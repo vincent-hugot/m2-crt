@@ -1,0 +1,211 @@
+
+/** 
+ * Parser for the constraints.
+ * by Vincent Hugot, 2009-10-4
+ 
+ * This grammar has the following advantages over the one which was suggested:
+ 
+  * More robust: Won't die if there are too many line feeds at the beginning or end...
+  * Support for negative integers (the other did not!!)
+  * AST expression trees correspond to the intuitive idea:
+    +(2,3) instead of Exp(2,Exp(+,3)); visitors will be much
+    easier to implement...
+  * Expressions are (correctly) left-associative
+  * Expressions support operator priorities
+  * Supports parentheses to override priorities
+    (the other had no priorities and no parens to explicitely
+     specify them... the only possible way to get correct nesting would
+     have been to introduce intermediary variables... a mess !)
+  * Supports several constraints on one line, comma-separated
+     
+ * ... and the following difference
+  * Domains must be grouped at beginning of file
+    (can be seen as a restriction; 
+     I see it as a cleaner way of doing things but YMMW)
+  
+**/
+
+options {
+  MULTI=true;
+  VISITOR=true;
+  //NODE_PACKAGE="parser";
+    // For some reason, this option generates brain-dead "import .*"
+    // which prevent compilation of generated files. So we'll do without it.
+}
+
+PARSER_BEGIN(Parser)
+    public class Parser {}
+PARSER_END(Parser)
+
+
+/** LEXER */
+
+SKIP : { 
+  " " | "\r" | "\t" | "\n" 
+}  
+
+TOKEN : {
+
+  /** Identifiers */
+
+    < IDENTIFIER :  
+      <LETTER> 
+      | 
+      (( <LETTER> | "_" ) ( <LETTER> | <DIGIT> | <SPECIALSYMB> )*) 
+    >
+  | < INTEGER :     ("-")? (<DIGIT>)+ >
+  | < DIGIT :       ["0"-"9"] >
+  | < LETTER :      ["a"-"z", "A"-"Z"] >
+  | < SPECIALSYMB : ["_", "'"] >
+
+  /** Symbols */
+
+  | < LB:     "[" >
+  | < RB:     "]" >
+  | < LP:     "(" >
+  | < RP:     ")" >
+  | < BOUNDS: ",...," >
+  | < COMMA:  "," >
+  | < SEMICOLON: ";" >
+  
+  /** OPERATORS */
+
+  | < DOMAIN_DEF:   "*:" >
+
+  | < PLUS:         "*+" >
+  | < MINUS:        "*-">
+  | < TIMES:        "***" >
+  | < DIV:          "*/" >
+
+  | < NEQ:          "*/=" >
+  | < EQ:           "*=" >
+
+  | < LEQ:          "*=<" > 
+  | < GEQ:          "*>=" >
+  
+  | < G:            "*>" >
+  | < L:            "*<" >
+  
+} // END TOKENS 
+
+
+/** PARSER */
+
+void constraints() : {} 
+{
+  domain_definition() (<COMMA> domain_definition())*
+  <SEMICOLON>
+  constraint() (<COMMA> constraint()) *
+  <EOF>
+}
+
+void domain_definition() #domain : {}
+{
+  variable() <DOMAIN_DEF> <LB> integer() <BOUNDS> integer() <RB>
+}
+
+
+void variable() #var : {}
+{
+  <IDENTIFIER>
+    { 
+       jjtThis.name = token.image; 
+    }
+}
+
+void integer() #integer : {}
+{
+  <INTEGER>
+    {
+      jjtThis.value = Integer.parseInt(token.image);
+    }
+}
+
+void cons_eq() #eq : {}
+{
+   expression() <EQ> expression()
+}
+
+void cons_leq() #leq : {}
+{
+   expression() <LEQ> expression()
+}
+
+void cons_geq() #geq : {}
+{
+   expression() <GEQ> expression()
+}
+
+void cons_neq() #neq : {}
+{
+   expression() <NEQ> expression()
+}
+
+void cons_g() #g : {}
+{
+   expression() <G> expression()
+}
+
+void cons_l() #l : {}
+{
+   expression() <L> expression()
+}
+
+void constraint() : {}
+{
+  LOOKAHEAD(2)
+  cons_eq() 
+  | 
+  LOOKAHEAD(2)
+  cons_leq()
+  |
+  LOOKAHEAD(2)
+  cons_geq() 
+  |
+  LOOKAHEAD(2)
+  cons_l()
+  |
+  LOOKAHEAD(2)
+  cons_g() 
+  |
+  cons_neq()
+}
+
+
+void atomic_expression() #void : {} 
+{
+  variable() 
+  |
+  integer()
+  |
+  <LP> expression() <RP>
+}
+
+
+void multiplicative_expression() #void : {}
+{ 
+  atomic_expression() 
+  (
+    ( <TIMES> atomic_expression() #mul(2) )
+    |
+    ( <DIV> atomic_expression() #div(2) )
+  )*
+}
+
+
+void additive_expression() #void : {}
+{ 
+  multiplicative_expression() 
+  (
+    (<PLUS> multiplicative_expression() #plus(2) )
+    |
+    (<MINUS> multiplicative_expression() #minus(2) )
+  )*
+}
+
+void expression() #void : {}
+{
+  additive_expression()
+}
+
+
