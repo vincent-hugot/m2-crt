@@ -18,7 +18,7 @@ public class Constant extends Variable {
 	 */
 	public Constant(String name, int value) {
 		super(name);
-		this.value = value;
+		this.value = value;;
 	}
 	
 	
