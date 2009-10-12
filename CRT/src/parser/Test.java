@@ -1,11 +1,13 @@
 package parser;
 
+import java.io.InputStream;
+
 public class Test {
   @SuppressWarnings("static-access")
-public static void main(String args[]) throws Exception {
+public static void dirty_parser_testing(InputStream stream) throws Exception {
     
     
-    Parser p = new Parser(System.in);
+    Parser p = new Parser(stream);
     p.constraints();
     System.out.println("TREE");
     Node root = p.jjtree.rootNode();
