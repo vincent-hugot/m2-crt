@@ -1,0 +1,702 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Package file SwissKnife (sknife) - Vincent Hugot     %
+%   1.0                                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% evenodd
+%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{sknife}
+%[3 March 2005  Generic tools to make one's life easier.]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       Packages provided and needed                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[dvips]{graphics}
+\usepackage[ansinew]{inputenc}
+\usepackage{amsmath,calc,amssymb,lastpage,fancyhdr,eurosym,stmaryrd,pifont,mathrsfs}
+\usepackage{verbatim,moreverb,hhline,array,color,graphicx,bm}
+\usepackage{slashbox,fancybox,url,multicol,ifthen,upquote,shortvrb}
+\usepackage[normalem]{ulem}
+\usepackage{pst-3d,pst-coil,pst-eps,pst-fill,pst-grad,pst-node,pst-plot,pst-text,pst-tree}
+%\usepackage{eucal}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       Managing Options                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareOption{hugematrices}{\setcounter{MaxMatrixCols}{20}}
+
+\DeclareOption{vrule}{\setlength{\columnseprule}{0.5pt}}
+
+\MakeShortVerb{\|}
+\DeclareOption{noshortverb}{\DeleteShortVerb{\|}}
+
+\def\isnoserif{0}
+\DeclareOption{sanserif}{\def\isnoserif{1}}
+
+\def\isenglish{0}
+\DeclareOption{english}{\def\isenglish{1}}
+
+\def\pagetitle#1{\chead{\large\textsc{#1}} \title{#1}}
+\def\pageleftheader#1{\lhead{#1}}
+\def\pagerightheader#1{\rhead{#1}}
+\def\pageleftfoot#1{\lfoot{#1}}
+\def\pagerightfoot#1{\rfoot{#1}}
+\def\pagesubject#1{\cfoot{\textsc{#1}}}
+
+\DeclareOption{deflayout}{
+\DeclareInputText{128}{\euro} \setlength{\textwidth}{16cm-1.5mm}
+\setlength{\textheight}{25.5cm} \setlength{\marginparwidth}{0cm}
+\setlength{\oddsidemargin}{0cm} \setlength{\topmargin}{-1in+2cm}
+\setlength{\footskip}{20pt} \setlength{\voffset}{-0.85cm}
+}
+
+\DeclareOption{defhf}{\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagetitle{Title}
+\pageleftheader{-}
+\pagerightheader{-}
+\pageleftfoot{\emph{\today}} \pagerightfoot{\emph{Page \thepage{} / \pageref{LastPage}}} \pagesubject{Subject}
+\title{Title} \author{author}}
+
+\def\isbabel{1}
+\DeclareOption{nobabel}{\def\isbabel{0}}
+
+\def\isindex{0}
+\DeclareOption{index}{\def\isindex{1}}
+
+\def\isalcal{0}
+\DeclareOption{alcal}{\def\isalcal{1}}
+
+\def\ishyperref{1}
+\DeclareOption{nohyperref}{\def\ishyperref{0}}
+
+\ProcessOptions
+
+
+\ifnum \isnoserif=1
+\usepackage{cmbright}
+\let\formertextsf\textsf
+\let\textsf\textrm
+\let\textrm\formertextsf
+\fi
+
+\ifnum \isbabel=1
+\ifnum \isenglish=1
+\usepackage[english]{babel}
+
+\else
+
+\def\ACROSStext{HORIZONTALEMENT}
+\def\DOWNtext{VERTICALEMENT}
+\usepackage[french]{babel}
+\fi\fi
+
+\ifnum \isindex=1
+\usepackage{makeidx}
+\makeindex
+\AtEndDocument{\printindex}
+\fi
+
+\ifnum \isalcal=1
+\usepackage{eucal}
+\fi
+
+\ifnum \ishyperref=1
+\definecolor{linkcolor}{rgb}{.5,0,0}
+\usepackage[colorlinks,linkcolor=linkcolor,pagecolor=blue,dvips]{hyperref}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       Definitions, preferences and such             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{ink}{rgb}{0,0,.8}
+\definecolor{lightblue}{rgb}{.9,.9,1}
+
+
+\let\formermaketitle\maketitle
+\renewcommand\maketitle{\formermaketitle\thispagestyle{empty}}
+
+\flushbottom
+
+\setcounter{secnumdepth}{5}
+%\setlength{\columnseprule}{0.5pt}
+% twocolumns : ligne de s�paration
+\setlength{\columnsep}{20pt}
+\setcounter{tocdepth}{5}
+
+\psset{treesep=0.7cm,levelsep=2cm,treemode=B,nodesep=4pt,radius=2pt,treefit=tight,linewidth=.8pt}
+\def\armedge{\ncdiag[armA=0,angleB=180,armB=1cm]}
+
+\AtBeginDocument{
+\renewcommand\labelitemi{$\diamond$}
+\renewcommand\labelitemii{$\triangleright$}
+\renewcommand\labelitemiii{$\star$}
+\renewcommand\labelitemiv{$\circ$}}
+
+\renewcommand{\thefootnote}{\,(\arabic{footnote})}
+
+\renewcommand\labelenumi{\textbf{\theenumi.}}
+\renewcommand\labelenumii{\textbf{(\theenumii)}}
+\renewcommand\labelenumiii{\textbf{\theenumiii.}}
+\renewcommand\labelenumiv{\textbf{\theenumiv.}}
+
+% Text-related macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\evenodd[3]{\ifodd #1 #3 \else #2\fi}
+
+\newcommand\noi\noindent
+
+\newcommand{\centre}[1]{\begin{center} #1 \end{center}}
+% short-cut for centering text
+
+\newcommand{\tss}{\textsuperscript}
+% exposant texte
+\newcommand{\tsb}[1]{$_{\text{#1}}$}
+% indice texte
+
+\newcommand{\latex}{\LaTeX}                                     % commande LATEX
+
+\newcommand{\twocol}
+[1]{\begin{multicols}{2}{#1}\end{multicols}}                    % deux colonnes
+
+\newcommand{\T}[2]{\begin{tabular}{#1}#2\end{tabular}}
+
+\def\rem{\vspace{-5mm}}
+
+% Text symbols %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{filecontents}{umvs.fd}       % indispensable pour la fonte mvs
+%    \DeclareFontFamily{U}{mvs}{}
+%    \DeclareFontShape{U}{mvs}{m}{n}{<-> fmvr8x}{}
+%\end{filecontents}
+
+\newcommand{\man}{\text{\Large\Pisymbol{wasy}{25}}}
+\newcommand{\woman}{\text{\Large\Pisymbol{wasy}{26}}}
+\newcommand{\permil}{\text{\Pisymbol{wasy}{104}}}
+%\newcommand{\hommefemme}{\text{\Large\Pisymbol{mvs}{133}}}
+\renewcommand{\check}{\text{\Pisymbol{ding}{33}}}
+\newcommand{\nocheck}{\text{\Pisymbol{ding}{37}}}
+
+\newcommand{\exhaustfont}[1]{
+\newcounter{aazsghjk}
+\setcounter{aazsghjk}{0}
+\whiledo{\value{aazsghjk}<256}{
+{\tiny\theaazsghjk}
+{\Huge\Pisymbol{#1}{\theaazsghjk}}
+\qquad\stepcounter{aazsghjk}}}
+
+
+
+% Math-related macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\p}[1]{\left( #1 \right)}                           %couple de parenth�ses
+\newcommand{\pd}[1]{\left\lvert #1 \right\rvert}                %couple ||
+\newcommand{\pdd}[1]{\left\lVert #1 \right\rVert}               %couple ||  ||
+\newcommand{\pc}[1]{\left[ #1 \right]}                          %couple []
+\newcommand{\pa}[1]{\left\{ #1 \right\}}                        %couple {}
+\newcommand{\pb}[1]{\left\langle #1 \right\rangle}              %couple de par bris�es
+\newcommand{\pcc}[1]{\left\llbracket #1 \right\rrbracket}       %couple de doubles crochets
+\newcommand{\pco}[1]{\left] #1 \right[}                         %intervalle ouvert
+\newcommand\pf[1]{\left\lfloor {#1} \right\rfloor}              %floor
+
+
+\newcommand{\lp}[1]{\left( #1 \right.}                          %parenth�se gauche
+\newcommand{\lpd}[1]{\left\lvert #1 \right.}                    %idem |
+\newcommand{\lpdd}[1]{\left\lVert #1 \right.}                   %idem ||
+\newcommand{\lpc}[1]{\left[ #1 \right.}                         %idem [
+\newcommand{\lpa}[1]{\left\{ #1 \right.}                        %idem {
+\newcommand{\lpb}[1]{\left\langle #1 \right.}                   %par bris�e gauche
+\newcommand{\lpcc}[1]{\left\llbracket #1 \right.}               % |[
+\newcommand{\lpco}[1]{\left] #1 \right.}
+
+\newcommand{\rp}[1]{\left. #1 \right)}                          %parenth�se droite
+\newcommand{\rpd}[1]{\left. #1 \right\rvert}                    %idem |
+\newcommand{\rpdd}[1]{\left. #1 \right\rVert}                   %idem ||
+\newcommand{\rpc}[1]{\left. #1 \right]}                         %idem ]
+\newcommand{\rpa}[1]{\left. #1 \right\}}                        %idem }
+\newcommand{\rpb}[1]{\left. #1 \right\rangle}                   %par bris�e droite
+\newcommand{\rpcc}[1]{\left. #1 \right\rrbracket}               % ]|
+\newcommand{\rpco}[1]{\left. #1 \right[}
+
+\newcommand{\g}{\vphantom}
+% ghost : adjusts the delimiters (useful for nested formulaes)
+\newcommand{\gi}{\g{\bigl( \bigr.}}
+\newcommand{\gii}{\g{\Bigl( \bigr.}}
+\newcommand{\giii}{\g{\biggl( \biggr.}}
+\newcommand{\giv}{\g{\Biggl( \Biggr.}}
+\newcommand{\gv}{\g{\M{1\\1\\1}}}
+\newcommand{\gvi}{\g{\M{1\\1\\1\\1}}}
+\newcommand{\gvii}{\g{\M{1\\1\\1\\1\\1}}}
+\newcommand{\gviii}{\g{\M{1\\1\\1\\1\\1\\1}}}
+\newcommand{\gix}{\g{\M{1\\1\\1\\1\\1\\1\\1}}}
+\newcommand{\gx}{\g{\M{1\\1\\1\\1\\1\\1\\1\\1}}}
+
+\newcommand{\mlc}{\multicolumn}
+
+\newcommand{\rectresult}[1]{{\boldmath \[\boxed{ #1} \]}}
+% bold, centered, boxed result.
+\newcommand{\result}[1]{\centre{\ovalbox{\boldmath ${\ds #1}$}}}
+% bold, centered, boxed result with smooth edges to the box.
+
+\def\sys#1#2{\lpa{\begin{array}{#1}#2\end{array}}}
+\def\sysb#1#2{\lpd{\begin{array}{#1}#2\end{array}}}
+% syst�mes
+
+\newcommand{\ts}{\textstyle}
+\newcommand{\ds}{\displaystyle}
+% modes d'affichage
+
+\newcommand{\aligne}[1]{\begin{align*} #1 \end{align*}}
+% env math align�
+
+\newcommand{\A}[2]{\begin{array}{#1}#2\end{array}}
+
+
+\def\build#1_#2^#3{\mathrel{\mathop{#1}\limits_{#2}^{#3}}}
+\renewcommand{\ss}{\substack}       % somme � deux variables etc
+
+% Symbols %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\application}[5][1]{\lpd{%
+% d�crit une application d'un ensemble vers un autre.
+%0 opt pour pr�sentation r�duite.
+\ifnum #1=1 \M{ #2 & \lto & #3 \\ #4 & \assoc & #5}
+\else \mM{ #2 & \lto & #3 \\ #4 & \assoc & #5}
+\fi}}
+
+\renewcommand{\v}{\overrightarrow}
+% vector (arrow)
+
+\renewcommand{\r}{\sqrt}
+% short-cut for square root
+\newcommand{\f}{\frac}
+% quick fraction
+\newcommand\abs\pd
+% valeur absolue
+\newcommand{\im}{\Longrightarrow}
+% ==>  equivalence : \iff
+\newcommand{\mi}{\Longleftarrow}
+% <==
+
+\newcommand{\ortho}{\bot}
+% symbole orthogonal
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}} \newcommand{\Q}{\ensuremath{\mathbb{Q}}}         % ensembles usuels
+\newcommand{\C}{\ensuremath{\mathbb{C}}} \newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}} \newcommand{\K}{\ensuremath{\mathbb{K}}}
+% Symbols for common mathematical sets
+
+\renewcommand{\P}{\ensuremath{\mathbb{P}}}
+% Probability symbol
+\newcommand{\pr}[2][]{\P_{#1}\p{#2}}
+% Probability function
+
+\newcommand{\lto}{\mathop{\longrightarrow}}
+%  --->
+\newcommand{\assoc}{\mathop{\longmapsto}}
+% |--->
+
+\newcommand\der[1]{^{\p {#1}}}
+% d�riv�e p-i�me
+\newcommand{\dr}{\,\partial}
+% d rond
+\renewcommand{\d}{\,\mathrm d}
+% le d de l'�l�ment diff�rentiel
+\newcommand{\derpp}[2]{\p{\frac{\dr #1}{\dr #2}}}
+% d�riv�e partielle ()
+\newcommand{\dernp}[2]{\p{\frac{\mathrm{d} #1}{\mathrm{d} #2}}}
+% d�riv�e droite ()
+\newcommand{\derp}[2]{\frac{\dr #1}{\dr #2}}
+% d�riv�e partielle
+\newcommand{\dern}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+% d�riv�e droite
+
+\newcommand{\<}{\leqslant} \renewcommand{\>}{\geqslant}
+% <= >=
+
+\newcommand{\infi}{\infty}
+% symbole infini
+
+\newcommand{\limi}[3][]{\lim_{#2 \underset{#1}{\rightarrow}#3}}
+% lim[>]x--> a f(x)
+
+\newcommand{\sumk}[2]{\sum_{k=#1}^{#2}}
+\newcommand{\sumi}[2]{\sum_{i=#1}^{#2}}
+\newcommand{\sumn}[2]{\sum_{n=#1}^{#2}}
+\newcommand{\sump}[2]{\sum_{p=#1}^{#2}}
+\newcommand{\sumj}[2]{\sum_{j=#1}^{#2}}
+
+\newcommand{\prodk}[2]{\prod_{k=#1}^{#2}}
+\newcommand{\prodi}[2]{\prod_{i=#1}^{#2}}
+\newcommand{\prodj}[2]{\prod_{j=#1}^{#2}}
+\newcommand{\prodn}[2]{\prod_{n=#1}^{#2}}
+\newcommand{\prodp}[2]{\prod_{p=#1}^{#2}}
+% short-cuts for sums and products.
+
+\renewcommand\th{\mathrm {th}\,} \DeclareMathOperator{\ch}{ch}
+% fonctions hyperboliques
+\DeclareMathOperator{\sh}{sh}
+
+\providecommand\x\text
+\newcommand{\iinto}
+% int�grales sp�ciales (mode display uniquement)
+{\bigcirc \kern -16.0pt \int\!\!\!\!\!\int}
+\newcommand{\iiinto}
+{\ \text{\Large $\bigcirc$} \kern -21pt \int\!\!\!\!\!\int\!\!\!\!\!\int}
+\renewcommand{\iiint}
+{\int\!\!\!\!\!\int\!\!\!\!\!\int}
+\renewcommand{\iint}
+{\int\!\!\!\!\!\int}
+
+\newcommand{\rest}[2]{\left.#1\right|_{#2}}
+% operation de restriction ^pour induire
+\newcommand{\suml}{\sum\limits}
+%une somme au milieu d'un texte avec les limites OK
+\newcommand{\mc}{\mathcal}
+% �crit en fonte caligraphi�e
+\newcommand{\mf}{\mathfrak}
+\newcommand\ms{\mathscr}
+\newcommand{\eps}{\varepsilon}
+% joli signe epsilon
+\newcommand{\ul}{\underline}
+% souligne
+\newcommand{\ol}{\overline}
+% surligne
+\DeclareMathOperator{\Vect}{Vect}
+% Enveloppe vectorielle
+\newcommand{\bk}{\bigskip}
+% raccourci pour \bigskip
+\newcommand{\mk}{\medskip}
+% raccourci pour \medskip
+\newcommand\sk\smallskip
+\newcommand{\Text}[1]{\ensuremath{\ \ \text{#1}\ \ }}
+% text en math avec espacements
+
+\newcommand{\ptout}[1]{\forall\,#1}
+\newcommand{\qs}[1]{\p{\ptout #1}}
+% groupes avec quantificateurs ()
+\newcommand{\ie}[1]{\left.\p{\exists #1}\right /\,}
+\newcommand{\ieu}[1]{\left.\p{\exists ! #1}\right /\,}
+
+\newcommand\indessous[2]{\underset
+% un appartient � � mettre sous qqchose
+{\underset{#2}{\,\text{\rotatebox{-90}{\!\!\!\!$\in$}}}}{#1}}
+
+\newcommand{\CQFD}{$\mathbb{\ C.Q.F.D.\ \ }$}
+% �crit C.Q.F.D.
+
+\DeclareMathOperator{\Mato}{Mat}
+% Matrice (carr�e) de f dans une base B.. (au d�part, B' � l'arriv�e)
+\newcommand{\Mat}[2]{\underset{#2\leftarrow#1}{\Mato\,}}
+\newcommand{\Matc}[1]{\underset{#1}{\Mato\,}}
+\DeclareMathOperator{\Ima}{Im} \DeclareMathOperator{\Ker}{Ker}
+% Op�rateurs image, noyaux spectre
+\DeclareMathOperator{\Sp}{Sp}
+\renewcommand{\sup}{\mathop{\textrm{Sup}}\limits}
+\newcommand {\trans}[1]{{\vphantom{#1}}^t #1 }
+\DeclareMathOperator{\Trace}{Tr}
+% Transpos�e, trace
+
+\renewcommand{\b}[2]{\genfrac{(}{)}{0pt}{}{#2}{#1}}
+% coeffs binomiaux
+
+\renewcommand{\tilde}{\widetilde}\renewcommand{\hat}{\widehat}
+% tilde et chapeau
+
+\renewcommand{\t}{\cdot}
+% \times en point
+
+\DeclareMathOperator{\rg}{rg}
+% rang
+\newcommand{\inter}{\cap} \newcommand{\union}{\cup}
+% op�rateurs ensemblistes
+\newcommand{\non}[1]{\overline{#1}}
+\newcommand{\inc}{\subset}\newcommand{\incr}{\supset}
+% inclus, ou �gal
+\newcommand{\ince}{\subseteq}\newcommand{\incre}{\supseteq}
+\newcommand{\uniond}{\sqcup}
+% union disjointe
+
+\newcommand{\idemest}{\text{\small\textsc{ie. }}}
+% locution Ie
+
+\newcommand{\pfp}[2]{
+% petite fraction pench�e
+{\raise0.5ex\hbox{$\scriptstyle {#1}$} \kern-0.1em/\kern-0.15em
+\lower0.25ex\hbox{$\scriptstyle {#2}$}}}
+\newcommand{\fp}[2]{\raise0.45ex\hbox{$#1$}
+% fraction pench�e
+\!\mathord{\left/{\vphantom {#1 #2}}\right.
+\kern-\nulldelimiterspace}
+\!\lower0.67ex\hbox{$#2$}}
+
+% Matrices %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mattrig}[5]{% Cr�e la matrice triangulaire (sans d�limiteur).
+%Le dernier param�tre est un nombre : 1 sup�rieure 0 inf�rieure.
+\small\M{
+ \normalsize\rnode{a}{#1}    & \rnode{e}{\ifnum #5=1  \else \color{gray} \fi #3}
+& & \rnode{f}{\ifnum #5=1  \else \color{gray} \fi #3}   \\
+\rnode{h}{\ifnum #5=0  \else \color{gray} \fi #4}&& & \\
+ &  & & \rnode{g}{\ifnum #5=1  \else \color{gray} \fi #3}    \\
+\rnode{i}{\ifnum #5=0  \else \color{gray} \fi #4}&  & \rnode{j}
+{\ifnum #5=0  \else \color{gray} \fi #4}&
+\normalsize\rnode{b}{#2}}
+\psset{linecolor=black,linestyle=solid,nodesep=4pt,linewidth=0.5pt}
+\ncline{a}{b}
+\psset{linestyle=dotted,linewidth=1pt}
+\ifnum #5=1 \psset{linecolor=black} \else \psset{linecolor=gray} \fi
+\ncline{e}{f}\ncline{f}{g}\ncline{g}{e}
+\ifnum #5=0 \psset{linecolor=black} \else \psset{linecolor=gray} \fi
+\ncline{h}{i}\ncline{i}{j}\ncline{h}{j}}
+
+\newcommand{\matdiag}[3][0]{
+% cr�e la matrice diagonale
+\mattrig {#2}{#3}{#1}{#1}2
+}
+
+\newlength{\defaultmatdottedlinewidth}
+% �paisseur des pointill�s
+\setlength{\defaultmatdottedlinewidth}{1pt}
+\newlength{\matlinesep}
+% respect
+\setlength{\matlinesep}{4pt}
+
+\newcommand{\mn}{\Rnode}
+% d�finit un noeud dans une matrice : \mn [marqueur][contenu]
+
+\newcommand{\matdrawbloc}[5][\defaultmatdottedlinewidth]{
+% relie un bloc de quatre noeuds...
+\psset{linecolor=black,nodesep=\matlinesep,linestyle=dotted,linewidth=#1}
+\ncline{#2}{#3}\ncline{#3}{#4}
+\ncline{#4}{#5}\ncline{#5}{#2}}
+\newcommand{\matdrawtri}[4][\defaultmatdottedlinewidth]{
+\psset{linecolor=black,nodesep=\matlinesep,linestyle=dotted,linewidth=#1}
+\ncline{#2}{#3}
+\ncline{#3}{#4}
+\ncline{#4}{#2}}
+\newcommand{\matdrawline}[2]{
+\psset{linecolor=black,linestyle=solid,nodesep=\matlinesep,linewidth=0.4pt}
+\ncline{#1}{#2}
+\ncline{#2}{#1}}
+\newcommand{\matdrawdottedline}[3][\defaultmatdottedlinewidth]{
+\psset{linecolor=black,linestyle=dotted,nodesep=\matlinesep,linewidth=#1}
+\ncline{#2}{#3}
+\ncline{#3}{#2}}
+
+\newcommand{\matdrawsolidbloc}[5][0.4pt]{
+% relie un bloc de quatre noeuds...
+\psset{linecolor=black,nodesep=0pt,linestyle=solid,linewidth=#1}
+\ncline{#2}{#3}\ncline{#3}{#4}
+\ncline{#4}{#5}\ncline{#5}{#2}}
+
+\newcommand{\M}[1]{\begin{matrix}#1\end{matrix} }
+% cr�e une matrice vierge
+\newcommand{\mM}
+[1]{\begin{smallmatrix}#1\end{smallmatrix} }
+% cr�e une matrice vierge minuscule
+\newcommand{\pM}[1]{\p{\M {#1}}}
+% Les m�mes avec des parenth�ses ordinaires d'office.
+\newcommand{\pmM}[1]{\p{\mM {#1}}}
+
+\newcommand{\ga}{\alpha}\newcommand{\gb}{\beta}
+% Greek letters
+\renewcommand{\gg}{\gamma}\newcommand{\gd}{\delta}
+\newcommand \gz \zeta \renewcommand \ge \varepsilon
+\newcommand \gt\theta \newcommand \go \omega
+\newcommand \gs \sigma \newcommand \gu \upsilon
+\newcommand \gr \rho \newcommand \gl \lambda
+\newcommand \gp \varphi \newcommand \gD \Delta
+\newcommand \gO \Omega \newcommand \gS \Sigma
+\newcommand \gT \Theta
+
+\def\ron{\circ}
+\def\serie#1{\ensuremath{\p{\gi\sum #1}}}
+% sp�cifique analyse
+\def\serieb#1{\ensuremath{\bigl(\sum #1 \bigr)}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                Functions dedicated to curves
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\def\pssin#1{57.2958 #1 mul sin}
+\def\pscos#1{57.2958 #1 mul cos}
+\def\psexp#1{2.71828 #1 exp}
+\def\pspi#1{3.1416}
+
+\def\graphgrid{1}
+\def\graphaxes{1}
+\def\graphplot{1}
+\def\graphticks{1}
+\def\graphpoints{500}
+
+%\def\addgraph f(x)=#1..{%
+%\psplot[plotpoints=\graphpoints]{\graphlocalxmin}{\graphlocalxmax}{#1}}
+
+\def\addgraph f(x)=#1..{
+\addrgraph f(x)=#1,x=\graphlocalxmin..\graphlocalxmax..}
+
+\def\addrgraph f(x)=#1,x=#2..#3..{%
+\psplot[plotpoints=\graphpoints]{#2}{#3}{#1}}
+
+\newcommand\graphlocaldrawenvironement[5]{
+\ifnum \graphaxes=1
+            \ifnum \graphticks=0
+            \psset{labels=none,ticks=none}
+            \fi
+            \psaxes[linewidth=.8pt,linecolor=black,ticksize=1pt]%
+                {<->}(0,0)(#2,#4)(#3,#5)
+        \fi
+        \ifnum \graphgrid=1
+            \psgrid[subgriddiv=1,griddots=10,gridwidth=.4pt,gridlabels=0pt,%
+            gridcolor=black]%
+                (0,0)(#2,#4)(#3,#5)
+        \fi}
+
+\newcommand\regraphaxes{
+\graphlocaldrawenvironement{}{\graphlocalxmin}{\graphlocalxmax}
+{\graphlocalymin}{\graphlocalymax}}
+
+\def\graphs#1,x=#2..#3,y=#4..#5(x=#6,y=#7){
+\begin{center}
+{\tiny\psset{xunit=#6,yunit=#7,linewidth=1.2pt}
+    \pspicture*(#2,#4)(#3,#5)
+
+        \graphlocaldrawenvironement{}{#2}{#3}{#4}{#5}
+
+        \ifnum \graphplot=1
+            \def\graphlocalxmin{#2}
+            \def\graphlocalxmax{#3}
+            \def\graphlocalymin{#4}
+            \def\graphlocalymax{#5}
+            #1
+        \fi
+    \endpspicture}
+\end{center}}% end of \graphs
+
+
+\def\graph f(x)=#1,x=#2..#3,y=#4..#5(x=#6,y=#7){
+\graphs{\addgraph f(x)=#1..},x=#2..#3,y=#4..#5(x=#6,y=#7)
+}% end of \graph
+
+\newcommand\verticalline[1]{\psline{-}(#1,\graphlocalymin)(#1,\graphlocalymax)}
+
+\newcommand\graphcolor[1]{\psset{linecolor=#1}} % never use first
+
+\newcommand\graphshadecolor[1]{\psset{fillcolor=#1}}
+
+\def\addrgraphshade f(x)=#1,x=#2..#3..{%
+\pscustom[fillstyle=solid,linestyle=none]{
+\psplot[plotpoints=\graphpoints]{#2}{#3}{#1}
+\psline(#3,\graphlocalymax)(#3,0)(#2,0)(#2,\graphlocalymax)}
+\regraphaxes
+\addrgraph f(x)=#1,x=#2..#3..}
+
+\def\addgraphshade f(x)=#1..{
+\addrgraphshade f(x)=#1,x=\graphlocalxmin..\graphlocalxmax..}
+
+\graphcolor{black}\graphshadecolor{lightblue}
+
+\newcommand\graphpoint[6][hv]{\footnotesize
+\ifthenelse{\equal{#1}{hv} \or \equal{#1}{vh}}
+    {
+    \psline[linecolor=ink,linestyle=dashed,linewidth=.5pt]{-}(#2,0)(#2,#3)(0,#3)
+    }{
+    \ifthenelse{\equal{#1}{h}}
+        {
+        \psline[linecolor=ink,linestyle=dashed,linewidth=.5pt]{-}(#2,#3)(0,#3)
+        }{
+        \ifthenelse{\equal{#1}{v}}
+            {
+            \psline[linecolor=ink,linestyle=dashed,linewidth=.5pt]{-}(#2,0)(#2,#3)
+            }
+            {
+            %else
+            }
+        }
+    }
+\ifthenelse{\lengthtest{#2pt>0pt}}{
+    \ifthenelse{\lengthtest{#3pt>0pt}}{
+        \uput{5pt}[45](#2,#3){$#4$}
+        \uput{5pt}[-90](#2,0){$#5$}
+        \uput{5pt}[180](0,#3){$#6$}
+    }{
+        \uput{5pt}[-45](#2,#3){$#4$}
+        \uput{5pt}[90](#2,0){$#5$}
+        \uput{5pt}[180](0,#3){$#6$}
+    }
+}{
+    \ifthenelse{\lengthtest{#3pt>0pt}}{
+        \uput{5pt}[135](#2,#3){$#4$}
+        \uput{5pt}[-90](#2,0){$#5$}
+        \uput{5pt}[0](0,#3){$#6$}
+    }{
+        \uput{5pt}[-135](#2,#3){$#4$}
+        \uput{5pt}[90](#2,0){$#5$}
+        \uput{5pt}[0](0,#3){$#6$}
+    }
+} \psdot[dotsize=5pt,dotstyle=+,dotangle=45](#2,#3)} % end graphpoint
+
+
+
+\newcommand\graphvert[2][--]{
+\ifthenelse{\equal{#1}{--}}
+    {
+    \psline[linecolor=ink,linestyle=dashed,linewidth=.5pt]{-}(#2,\graphlocalymin)(#2,\graphlocalymax)
+    }{
+    \psline{#1}(#2,\graphlocalymin)(#2,\graphlocalymax)
+    }
+}
+
+
+
+\newcommand\graphlabel[4]{\footnotesize
+\ifthenelse{\equal{#2}{u}}
+    {
+    \uput{5pt}[90](#3,#4){$#1$}
+    }{
+    \ifthenelse{\equal{#2}{ur}}
+        {
+        \uput{5pt}[45](#3,#4){$#1$}
+        }{
+        \ifthenelse{\equal{#2}{r}}
+            {
+            \uput{5pt}[0](#3,#4){$#1$}
+            }{
+            \ifthenelse{\equal{#2}{dr}}
+                {
+                \uput{5pt}[-45](#3,#4){$#1$}
+                }{
+                \ifthenelse{\equal{#2}{d}}
+                    {
+                    \uput{5pt}[-90](#3,#4){$#1$}
+                    }{
+                    \ifthenelse{\equal{#2}{l}}
+                        {
+                        \uput{5pt}[180](#3,#4){$#1$}
+                        }{
+                        \ifthenelse{\equal{#2}{ul}}
+                            {
+                            \uput{5pt}[135](#3,#4){$#1$}
+                            }{
+                            \ifthenelse{\equal{#2}{dl}}
+                                {
+                                \uput{5pt}[225](#3,#4){$#1$}
+                                }{
+                                %else
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,103 @@
+
+%% Common definitions for the project.
+
+% Vincent Hugot
+
+% Does nothing, but does it well
+\def\id#1{#1}
+
+% French quotes with proper spacing
+\def\quote#1{\flqq\,#1\,\frqq{}}
+
+\def\cad{c'est-à-dire}
+\def\Cad{C'est-à-dire}
+\def\dateformat#1/#2/#3{#1/#2/#3}
+
+% name formatting
+\def\familyname{\textsc}
+\def\firstname{\id}
+\def\groupmember#1#2{\firstname{#1} \familyname{#2}}
+
+% group members
+\def\mwyd{\groupmember{Wydade}{Ben Hamdia}}
+\def\mmat{\groupmember{Mathias}{Coqblin}}
+\def\mlou{\groupmember{Loubna}{Darkate}}
+\def\mmor{\groupmember{Mor Salla}{Fall}}
+\def\moli{\groupmember{Olivier}{Finot}}
+\def\mvin{\groupmember{Vincent}{Hugot}}
+\def\mmed{\groupmember{Mehdi}{Iraqi Houssaini}}
+\def\mbed{\groupmember{Bedr}{MOUAJAB}}
+\def\mdon{\groupmember{Donald}{Srey}}
+
+% quality of a member during a meeting
+\def\quality#1{\ (\textit{#1})}
+
+\def\excused{\quality{excusé}}
+\def\absent{\quality{absent}}
+\def\animator{\quality{animateur}}
+\def\scribe{\quality{scribe}}
+\def\reader{\quality{relecteur}}
+
+% theme od a meeting section
+\def\meetingtheme#1{ \textbf{[ #1 ]}\sk\\}
+
+\def\mtdebate{\meetingtheme{Débat}}
+\def\mtsuivi{\meetingtheme{Suivi}}
+\def\mtplan{\meetingtheme{Planning}}
+\def\mtconc{\meetingtheme{Concertation}}
+
+% important points
+\def\mtdecision{\textsl}
+\def\mtclientsaid{\textsl}
+
+% Questions and answers
+\def\qna#1#2{\textbf{#1}\sk\\#2\mk\\}
+
+% technology
+\def\tech{\texttt}
+\def\java{\tech{Java}}
+\def\jjtree{\tech{JJTree}}
+\def\javacc{\tech{JavaCC}}
+\def\ocaml{\tech{OCaml}}
+\def\svn{\tech{SVN}}
+\def\junit{\tech{JUnit}}
+\def\ant{\tech{ant}}
+\def\ast{arbre de syntaxe abstraite}
+\def\Ast{Arbre de syntaxe abstraite}
+\def\noeud{n\oe{}ud}
+\def\eclipse{\tech{Eclipse}}
+
+% some words that it may be useful not to have to type completly each time
+\def\op{opérateur}
+\def\ad{addition}
+\def\sub{soustraction}
+\def\mul{multiplication}
+\def\div{division entière}
+\def\dif{différence}
+\def\aff{affectation}
+\def\sup{supérieur}
+\def\inf{inférieur}
+\def\infe{inférieur ou égal}
+\def\dom{définition de domaine}
+
+% some defininitions whitch they are not totaly defined yet (and they may not work)
+
+% apparence des nom de classe java non définies.
+\def\javaclass#1{#1}
+
+
+
+% grammar rules
+\def\terminal#1{\verb*§#1§}
+\def\variable#1{\textbf{#1}}
+\def\astnode#1{\textit{\sffamily #1}}
+
+% something the user must replace in a command
+\def\userentry#1{$<$\textit{#1}$>$}
+
+% syntax of a console command , for instance
+\def\usercommand#1{\texttt{#1}}
+
+
+% "remets à plus tard ce que tu pourrais faire maintenant !"
+\def\todo{{\ }\mk\\\textbf{TODO:}\mk\\}

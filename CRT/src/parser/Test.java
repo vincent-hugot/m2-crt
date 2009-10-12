@@ -1,5 +1,8 @@
+package parser;
+
 public class Test {
-  public static void main(String args[]) throws Exception {
+  @SuppressWarnings("static-access")
+public static void main(String args[]) throws Exception {
     
     
     Parser p = new Parser(System.in);
