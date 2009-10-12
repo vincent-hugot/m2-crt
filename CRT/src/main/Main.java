@@ -23,7 +23,7 @@ public class Main {
 			// Here BufferedInputStream is added for fast reading.
 			bis = new BufferedInputStream(fis);
 			dis = new DataInputStream(bis);
-
+			parser.Test.dirty_parser_testing(dis);
 			// dispose all the resources after using them.
 			fis.close();
 			bis.close();
@@ -35,7 +35,6 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		parser.Test.dirty_parser_testing(dis);
 		System.out.println("Test END");
 	}
 
