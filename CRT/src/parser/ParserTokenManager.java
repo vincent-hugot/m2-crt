@@ -481,14 +481,12 @@ static private void jjCheckNAdd(int state)
       jjrounds[state] = jjround;
    }
 }
-@SuppressWarnings("unused")
 static private void jjAddStates(int start, int end)
 {
    do {
       jjstateSet[jjnewStateCnt++] = jjnextStates[start];
    } while (start++ != end);
 }
-@SuppressWarnings("unused")
 static private void jjCheckNAddTwoStates(int state1, int state2)
 {
    jjCheckNAdd(state1);
