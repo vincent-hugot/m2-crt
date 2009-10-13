@@ -13,6 +13,9 @@ public static void dirty_parser_testing(InputStream stream) throws Exception {
     Node root = p.jjtree.rootNode();
     ((SimpleNode) root).dump(" > ");
     
+    
+    root.jjtAccept(new checking.CheckingVisitor(), null);
+    
     /*
     TermesClos parser = new TermesClos(System.in);
     parser.axiome();
