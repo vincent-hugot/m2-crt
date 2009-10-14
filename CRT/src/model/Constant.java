@@ -1,8 +1,20 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Constant extends Variable {
 	
 	private int value;
+	
+	
+	/**
+	 * @param value
+	 */
+	public Constant(ArrayList<Integer> domain , boolean artificial, int value) {
+		super("", domain, artificial);
+		this.value = value;
+	}
+	
 
 	public int getValue() {
 		return value;
@@ -11,23 +23,4 @@ public class Constant extends Variable {
 	public void setValue(int value) {
 		this.value = value;
 	}
-
-	/**
-	 * @param value
-	 */
-	public Constant(int value) {
-		super();
-		this.value = value;
-	}
-
-	/**
-	 * @param name
-	 * @param value
-	 */
-	public Constant(String name, int value) {
-		super(name);
-		this.value = value;
-	}
-	
-	
 }
