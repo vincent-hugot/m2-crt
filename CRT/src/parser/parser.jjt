@@ -26,8 +26,10 @@
 **/
 
 options {
-  MULTI=true;
-  VISITOR=true;
+	MULTI=true;
+	VISITOR=true;
+	STATIC=false;
+	ERROR_REPORTING=true; /* https://javacc.dev.java.net/doc/apiroutines.html Customizing Error Messages */
   //NODE_PACKAGE="parser";
     // For some reason, this option generates brain-dead "import .*"
     // which prevent compilation of generated files. So we'll do without it.
@@ -91,21 +93,26 @@ TOKEN : {
 
 /** PARSER */
 
-void constraints() : {} 
+/* Rroot node */
+SimpleNode constraints() #parse : {} 
 {
   domain_definition() (<COMMA> domain_definition())*
   <SEMICOLON>
   constraint() (<COMMA> constraint()) *
-  <EOF>
+  <EOF> { return jjtThis; }
 }
 
-void domain_definition() #domain : {}
+void domain_definition() #domain : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
   variable() <DOMAIN_DEF> <LB> integer() <BOUNDS> integer() <RB>
 }
 
 
-void variable() #var : {}
+void variable() #var : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
   <IDENTIFIER>
     { 
@@ -113,40 +120,57 @@ void variable() #var : {}
     }
 }
 
-void integer() #integer : {}
+void integer() #integer : {
+	jjtThis.setLine(getToken(1).beginLine);
+	String value;
+}
 {
   <INTEGER>
     {
-      jjtThis.value = Integer.parseInt(token.image);
+      /*jjtThis.value = Integer.parseInt(token.image);*/
+	  value = token.image; // String, then parsed with NumberFormatException
+      jjtThis.setValue(value);
     }
 }
 
-void cons_eq() #eq : {}
+void cons_eq() #eq : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
    expression() <EQ> expression()
 }
 
-void cons_leq() #leq : {}
+void cons_leq() #leq : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
    expression() <LEQ> expression()
 }
 
-void cons_geq() #geq : {}
+void cons_geq() #geq : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
    expression() <GEQ> expression()
 }
 
-void cons_neq() #neq : {}
+void cons_neq() #neq : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
    expression() <NEQ> expression()
 }
 
-void cons_g() #g : {}
+void cons_g() #g : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
    expression() <G> expression()
 }
 
-void cons_l() #l : {}
+void cons_l() #l : {
+	jjtThis.setLine(getToken(1).beginLine);
+}
 {
    expression() <L> expression()
 }
@@ -182,24 +206,28 @@ void atomic_expression() #void : {}
 }
 
 
-void multiplicative_expression() #void : {}
+void multiplicative_expression() #void : {
+	Token t;
+}
 { 
   atomic_expression() 
   (
-    ( <TIMES> atomic_expression() #mul(2) )
+    ( t=<TIMES> atomic_expression() {jjtThis.setLine(t.beginLine);} #mul(2) )
     |
-    ( <DIV> atomic_expression() #div(2) )
+    ( t=<DIV> atomic_expression() {jjtThis.setLine(t.beginLine);} #div(2) )
   )*
 }
 
 
-void additive_expression() #void : {}
+void additive_expression() #void : {
+	Token t;
+}
 { 
   multiplicative_expression() 
   (
-    (<PLUS> multiplicative_expression() #plus(2) )
+    ( t=<PLUS> multiplicative_expression() {jjtThis.setLine(t.beginLine);} #plus(2) )
     |
-    (<MINUS> multiplicative_expression() #minus(2) )
+    ( t=<MINUS> multiplicative_expression() {jjtThis.setLine(t.beginLine);} #minus(2) )
   )*
 }
 

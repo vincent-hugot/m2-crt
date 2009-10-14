@@ -1,26 +1,49 @@
 package checking;
 
 import parser.*;
+import translator.ConstraintsError;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
 
 public class CheckingVisitor implements ParserVisitor {
 	
-	void fail(String msg)
-	{
-		// blah
-		System.out.println(msg);
-	}
+	private SimpleNode ast;
+	private ArrayList<ConstraintsError> errors;
+	private String filename;
 	
 	/** Set of variables which we know have already been declared. */
 	Set<String> declaredVars = new HashSet<String>();
 	
+	
+	
+	public CheckingVisitor(SimpleNode ast, String filename) {
+		this.ast = ast;
+		this.errors = new ArrayList<ConstraintsError>();
+		this.filename = filename;
+	}
+	
+	
+	void fail(String msg, int line) {
+		errors.add(new ConstraintsError(filename, line, msg));
+	}
+	
+	
+	public void check() {
+		ast.jjtAccept(this, new Object());
+	}
+	
+	
+	public ArrayList<ConstraintsError> getErrors() {
+		return errors;
+	}
+	
+	
 
 	
 	public Object visit(SimpleNode node, Object data) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -38,7 +61,8 @@ public class CheckingVisitor implements ParserVisitor {
 		String varName = ((ASTvar)node.jjtGetChild(0)).name;
 		if (declaredVars.contains(varName))
 		{
-			fail("Variable " + varName + " has more than one declaration");
+			fail("Variable " + varName + " has more than one declaration",
+					((SimpleNode) node.jjtGetChild(0)).getLine());
 		}
 		declaredVars.add(varName);
 		int lower = ((ASTinteger)node.jjtGetChild(1)).value ;
@@ -46,7 +70,7 @@ public class CheckingVisitor implements ParserVisitor {
 		if (lower > higher)
 		{
 			fail("Variable " + varName + " lives in the empty domain: [" +
-					lower + ",...," + higher + "]");
+					lower + ",...," + higher + "]", node.getLine());
 		}
 		
 		return null;
@@ -58,14 +82,13 @@ public class CheckingVisitor implements ParserVisitor {
 		String varName = ((ASTvar)node).name;
 		if (!declaredVars.contains(varName))
 		{
-			fail("Variable " + varName + " has not been declared");
+			fail("Variable " + varName + " has not been declared", node.getLine());
 		}
 		return null;
 	}
 
 	
 	public Object visit(ASTinteger node, Object data) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

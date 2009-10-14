@@ -3,7 +3,6 @@ package parser;
 import java.io.InputStream;
 
 public class Test {
-  @SuppressWarnings("static-access")
 public static void dirty_parser_testing(InputStream stream) throws Exception {
     
     
@@ -14,7 +13,7 @@ public static void dirty_parser_testing(InputStream stream) throws Exception {
     ((SimpleNode) root).dump(" > ");
     
     
-    root.jjtAccept(new checking.CheckingVisitor(), null);
+    root.jjtAccept(new checking.CheckingVisitor((SimpleNode)root,""), null);
     
     /*
     TermesClos parser = new TermesClos(System.in);

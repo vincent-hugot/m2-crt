@@ -11,28 +11,27 @@ package parser;
  * You can modify this class to customize your error reporting
  * mechanisms so long as you retain the public fields.
  */
-@SuppressWarnings("serial")
 public class ParseException extends Exception {
+
+  /**
+   * The version identifier for this Serializable class.
+   * Increment only if the <i>serialized</i> form of the
+   * class changes.
+   */
+  private static final long serialVersionUID = 1L;
 
   /**
    * This constructor is used by the method "generateParseException"
    * in the generated parser.  Calling this constructor generates
    * a new object of this type with the fields "currentToken",
-   * "expectedTokenSequences", and "tokenImage" set.  The boolean
-   * flag "specialConstructor" is also set to true to indicate that
-   * this constructor was used to create this object.
-   * This constructor calls its super class with the empty string
-   * to force the "toString" method of parent class "Throwable" to
-   * print the error message in the form:
-   *     ParseException: <result of getMessage>
+   * "expectedTokenSequences", and "tokenImage" set.
    */
   public ParseException(Token currentTokenVal,
                         int[][] expectedTokenSequencesVal,
                         String[] tokenImageVal
                        )
   {
-    super("");
-    specialConstructor = true;
+    super(initialise(currentTokenVal, expectedTokenSequencesVal, tokenImageVal));
     currentToken = currentTokenVal;
     expectedTokenSequences = expectedTokenSequencesVal;
     tokenImage = tokenImageVal;
@@ -50,21 +49,13 @@ public class ParseException extends Exception {
 
   public ParseException() {
     super();
-    specialConstructor = false;
   }
 
   /** Constructor with message. */
   public ParseException(String message) {
     super(message);
-    specialConstructor = false;
   }
 
-  /**
-   * This variable determines which constructor was used to create
-   * this object and thereby affects the semantics of the
-   * "getMessage" method (see below).
-   */
-  protected boolean specialConstructor;
 
   /**
    * This is the last token that has been consumed successfully.  If
@@ -86,17 +77,80 @@ public class ParseException extends Exception {
    * defined in the generated ...Constants interface.
    */
   public String[] tokenImage;
-
-  /**
-   * This method has the standard behavior when this object has been
-   * created using the standard constructors.  Otherwise, it uses
-   * "currentToken" and "expectedTokenSequences" to generate a parse
-   * error message and returns it.  If this object has been created
-   * due to a parse error, and you do not catch it (it gets thrown
-   * from the parser), then this method is called during the printing
-   * of the final stack trace, and hence the correct error message
-   * gets displayed.
+  
+  
+  
+  public String getMessage() {
+    /*if (!specialConstructor) {
+      return super.getMessage();
+    }*/
+    StringBuffer expected = new StringBuffer();
+    int maxSize = 0;
+    for (int i = 0; i < expectedTokenSequences.length; i++) {
+      if (maxSize < expectedTokenSequences[i].length) {
+        maxSize = expectedTokenSequences[i].length;
+      }
+      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+        expected.append(tokenImage[expectedTokenSequences[i][j]])/*.append(' ')*/;
+      }
+      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+        //if (i < (expectedTokenSequences.length-1)) // Evite d'afficher le dernier "/"
+        	expected.append("  ...  ");
+      }
+      //expected.append("");
+    }
+    
+    //String retval = "[Parser] symbole rencontré ";
+    String retval = "";
+    String retval_hypothese = "";
+    Token tok = currentToken.next;
+    for (int i = 0; i < maxSize; i++) {
+      /*if (i != 0) retval += " ";
+      if (tok.kind == 0) {
+        retval += tokenImage[0];
+        break;
+      }*/
+      //retval += " " + tokenImage[tok.kind];
+      retval += "\"";
+      retval += add_escapes(tok.image);
+      retval += "\"";
+      
+      if (add_escapes(tok.image).isEmpty())
+    	  retval_hypothese = " (perhaps EOF)";
+      
+      tok = tok.next;
+    }
+    
+    //retval += " inattendu" + retval_hypothese + ". " + eol;
+    retval = "[Parser] encountered symbol: " + retval + retval_hypothese + ". " + eol;
+    
+    //retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn;
+    //retval += "." + eol;
+    
+    if (expectedTokenSequences.length == 1) {
+      retval += "     Expected:" + "  ";
+    } else {
+      retval += "     Expected:" + "  ";
+    }
+    retval += expected.toString();
+    return retval;
+  }
+  
+  public int getLine() {
+	  return currentToken.next.beginLine;
+  }
+  
+  
+  /*
+0 : Encountered " <IDENTIFICATEUR> "iddd "" at line 7, column 15.
+Was expecting one of:
+    "(" ...
+    "[" ...
+    ";" ...
+    "=" ...
    */
+  
+  /*
   public String getMessage() {
     if (!specialConstructor) {
       return super.getMessage();
@@ -138,19 +192,71 @@ public class ParseException extends Exception {
     }
     retval += expected.toString();
     return retval;
+
+	  }*/
+
+
+  /**
+   * It uses "currentToken" and "expectedTokenSequences" to generate a parse
+   * error message and returns it.  If this object has been created
+   * due to a parse error, and you do not catch it (it gets thrown
+   * from the parser) the correct error message
+   * gets displayed.
+   */
+  private static String initialise(Token currentToken,
+                           int[][] expectedTokenSequences,
+                           String[] tokenImage) {
+    String eol = System.getProperty("line.separator", "\n");
+    StringBuffer expected = new StringBuffer();
+    int maxSize = 0;
+    for (int i = 0; i < expectedTokenSequences.length; i++) {
+      if (maxSize < expectedTokenSequences[i].length) {
+        maxSize = expectedTokenSequences[i].length;
+      }
+      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+      }
+      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+        expected.append("...");
+      }
+      expected.append(eol).append("    ");
+    }
+    String retval = "Encountered \"";
+    Token tok = currentToken.next;
+    for (int i = 0; i < maxSize; i++) {
+      if (i != 0) retval += " ";
+      if (tok.kind == 0) {
+        retval += tokenImage[0];
+        break;
+      }
+      retval += " " + tokenImage[tok.kind];
+      retval += " \"";
+      retval += add_escapes(tok.image);
+      retval += " \"";
+      tok = tok.next;
+    }
+    retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn;
+    retval += "." + eol;
+    if (expectedTokenSequences.length == 1) {
+      retval += "Was expecting:" + eol + "    ";
+    } else {
+      retval += "Was expecting one of:" + eol + "    ";
+    }
+    retval += expected.toString();
+    return retval;
   }
 
   /**
    * The end of line string for this machine.
    */
   protected String eol = System.getProperty("line.separator", "\n");
- 
+
   /**
    * Used to convert raw characters to their escaped version
    * when these raw version cannot be used as part of an ASCII
    * string literal.
    */
-  protected String add_escapes(String str) {
+  static String add_escapes(String str) {
       StringBuffer retval = new StringBuffer();
       char ch;
       for (int i = 0; i < str.length(); i++) {
@@ -196,4 +302,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=256be8243968648ad3e34bd16606e75d (do not edit this line) */
+/* JavaCC - OriginalChecksum=7ecb3984191375f902137e9c33575a68 (do not edit this line) */
