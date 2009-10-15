@@ -138,7 +138,7 @@ public class Translator {
 		if (fail()) return;
 		
 		// TODO : Translation (visitor)
-		//TranslatingVisitor tv = new TranslatingVisitor(ast);
+		//TranslationVisitor tv = new TranslationVisitor(ast);
 		//model = cv.translate();
 	}
 	

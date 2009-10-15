@@ -23,10 +23,8 @@ public class Launcher {
 			System.out.println("An error occurred!");
 			
 			ArrayList<ConstraintsError> errors = translator.getErrors();
-			for (int i=0; i<errors.size(); i++) {
-				ConstraintsError error = (ConstraintsError) errors.get(i);
-				System.out.println(error);
-			}
+			for (int i=0; i<errors.size(); i++)
+				System.out.println(errors.get(i));
 		}
 		
 		// else, for now, just dumping the AST
