@@ -26,7 +26,7 @@ public class CheckingVisitor implements ParserVisitor {
 	}
 	
 	
-	void fail(String msg, int line) {
+	public void fail(String msg, int line) {
 		errors.add(new ConstraintsError(filename, line, msg));
 	}
 	
