@@ -13,27 +13,30 @@ public class Model {
 		constraints = new ArrayList<Constraint>();
 	}
 
-	public void newVariable(String nom, boolean artificial, int minBoundary, int maxBoundary) {
+	public Variable newVariable(String name, int minBoundary, int maxBoundary, boolean artificial) {
+		// TODO fill in
+		
+		return null;
+	}
+
+	public Variable newVariable(String name, int minBoundary, int maxBoundary) {
+		return newVariable(name, minBoundary, maxBoundary, false);
+	}
+
+	public Constant newConstant(int value) {
+		// TODO fill in
+		
+		// NOTE : Constant has no domain but its own value
+		// Change Constant so that the constructor determines the domain by itself
+		
+		return null;
+	}
+
+	public void newExpression(Variable operand1, Variable operand2, Operator operator, Variable equal) {
 		// TODO fill in
 	}
 
-	public void newVariable(String nom, int minBoundary, int maxBoundary) {
-		newVariable(nom, false, minBoundary, maxBoundary);
-	}
-
-	public void newConstant(int value) {
-		// TODO fill in
-	}
-
-	public void newExpression(Variable operand1, Variable operand2, Operator operator) {
-		// TODO fill in
-	}
-
-	public void newConstraint(Variable operand1, Variable operand2, Operator operator, Variable equal) {
-		// TODO fill in
-	}
-
-	public void newOperator(Global.opType type) {
+	public void newConstraint(Variable operand1, Variable operand2, Operator operator) {
 		// TODO fill in
 	}
 

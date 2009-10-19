@@ -1,6 +1,5 @@
 package translator;
 
-import java.util.ArrayList;
 
 
 /**
@@ -21,10 +20,7 @@ public class Launcher {
 		// If any error, dumping them
 		if (translator.fail()) {
 			System.out.println("An error occurred!");
-			
-			ArrayList<ConstraintsError> errors = translator.getErrors();
-			for (int i=0; i<errors.size(); i++)
-				System.out.println(errors.get(i));
+			translator.dumpErrors();
 		}
 		
 		// else, for now, just dumping the AST

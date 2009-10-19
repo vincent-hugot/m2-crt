@@ -1,18 +1,19 @@
 package model;
 
 import java.util.ArrayList;
+import model.Global.OpType;
 
 public class Operator {
 
-	private Global.opType	      type;
+	private Global.OpType	      type;
 	private ArrayList<Constraint>	associatedConstraints;
 
-	public Operator(Global.opType type) {
+	public Operator(OpType type) {
 
 		this.type = type;
 	}
 
-	public Global.opType getType() {
+	public OpType getType() {
 
 		return type;
 	}

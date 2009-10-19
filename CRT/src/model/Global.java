@@ -1,10 +1,12 @@
 package model;
 
-final class Global {
+public final class Global {
 
 	private Global() {}
 
-	public enum opType {
-		addition, substraction, multiplication, difference, division, affectation, greater, lower, greaterOrEqual, lowerOrEqual
+	public enum OpType {
+		ADD, SUB, MUL, DIV,
+		EQUAL, NOT_EQUAL,
+		GREATER, LOWER, GREATER_OR_EQUAL, LOWER_OR_EQUAL
 	}
 }
