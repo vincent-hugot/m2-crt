@@ -18,8 +18,8 @@ public class Constant extends Variable {
 
 		return value;
 	}
-
-	/*
-	 * public void setValue(int value) { this.value = value; }
-	 */
+	
+	public boolean equals(Object obj){
+		return (obj instanceof Constant && this.value == ((Constant) obj).value);
+	}
 }

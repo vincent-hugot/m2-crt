@@ -20,8 +20,9 @@ public class Expression extends Constraint {
 		return equal;
 	}
 
-	public boolean equals(Object O) {
-		return (O instanceof Expression && this.left.equals(((Expression) O).left)
-				&& this.right.equals(((Expression) O).right) && this.equal.equals(((Expression) O).equal) && this.op.equals(((Expression) O).op));
+	public boolean equals(Object obj) {
+		return (obj instanceof Expression && this.left.equals(((Expression) obj).left)
+				&& this.right.equals(((Expression) obj).right) && this.equal.equals(((Expression) obj).equal) && this.op
+				.equals(((Expression) obj).op));
 	}
 }

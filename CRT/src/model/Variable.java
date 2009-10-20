@@ -5,10 +5,11 @@ import java.util.Collections;
 
 public class Variable {
 
-	private String				name;
-	private boolean				artificial;
-	private ArrayList<Integer>	domain;
-	private ArrayList<Integer>	excludedDomain;
+	protected String				name;
+	protected boolean				artificial;
+	protected ArrayList<Integer>	domain;
+	protected ArrayList<Integer>	excludedDomain;
+	protected ArrayList<Constraint> associatedConstraints;
 
 	// TODO : Add constraints list
 
@@ -89,12 +90,20 @@ public class Variable {
 		}
 	}
 
-	public boolean equals(Object o) {
+	public ArrayList<Constraint> getAssociatedConstraints() {
+		return associatedConstraints;
+	}
+	
+	public void addConstraint(Constraint c){
+		associatedConstraints.add(c);
+	}
+
+	public boolean equals(Object obj) {
 		boolean res;
 
-		res = (o instanceof Variable && this.name.equals(((Variable) o).name)
-				&& this.artificial == ((Variable) o).artificial && this.domain.equals(((Variable) o).domain) && this.excludedDomain
-				.equals(((Variable) o).excludedDomain));
+		res = (obj instanceof Variable && this.name.equals(((Variable) obj).name)
+				&& this.artificial == ((Variable) obj).artificial && this.domain.equals(((Variable) obj).domain) && this.excludedDomain
+				.equals(((Variable) obj).excludedDomain));
 		return res;
 	}
 

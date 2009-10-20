@@ -34,11 +34,16 @@ public class Model {
 
 	public void newExpression(Variable operand1, Variable operand2, Global.OpType operator, Variable equal) {
 		Expression e = new Expression(operand1, operator, operand2, equal);
+		operand1.addConstraint(e);
+		operand2.addConstraint(e);
+		equal.addConstraint(e);
 		constraints.add(e);
 	}
 
 	public void newConstraint(Variable operand1, Variable operand2, OpType operator) {
 		Constraint c = new Constraint(operand1, operator, operand2);
+		operand1.addConstraint(c);
+		operand2.addConstraint(c);
 		constraints.add(c);
 	}
 
