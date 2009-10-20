@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import model.Global.OpType;
+
 public class Model {
 
 	private ArrayList<Variable>	  variables;
@@ -14,9 +16,10 @@ public class Model {
 	}
 
 	public Variable newVariable(String name, int minBoundary, int maxBoundary, boolean artificial) {
-		// TODO fill in
+		Variable v = new Variable(name, minBoundary, maxBoundary, artificial);
+		variables.add(v);
 		
-		return null;
+		return v;
 	}
 
 	public Variable newVariable(String name, int minBoundary, int maxBoundary) {
@@ -24,20 +27,19 @@ public class Model {
 	}
 
 	public Constant newConstant(int value) {
-		// TODO fill in
-		
-		// NOTE : Constant has no domain but its own value
-		// Change Constant so that the constructor determines the domain by itself
-		
-		return null;
+		Constant c = new Constant(value);		
+		variables.add(c);
+		return c;
 	}
 
-	public void newExpression(Variable operand1, Variable operand2, Operator operator, Variable equal) {
-		// TODO fill in
+	public void newExpression(Variable operand1, Variable operand2, Global.OpType operator, Variable equal) {
+		Expression e = new Expression(operand1, operator, operand2, equal);
+		constraints.add(e);
 	}
 
-	public void newConstraint(Variable operand1, Variable operand2, Operator operator) {
-		// TODO fill in
+	public void newConstraint(Variable operand1, Variable operand2, OpType operator) {
+		Constraint c = new Constraint(operand1, operator, operand2);
+		constraints.add(c);
 	}
 
 	public ArrayList<Variable> getVariables() {

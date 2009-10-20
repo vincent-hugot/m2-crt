@@ -27,4 +27,8 @@ public class Operator {
 
 		associatedConstraints.add(constraint);
 	}
+	
+	public boolean equals(Object obj){
+		return (obj instanceof Operator && this.type == ((Operator) obj).type);
+	}
 }

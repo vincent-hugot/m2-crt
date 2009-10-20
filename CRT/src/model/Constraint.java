@@ -2,20 +2,20 @@ package model;
 
 public class Constraint {
 
-	private Variable	left;
-	private Variable	right;
+	protected Variable	left;
+	protected Variable	right;
 
-	private Operator	op;
+	protected Operator	op;
 
 	/**
 	 * @param left
 	 * @param op
 	 * @param right
 	 */
-	public Constraint(Variable left, Operator op, Variable right) {
+	public Constraint(Variable left, Global.OpType op, Variable right) {
 
 		this.left = left;
-		this.op = op;
+		this.op = new Operator(op);
 		this.right = right;
 	}
 
@@ -34,4 +34,8 @@ public class Constraint {
 		return op;
 	}
 
+	public boolean equals(Object obj) {
+		return (obj instanceof Constraint && this.left.equals(((Constraint) obj).left)
+				&& this.op.equals(((Constraint) obj).op) && this.right.equals(((Constraint) obj).right));
+	}
 }

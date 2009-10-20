@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 
 public class Constant extends Variable {
 
@@ -9,9 +8,9 @@ public class Constant extends Variable {
 	/**
 	 * @param value
 	 */
-	public Constant(ArrayList<Integer> domain, boolean artificial, int value) {
-
-		super("", domain, artificial);
+	public Constant(int value) {
+		
+		super("", value, value, true);
 		this.value = value;
 	}
 
