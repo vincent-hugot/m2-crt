@@ -36,7 +36,7 @@ public class ModelTest {
 	}
 
 	@Test
-	public void testNewExpression() {
+	public void testNewExpression() /*throws ModelException*/ {
 		Expression e;
 		Variable v1, v2, v3;
 		m = new Model();
@@ -49,7 +49,7 @@ public class ModelTest {
 	}
 
 	@Test
-	public void testNewConstraint() {
+	public void testNewConstraint() /*throws ModelException*/ {
 		Constraint c;
 		Variable v1, v2;
 		m = new Model();

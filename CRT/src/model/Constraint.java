@@ -12,10 +12,16 @@ public class Constraint {
 	 * @param op
 	 * @param right
 	 */
-	public Constraint(Variable left, Global.OpType op, Variable right) {
-
+	public Constraint(Variable left, Global.OpType op, Variable right)/*throws ModelException*/ {
+		
+		Operator oper = new Operator(op);
+		
+		/*if(oper.isArithmetical()){
+			throw new ModelException("The constraint operator must be not arithmetical");
+		}*/
+		
 		this.left = left;
-		this.op = new Operator(op);
+		this.op = oper;
 		this.right = right;
 	}
 

@@ -34,7 +34,7 @@ public class Model {
 		return c;
 	}
 
-	public void newExpression(Variable operand1, Variable operand2, Global.OpType operator, Variable equal) {
+	public void newExpression(Variable operand1, Variable operand2, Global.OpType operator, Variable equal) /*throws ModelException*/ {
 		Expression e = new Expression(operand1, operator, operand2, equal);
 		operand1.addConstraint(e);
 		operand2.addConstraint(e);
@@ -42,7 +42,7 @@ public class Model {
 		constraints.add(e);
 	}
 
-	public void newConstraint(Variable operand1, Variable operand2, OpType operator) {
+	public void newConstraint(Variable operand1, Variable operand2, OpType operator) /*throws ModelException*/ {
 		Constraint c = new Constraint(operand1, operator, operand2);
 		operand1.addConstraint(c);
 		operand2.addConstraint(c);

@@ -2,17 +2,25 @@ package model;
 
 public class Expression extends Constraint {
 
-	private Variable	equal;
-
+	protected Variable	equal;
+	protected Operator expressionOperator;
+	
 	/**
 	 * @param left
 	 * @param op
 	 * @param right
 	 * @param equal
 	 */
-	public Expression(Variable left, Global.OpType op, Variable right, Variable equal) {
+	public Expression(Variable left, Global.OpType op, Variable right, Variable equal)/*throws ModelException*/ {
 
-		super(left, op, right);
+		super(left, Global.OpType.EQUAL, right);
+		Operator o = new Operator(op);
+		
+		/*if(!o.isArithmetical()){
+			throw new ModelException("The expression's operator must be arithmetical!");
+		}*/
+		
+		this.expressionOperator = o;
 		this.equal = equal;
 	}
 
