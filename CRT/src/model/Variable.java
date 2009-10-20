@@ -11,8 +11,7 @@ public class Variable {
 	protected ArrayList<Integer>	excludedDomain;
 	protected ArrayList<Constraint> associatedConstraints;
 
-	// TODO : Add constraints list
-
+	
 	/**
 	 * @param name
 	 */

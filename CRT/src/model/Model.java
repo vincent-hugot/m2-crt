@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
+
 import model.Global.OpType;
 
 public class Model {
@@ -58,6 +60,25 @@ public class Model {
 	public boolean equals(Object obj) {
 		return (obj instanceof Model && this.variables.equals(((Model) obj).variables) && this.constraints
 				.equals(((Model) obj).constraints));
+	}
+	
+	public ArrayList<Constraint> getConstraintConcerningVariables(Variable v1, Variable v2){
+		ArrayList<Constraint> res, al1, al2;
+		java.util.ListIterator<Constraint> it;
+		Constraint cons;
+		res = new ArrayList<Constraint>();
+		al1 = v1.getAssociatedConstraints();
+		al2 = v2.getAssociatedConstraints();
+		
+		it = al1.listIterator();
+		
+		while(it.hasNext()){
+			cons = it.next();
+			if(cons instanceof Constraint && al2.contains(cons)){
+				res.add(cons);
+			}
+		}
+		return res;
 	}
 
 }
