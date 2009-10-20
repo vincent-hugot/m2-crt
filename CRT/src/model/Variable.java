@@ -107,6 +107,5 @@ public class Variable {
 		return res;
 	}
 
-	// TODO : add exclude()-like method
-	// TODO : add constraints accesses (add one, get list)
+	
 }

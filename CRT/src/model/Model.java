@@ -6,7 +6,7 @@ import model.Global.OpType;
 
 public class Model {
 
-	private ArrayList<Variable>	  variables;
+	private ArrayList<Variable>		variables;
 	private ArrayList<Constraint>	constraints;
 
 	public Model() {
@@ -18,7 +18,7 @@ public class Model {
 	public Variable newVariable(String name, int minBoundary, int maxBoundary, boolean artificial) {
 		Variable v = new Variable(name, minBoundary, maxBoundary, artificial);
 		variables.add(v);
-		
+
 		return v;
 	}
 
@@ -27,7 +27,7 @@ public class Model {
 	}
 
 	public Constant newConstant(int value) {
-		Constant c = new Constant(value);		
+		Constant c = new Constant(value);
 		variables.add(c);
 		return c;
 	}
@@ -55,12 +55,9 @@ public class Model {
 		return constraints;
 	}
 
-	/**
-	 * Returns D: list of domains
-	 * 
-	 * @return
-	 */
-	/*
-	 * public HashMap<Variable, ArrayList<Integer>> getD() { return null; }
-	 */
+	public boolean equals(Object obj) {
+		return (obj instanceof Model && this.variables.equals(((Model) obj).variables) && this.constraints
+				.equals(((Model) obj).constraints));
+	}
+
 }
