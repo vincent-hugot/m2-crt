@@ -14,7 +14,7 @@ public class Constraint {
 	 */
 	public Constraint(Variable left, Global.OpType op, Variable right)/*throws ModelException*/ {
 		
-		Operator oper = new Operator(op);
+		Operator oper = Global.getOperator(op);
 		
 		/*if(oper.isArithmetical()){
 			throw new ModelException("The constraint operator must be not arithmetical");

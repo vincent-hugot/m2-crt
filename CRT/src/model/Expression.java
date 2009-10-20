@@ -14,7 +14,7 @@ public class Expression extends Constraint {
 	public Expression(Variable left, Global.OpType op, Variable right, Variable equal)/*throws ModelException*/ {
 
 		super(left, Global.OpType.EQUAL, right);
-		Operator o = new Operator(op);
+		Operator o = Global.getOperator(op);
 		
 		/*if(!o.isArithmetical()){
 			throw new ModelException("The expression's operator must be arithmetical!");

@@ -10,6 +10,7 @@ public class Model {
 
 	private ArrayList<Variable>		variables;
 	private ArrayList<Constraint>	constraints;
+	private ArrayList<Operator> operators;
 
 	public Model() {
 
