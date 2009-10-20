@@ -2,16 +2,13 @@ package model;
 
 import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
-
 import model.Global.OpType;
 
 public class Model {
 
 	private ArrayList<Variable>		variables;
 	private ArrayList<Constraint>	constraints;
-	private ArrayList<Operator> operators;
-
+	
 	public Model() {
 
 		variables = new ArrayList<Variable>();
