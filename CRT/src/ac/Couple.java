@@ -3,23 +3,40 @@ package ac;
 import model.Variable;
 
 public class Couple {
-	private Variable V1;
-	private Variable V2;
+	private Variable xi;
+	private Variable xj;
 	
 	
 	public Couple() {
-		super();
+		this.xi = null;
+		this.xj = null;
 	}
-	public Variable getV1() {
-		return V1;
+	
+	public Couple(Variable xi, Variable xj) {
+		this.xi = xi;
+		this.xj = xj;
 	}
-	public void setV1(Variable v1) {
-		V1 = v1;
+	
+	
+	public Variable getXi() {
+		return xi;
 	}
-	public Variable getV2() {
-		return V2;
+	public void setXi(Variable xi) {
+		this.xi = xi;
 	}
-	public void setV2(Variable v2) {
-		V2 = v2;
+	public Variable getXj() {
+		return xj;
+	}
+	public void setXj(Variable xj) {
+		this.xj = xj;
+	}
+	
+	public boolean equals(Couple c) {
+		return (this.xi == c.xi) && (this.xj == c.xj);
+	}
+	public boolean equals(Object c) {
+		return (c instanceof Couple)
+			&& (this.xi == ((Couple)c).xi)
+			&& (this.xj == ((Couple)c).xj);
 	}
 }

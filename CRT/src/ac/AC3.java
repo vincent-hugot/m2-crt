@@ -1,87 +1,170 @@
 package ac;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-
+import java.util.LinkedList;
 import model.Constraint;
 import model.Model;
 import model.Variable;
 
+
+/**
+ * AC3 algorithm. Split int 4 functions, corresponding to the algorithm we have:
+ * <br>- ac3(): the main algorithm (uses initQueue() and revise())
+ * <br>- initQueue(): the part of AC3 that initialize QUEUE
+ * <br>- revise(): the REVISE part, trying to exclude a value from Xi (uses findValXj)
+ * <br>- findValXj(): the part of REVISE that looks for any Aj value so that
+ * (Ai,Aj) complies to every Cij constraint
+ * 
+ * <br>To sum up, ac3() and initQueue() are part of the AC3 algorithm,
+ * revise() and findValXj() are part of the REVISE operation
+ * 
+ * <br><br>A Couple class is used to have an (Xi,Xj) couple in this very order.
+ * <br>Variables are usually given a name that matches the original algorithm.
+ * 
+ * <br><br>The main change with the original algorithm is the substitution handling.
+ * It occurs whenever a "A < B + C" constraints is change by an "S1 = B + C"
+ * expression, followed by the "A < S1" constraint.
+ * 
+ * <br>Since Constraint is a binary operator, and Expression a ternary, they are treated
+ * the same way, yet one after another:
+ * <br>When a change is done (reduce == true) there's a propagation to any (Xk,Xi)
+ * couple.
+ * If Xi was (right) part of an expression, an update is made to EVERY expression.
+ * 
+ * <br>This update consists in recalculating the domain of the right part.
+ * For instance, S1=B+C, C has changed since REVISE, then we calculate dom(B+C),
+ * and apply dom(S1) := dom(B+C).
+ * <br>This is merely the same arc consistency we make in AC3, only more adapted
+ * to the Expression model.
+ * 
+ * <br>It should be noted that since Expressions are added in the Expression list
+ * in creation order (A+B+C creates S1=B+C, then S2=A+S2), checking in this same order
+ * guarantee that the propagation is in the correct order.
+ * 
+ * <br><br>Lastly, once this "update" is done, AC3 continues.
+ * 
+ * @author Mehdi
+ */
 public class AC3 {
-	 // inputs variables
-		   private ArrayList<Variable> X;
-		   //private Vector<ArrayList<Integer>> D_X ;//for each variable x in X. D(x) contains vx0, vx1... vxn, the possible values of x
-		   
-		   //Vector<Constraint> R_1; //constraints R1(x) on variable x that must be satisfied
-		   private ArrayList<Constraint> R_2; //R2(x, y) on variables x and y that must be satisfied
-		   
-	//	output variables
-		   //Arc consistent domains for each variable.  A VOIR !!!!!!!!
- 		 	 
-		 public void ac3 (Model M){
-		 // Initial domains are made consistent with unary constraints.
-		 //'worklist' contains all arcs we wish to prove consistent or not.
-		 
-			 Couple C=new Couple();
-			 X  =M.getVariables();
-			 HashMap<Integer,Couple > worklist = chargerWorkList();
-		     for (int i = 0; i < worklist.size(); i++) {
-				 C.setV1(worklist.get(i).getV1());
-				 C.setV2(worklist.get(i).getV2());				 
-		    	 worklist.remove(i);
-				if(arc_reduce (M,C.getV1(),C.getV2())){
-					if(C.getV1().getDomain().size()==C.getV1().getExcludedDomain().size()){
-						System.out.println("Verification échouée " +
-								"Car Les valeurs dans le domaine de x est vide donc ne " +
-								"verifie pas la contraine" +
-								"Pas de Solution");
-					}
-				}
-		     }
-		 }
-		 
-		 public HashMap<Integer,Couple > chargerWorkList(){
-			 Integer k = new Integer(0);
-			 HashMap<Integer,Couple > htemp=new HashMap<Integer, Couple>();
-			 Couple C=new Couple();
-			 for (int i = 0; i < X.size(); i++) {
-				 Variable V=X.get(i);
-				 for (int j = 0; j < X.size(); j++) {
-					if(! X.get(j).equals(V)){
-						C.setV1(V);
-						C.setV2(X.get(j));
-						htemp.put(k, C);
-						k++;
-					}
-				}
-			 }
-			 return htemp;
-		 }
-		 
-		 public Boolean arc_reduce (Model M,Variable V1,Variable V2 ){
-		     boolean change = false;
-		     for (int i = 0; i < V1.getDomain().size(); i++) {
-		    	 Integer val= V1.getDomain().get(i);
-		    	 if(! Find_val_V2(M, V2, V1,val)){
-		    		 V1.exclude(val);
-		    		 change=true;
-		    	 }
-			 }
-		     return change;
-		 }
-		 
-		 public Boolean Find_val_V2(Model M,Variable v2,Variable v1,Integer val){
+	
+	// For general variable/constraints list purpose
+	Model model;
+	
+	private ArrayList<Variable> X;
+	
+	
+	public AC3(Model model) {
+		this.model = model;
+		this.X = model.getVariables();
+	}
+	
+	
+	/**
+	 * Applying the AC3
+	 */
+	public void ac3() {
+		// Initial domains are made consistent with unary constraints.
+		// 'queue' contains all arcs we wish to prove consistent or not.
+		
+		LinkedList<Couple> queue = initQueue();
+		
+		while (!queue.isEmpty()) {
 			
-			for (int i = 0; i < M.getConstraintConcerningVariables(v1, v2).size(); i++) {
-				Constraint Crt=M.getConstraintConcerningVariables(v1, v2).get(i);
-				for (int j = 0; j < v2.getDomain().size(); j++) {
-					/*if(crt.IsValideVariable(val,v2.getDomain().get(j))){
-						return true;
-					}*/
+			Couple c = queue.poll();
+			
+			// Applying REVISE, then checking reduce
+			if (arcReduce(c.getXi(), c.getXj())) {
+				
+				// TODO : Add Expression handling
+				
+				// Propagation to any (xk,xi) with k!=i && k!=j
+				for (Variable xk : model.getVariables()) {
+					if (xk != c.getXi() && xk != c.getXj())
+						queue.offer(new Couple(xk, c.getXi()));
 				}
 			}
-			 return false;
-		 }	 
+		}
+	}
+	
+	public LinkedList<Couple> initQueue() {
+		Integer k = new Integer(0);
+		LinkedList<Couple> queue = new LinkedList<Couple>();
+		
+		for (int i = 0; i < X.size(); i++) {
+			
+			Variable xi = X.get(i);
+			
+			for (int j = 0; j < X.size(); j++) {
+				
+				if (!X.get(j).equals(xi)) {
+					Couple C = new Couple();
+					C.setXi(xi);
+					C.setXj(X.get(j));
+					queue.push(C);
+					k++;
+				}
+			}
+		}
+		return queue;
+	}
+	
+	
+	public Boolean arcReduce(Variable xi, Variable xj) {
+		boolean change = false;
+		
+		// Di (Xi domain)
+		ArrayList<Integer> di = xi.getRemainingDomain();
+		
+		for (int i = 0; i < di.size(); i++) {
+			
+			Integer ai = di.get(i);
+			
+			// Trying to find Aj | (Ai,Aj) respects every Cij constraint
+			if (!findAj(xi, xj, ai)) {
+				xi.exclude(ai);
+				change = true;
+			}
+		}
+		return change;
+	}
+	
+	
+	/**
+	 * Check if val, existing 
+	 * @param xj
+	 * @param xi
+	 * @param ai
+	 * @return
+	 */
+	public boolean findAj(Variable xi, Variable xj, Integer ai) {
+		ArrayList<Integer> xjDomain = xj.getRemainingDomain();
+		boolean valid = true;
+		
+		
+		for (Integer aj : xjDomain) {
+			
+			valid = true;
+			
+			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
+				if (!crt.areValidValues(ai,aj))
+					valid = false;
+			}
+			
+			if (valid == true) return true;
+		}
+		
+		return false;
+		
+		/*for (int i = 0; i < model.getConstraintConcerningVariables(v1, v2).size(); i++) {
+			Constraint crt = model.getConstraintConcerningVariables(v1, v2).get(i);
+			
+			for (int j = 0; j < v2RemainingDomain.size(); j++) {
+				
+				if (!crt.areValidValues(ai,v2.getRemainingDomain().get(j)))
+					return false;
+				
+			}
+		}
+		return false;*/
+	}
 }
-
