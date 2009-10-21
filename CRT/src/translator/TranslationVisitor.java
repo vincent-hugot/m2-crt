@@ -3,7 +3,6 @@ package translator;
 import java.util.HashMap;
 import model.Constant;
 import model.Model;
-import model.Operator;
 import model.Variable;
 import model.Global.OpType;
 import parser.*;
