@@ -34,8 +34,8 @@ public class Model {
 
 	public void newExpression(Variable operand1, Variable operand2, Global.OpType operator, Variable equal) /*throws ModelException*/ {
 		Expression e = new Expression(operand1, operator, operand2, equal);
-		operand1.addConstraint(e);
-		operand2.addConstraint(e);
+		operand1.addExpression(e);
+		operand2.addExpression(e);
 		equal.addConstraint(e);
 		constraints.add(e);
 	}

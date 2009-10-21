@@ -10,6 +10,7 @@ public class Variable {
 	protected ArrayList<Integer>	domain;
 	protected ArrayList<Integer>	excludedDomain;
 	protected ArrayList<Constraint> associatedConstraints;
+	protected ArrayList<Expression> associatedExpressions;
 
 	
 	/**
@@ -96,7 +97,15 @@ public class Variable {
 	public void addConstraint(Constraint c){
 		associatedConstraints.add(c);
 	}
+	
+	public ArrayList<Expression> getAssociatedExpressions() {
+		return associatedExpressions;
+	}
 
+	public void addExpression(Expression e){
+		associatedExpressions.add(e);
+	}
+	
 	public boolean equals(Object obj) {
 		boolean res;
 
@@ -122,5 +131,9 @@ public class Variable {
 		}
 		
 		return remaining;
+	}
+	
+	void resetExcludedDomain(){
+		excludedDomain.clear();
 	}
 }
