@@ -109,6 +109,18 @@ public class Variable {
 	public boolean isValidValue(int val){
 		return (domain.contains(new Integer(val)) && !excludedDomain.contains(new Integer(val)));
 	}
-
 	
+	
+	
+	/* Value getters for algorithm */
+	public ArrayList<Integer> getRemainingDomain() {
+		ArrayList<Integer> remaining = new ArrayList<Integer>();
+		
+		for (int i = 0; i < remaining.size(); i++) {
+			if (excludedDomain.contains(i))
+				remaining.add(domain.get(i));
+		}
+		
+		return remaining;
+	}
 }
