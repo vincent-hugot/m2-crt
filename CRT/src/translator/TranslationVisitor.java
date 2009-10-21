@@ -15,17 +15,20 @@ import parser.*;
  * <br>- Domain definition = Variable creation (+ add in symbols table)
  * <br>- A #var node returns the Variable object from its name
  * <br>- An #integer node creates a Constant, then returns it
+ * <br>- An expression node will create a substitute Variable,
+ * create an Expression from whatever Variable/Constant their child may return,
+ * then return the variable created
  * <br>- A constraint node creates the Constraint with whatever Variable/Constant
  * object their child may return
- * <br>- An expression node will create a substitute Variable,
- * create an Expression from whatever Variable/Constant their child may return.
  * 
- * The behavior of expressions is fully recursive, starting from #var/#integer,
- * to the constraint node.
- * This way, A < B + C * 42:
- * - creates the S1 = C * 42 expression (*node returns it)
- * - creates the S2 = B + S1 expression (+node returns it)
- * - creates the A < S2 constraint
+ * <br><br>The behavior of expressions is fully recursive,
+ * starting from #var/#integer, up to the constraint node.
+ * This way, "A < B + C * 42":
+ * <br>- A, B and C are returned according to their declaration (Variable object)
+ * <br>- 42 creates a constant and returns it
+ * <br>- "*"-node creates the S1 = C * 42 expression (returns S1)
+ * <br>- "+"-node creates the S2 = B + S1 expression (returns S2)
+ * <br>- "<"-node creates the A < S2 constraint
  * 
  * <br>A symbols table (declaredVars) and an iterator (substitute naming) are used.
  * 
@@ -36,13 +39,16 @@ import parser.*;
  */
 public class TranslationVisitor implements ParserVisitor {
 	
-	public static final String SUBSTITUTE = "S_";
+	/** Substitute variable prefix, using an invalid char to avoid conflicts */
+	public static final String SUBSTITUTE = "S@";
+	
+	/** Iterator for substitute naming */
+	private int substitute;
 	
 	private SimpleNode ast;
 	private Model model;
 	
 	private HashMap<String,Variable> declaredVars;
-	private int substitute;
 	
 	
 	public TranslationVisitor(SimpleNode ast) {

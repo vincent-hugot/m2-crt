@@ -39,7 +39,7 @@ public class ConstraintsError implements Comparable<ConstraintsError> {
 	
 	
 	/**
-	 * Compares 2 errors by their line number, for soorting purpose
+	 * Compares 2 errors by their line number, for sorting purpose
 	 * 
 	 * @param e compared error
 	 * @return -1 if <code>this</code> is before de <code>e</code>, 1 if after,

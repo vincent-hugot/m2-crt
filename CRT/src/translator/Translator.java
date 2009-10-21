@@ -68,6 +68,8 @@ public class Translator {
 	}
 	
 	
+	
+	/** Main translation method, "set it and forget it" (run everything at once) */
 	public Model translate() {
 		
 		// First step: parsing
@@ -155,7 +157,10 @@ public class Translator {
 	
 	
 	
-	
+	/**
+	 * Returns the reader to read through while parsing
+	 * @return a FileReader or a StringReader, depending on the constructor call
+	 */
 	public Reader getReader() {
 		Reader f;
 		
@@ -202,6 +207,9 @@ public class Translator {
 	}
 	
 	
+	/**
+	 * Dumping errors, for testing purpose
+	 */
 	public void dumpErrors() {
 		for (int i=0; i<errors.size(); i++)
 			System.out.println(errors.get(i));

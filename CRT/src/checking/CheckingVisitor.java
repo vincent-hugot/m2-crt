@@ -7,7 +7,19 @@ import java.util.HashMap;
 import model.Variable;
 
 
-
+/**
+ * Visitor for constraints files integrity checking.
+ * Checks:
+ * <br>- Double variable/domain declaration
+ * <br>- Use of correctly declared variable/domain
+ * <br>- Empty (X..X or 5..0) domain definition
+ * <br>- Obvious division by zero case
+ * 
+ * <br><br>Note that the two last ones are likely to be removed since
+ * the AC3/AC6 algorithms should handle them.
+ * 
+ * @author Vincent HUGOT & Mathias COQBLIN
+ */
 public class CheckingVisitor implements ParserVisitor {
 	
 	private SimpleNode ast;
