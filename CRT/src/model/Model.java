@@ -11,7 +11,6 @@ public class Model {
 	private ArrayList<Expression>	expressions;
 
 	public Model() {
-
 		variables = new ArrayList<Variable>();
 		constraints = new ArrayList<Constraint>();
 		expressions = new ArrayList<Expression>();
@@ -49,6 +48,9 @@ public class Model {
 		Constraint c = new Constraint(operand1, operator, operand2);
 		operand1.addConstraint(c);
 		operand2.addConstraint(c);
+		
+		operand1.addNeighbor(operand2);
+		operand2.addNeighbor(operand1);
 		constraints.add(c);
 	}
 

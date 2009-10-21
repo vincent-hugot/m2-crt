@@ -10,7 +10,7 @@ public class Constant extends Variable {
 	 */
 	public Constant(int value) {
 		
-		super("", value, value, true);
+		super(String.valueOf(value), value, value, true);
 		this.value = value;
 	}
 

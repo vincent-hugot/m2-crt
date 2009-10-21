@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import model.Global.OpType;
 
 public class Expression extends Constraint {
 
@@ -16,16 +17,18 @@ public class Expression extends Constraint {
 	 * @param right
 	 * @param equal
 	 */
-	public Expression(Variable left, Global.OpType op, Variable right, Variable equal)/* throws ModelException */{
-
+	public Expression(Variable left, OpType op, Variable right, Variable equal)/* throws ModelException */{
 		super(left, Global.OpType.EQUAL, right);
 		Operator o = Global.getOperator(op);
+		
 		/*
 		 * if(!o.isArithmetical()){ throw new ModelException("The expression's operator must be arithmetical!"); }
 		 */
-
-		this.expressionOperator = o;
+		
 		this.equal = equal;
+		this.expressionOperator = o;
+		this.domain = new ArrayList<Integer>();
+		this.excludedDomain = new ArrayList<Integer>();
 	}
 
 	public Variable getEqual() {

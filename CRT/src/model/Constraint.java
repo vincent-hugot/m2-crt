@@ -1,5 +1,7 @@
 package model;
 
+import model.Global.OpType;
+
 public class Constraint {
 
 	protected Variable	left;
@@ -12,7 +14,7 @@ public class Constraint {
 	 * @param op
 	 * @param right
 	 */
-	public Constraint(Variable left, Global.OpType op, Variable right)/*throws ModelException*/ {
+	public Constraint(Variable left, OpType op, Variable right)/*throws ModelException*/ {
 		
 		Operator oper = Global.getOperator(op);
 		

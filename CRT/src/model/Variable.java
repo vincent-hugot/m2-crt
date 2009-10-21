@@ -11,6 +11,7 @@ public class Variable {
 	protected ArrayList<Integer>	excludedDomain;
 	protected ArrayList<Constraint> associatedConstraints;
 	protected ArrayList<Expression> associatedExpressions;
+	protected ArrayList<Variable>	neighbors;
 
 	
 	/**
@@ -49,6 +50,9 @@ public class Variable {
 		this.domain = domain;
 		this.artificial = artificial;
 		this.excludedDomain = new ArrayList<Integer>();
+		this.associatedConstraints = new ArrayList<Constraint>();
+		this.associatedExpressions = new ArrayList<Expression>();
+		this.neighbors = new ArrayList<Variable>();
 	}
 
 	public String getName() {
@@ -104,6 +108,13 @@ public class Variable {
 
 	public void addExpression(Expression e){
 		associatedExpressions.add(e);
+	}
+	
+	public ArrayList<Variable> getNeighbors() {
+		return neighbors;
+	}
+	public void addNeighbor(Variable v){
+		neighbors.add(v);
 	}
 	
 	public boolean equals(Object obj) {
