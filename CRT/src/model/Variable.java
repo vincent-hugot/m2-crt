@@ -105,6 +105,10 @@ public class Variable {
 				.equals(((Variable) obj).excludedDomain));
 		return res;
 	}
+	
+	public boolean isValidValue(int val){
+		return (domain.contains(new Integer(val)) && !excludedDomain.contains(new Integer(val)));
+	}
 
 	
 }

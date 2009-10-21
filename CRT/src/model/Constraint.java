@@ -44,4 +44,29 @@ public class Constraint {
 		return (obj instanceof Constraint && this.left.equals(((Constraint) obj).left)
 				&& this.op.equals(((Constraint) obj).op) && this.right.equals(((Constraint) obj).right));
 	}
+	
+	public boolean areValidValues(int leftValue, int rightValue){
+		boolean res;
+		res = (left.isValidValue(leftValue) && right.isValidValue(rightValue));
+		
+		if(res)
+		{
+			switch(op.getType()){
+			
+			 case EQUAL : res = (leftValue == rightValue); 
+			 			break;
+			 case NOT_EQUAL : res = (leftValue != rightValue);
+			 			break;
+			 case GREATER : res = (leftValue > rightValue);
+			 			break;
+			 case LOWER : res = (leftValue < rightValue);
+			 			break;
+			 case GREATER_OR_EQUAL : res = (leftValue >= rightValue);
+			 			break;
+			 case LOWER_OR_EQUAL : res = (leftValue < rightValue);
+	 			break;
+			}
+		}
+		return res;
+	}
 }
