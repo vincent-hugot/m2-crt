@@ -12,7 +12,7 @@ import model.Variable;
  * Checks:
  * <br>- Double variable/domain declaration
  * <br>- Use of correctly declared variable/domain
- * <br>- Empty (X..X or 5..0) domain definition
+ * <br>- Empty domain definition
  * <br>- Obvious division by zero case
  * 
  * <br><br>Note that the two last ones are likely to be removed since
