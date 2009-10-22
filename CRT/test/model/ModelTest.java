@@ -42,8 +42,8 @@ public class ModelTest {
 		v1 = mock(Variable.class);
 		v2 = mock(Variable.class);
 		v3 = mock(Variable.class);
-		m.newExpression(v1, v2, Global.OpType.ADD, v3);
-		e = new Expression(v1, Global.OpType.ADD, v2, v3);
+		m.newExpression(v1, v2, Operator.Arithmetic.ADD, v3);
+		e = new Expression(v1, Operator.Arithmetic.ADD, v2, v3);
 		
 		assertFalse(m.getConstraints().contains(e));
 		assertTrue(m.getExpressions().contains(e));
@@ -56,8 +56,8 @@ public class ModelTest {
 		m = new Model();
 		v1 = mock(Variable.class);
 		v2 = mock(Variable.class);
-		m.newConstraint(v1, v2, Global.OpType.ADD);
-		c = new Constraint(v1, Global.OpType.ADD, v2);
+		m.newConstraint(v1, v2, Operator.Constraint.EQUAL);
+		c = new Constraint(v1, Operator.Constraint.EQUAL, v2);
 		
 		assertTrue(m.getConstraints().contains(c));
 		assertFalse(m.getExpressions().contains(c));

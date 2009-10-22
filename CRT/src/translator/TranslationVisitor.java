@@ -3,8 +3,8 @@ package translator;
 import java.util.HashMap;
 import model.Constant;
 import model.Model;
+import model.Operator;
 import model.Variable;
-import model.Global.OpType;
 import parser.*;
 
 
@@ -123,7 +123,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable left = (Variable) node.jjtGetChild(0).jjtAccept(this,data);
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
-		model.newConstraint(left,right,OpType.EQUAL);
+		model.newConstraint(left,right,Operator.Constraint.EQUAL);
 		
 		return null;
 	}
@@ -135,7 +135,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable left = (Variable) node.jjtGetChild(0).jjtAccept(this,data);
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
-		model.newConstraint(left,right,OpType.LOWER_OR_EQUAL);
+		model.newConstraint(left,right,Operator.Constraint.LOWER_OR_EQUAL);
 		
 		return null;
 	}
@@ -147,7 +147,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable left = (Variable) node.jjtGetChild(0).jjtAccept(this,data);
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
-		model.newConstraint(left,right,OpType.GREATER_OR_EQUAL);
+		model.newConstraint(left,right,Operator.Constraint.GREATER_OR_EQUAL);
 		
 		return null;
 	}
@@ -159,7 +159,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable left = (Variable) node.jjtGetChild(0).jjtAccept(this,data);
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
-		model.newConstraint(left,right,OpType.NOT_EQUAL);
+		model.newConstraint(left,right,Operator.Constraint.NOT_EQUAL);
 		
 		return null;
 	}
@@ -171,7 +171,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable left = (Variable) node.jjtGetChild(0).jjtAccept(this,data);
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
-		model.newConstraint(left,right,OpType.GREATER);
+		model.newConstraint(left,right,Operator.Constraint.GREATER);
 		
 		return null;
 	}
@@ -183,7 +183,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable left = (Variable) node.jjtGetChild(0).jjtAccept(this,data);
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
-		model.newConstraint(left,right,OpType.LOWER);
+		model.newConstraint(left,right,Operator.Constraint.LOWER);
 		
 		return null;
 	}
@@ -226,7 +226,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, min, max, true);
 		
 		
-		model.newExpression(left, right, OpType.MUL, equal);
+		model.newExpression(left, right, Operator.Arithmetic.MUL, equal);
 		
 		return equal;
 	}
@@ -284,7 +284,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, min, max, true);
 		
 		
-		model.newExpression(left, right, OpType.DIV, equal);
+		model.newExpression(left, right, Operator.Arithmetic.DIV, equal);
 		
 		return equal;
 	}
@@ -317,7 +317,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, min, max, true);
 		
 		
-		model.newExpression(left, right, OpType.ADD, equal);
+		model.newExpression(left, right, Operator.Arithmetic.ADD, equal);
 		
 		return equal;
 	}
@@ -350,7 +350,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, min, max, true);
 		
 		
-		model.newExpression(left, right, OpType.SUB, equal);
+		model.newExpression(left, right, Operator.Arithmetic.SUB, equal);
 		
 		return equal;
 	}
