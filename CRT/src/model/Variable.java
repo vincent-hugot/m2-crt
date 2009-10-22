@@ -7,8 +7,13 @@ public class Variable {
 
 	protected String				name;
 	protected boolean				artificial;
-	protected ArrayList<Integer>	domain;
-	protected ArrayList<Integer>	excludedDomain;
+	
+	/* Fomula: domain = baseDomain - excludedDomain */
+	protected ArrayList<Integer>	baseDomain; /* Original domain */
+	protected ArrayList<Integer>	domain; /* Domain restricted over time */
+	protected ArrayList<Integer>	excludedDomain; /* Exclusion domain */
+	
+	
 	protected ArrayList<Constraint> associatedConstraints;
 	protected ArrayList<Expression> associatedExpressions;
 	protected ArrayList<Variable>	neighbors;
@@ -26,69 +31,75 @@ public class Variable {
 	}
 
 	public Variable(String name, int min, int max, boolean artificial) {
-		domain = new ArrayList<Integer>();
+		baseDomain = new ArrayList<Integer>();
 		if (min <= max) {
 			for (int i = min; i <= max; i++)
-				domain.add(i);
+				baseDomain.add(i);
 		}
 
-		construct(name, domain, artificial);
+		construct(name, baseDomain, artificial);
 	}
 
 	public Variable(String name, int min, int max) {
-		domain = new ArrayList<Integer>();
+		baseDomain = new ArrayList<Integer>();
 		if (min <= max) {
 			for (int i = min; i <= max; i++)
-				domain.add(i);
+				baseDomain.add(i);
 		}
 
-		construct(name, domain, false);
+		construct(name, baseDomain, false);
 	}
 
 	public void construct(String name, ArrayList<Integer> domain, boolean artificial) {
 		this.name = name;
-		this.domain = domain;
 		this.artificial = artificial;
+		
+		this.baseDomain = domain;
+		this.domain = new ArrayList<Integer>(domain);
 		this.excludedDomain = new ArrayList<Integer>();
+		
 		this.associatedConstraints = new ArrayList<Constraint>();
 		this.associatedExpressions = new ArrayList<Expression>();
 		this.neighbors = new ArrayList<Variable>();
 	}
 
 	public String getName() {
-
 		return name;
 	}
-
-	public ArrayList<Integer> getDomain() {
-
-		return domain;
-	}
-
+	
 	public boolean isArtificial() {
-
 		return artificial;
 	}
-
+	
+	
+	
+	public ArrayList<Integer> getBaseDomain() {
+		return baseDomain;
+	}
+	public ArrayList<Integer> getDomain() {
+		return domain;
+	}
 	public ArrayList<Integer> getExcludedDomain() {
-
 		return excludedDomain;
 	}
-
+	
+	
 	public int minBound() {
 		if (!domain.isEmpty())
 			return domain.get(0);
 		return 0;
 	}
-
+	
 	public int maxBound() {
 		if (!domain.isEmpty())
 			return domain.get(domain.size() - 1);
 		return 0;
 	}
-
+	
 	public void exclude(int value) {
-		if (domain.contains(value) && !excludedDomain.contains(value)) {
+		if (domain.contains(value) ||
+				(baseDomain.contains(value) && !excludedDomain.contains(value))) {
+			domain.remove(new Integer(value));
 			excludedDomain.add(value);
 			Collections.sort(excludedDomain);
 		}
@@ -97,7 +108,6 @@ public class Variable {
 	public ArrayList<Constraint> getAssociatedConstraints() {
 		return associatedConstraints;
 	}
-	
 	public void addConstraint(Constraint c){
 		associatedConstraints.add(c);
 	}
@@ -105,7 +115,6 @@ public class Variable {
 	public ArrayList<Expression> getAssociatedExpressions() {
 		return associatedExpressions;
 	}
-
 	public void addExpression(Expression e){
 		associatedExpressions.add(e);
 	}
@@ -118,33 +127,23 @@ public class Variable {
 	}
 	
 	public boolean equals(Object obj) {
-		boolean res;
-
-		res = (obj instanceof Variable && this.name.equals(((Variable) obj).name)
-				&& this.artificial == ((Variable) obj).artificial && this.domain.equals(((Variable) obj).domain) && this.excludedDomain
-				.equals(((Variable) obj).excludedDomain));
-		return res;
+		if (!(obj instanceof Variable)) return false;
+		Variable v = (Variable) obj;
+		
+		return (name.equals(v.name) && artificial == v.artificial
+				&& baseDomain.equals(v.baseDomain) && domain.equals(v.domain)
+				&& excludedDomain.equals(v.excludedDomain));
 	}
 	
 	public boolean isValidValue(int val){
-		return (domain.contains(new Integer(val)) && !excludedDomain.contains(new Integer(val)));
+		return (domain.contains(new Integer(val)) ||
+			(baseDomain.contains(new Integer(val)) && !excludedDomain.contains(new Integer(val))));
 	}
 	
 	
 	
-	/* Value getters for algorithm */
-	public ArrayList<Integer> getRemainingDomain() {
-		ArrayList<Integer> remaining = new ArrayList<Integer>();
-		
-		for (int i = 0; i < remaining.size(); i++) {
-			if (excludedDomain.contains(i))
-				remaining.add(domain.get(i));
-		}
-		
-		return remaining;
-	}
-	
-	void resetExcludedDomain(){
+	void resetDomain() {
+		domain.clear();
 		excludedDomain.clear();
 	}
 }

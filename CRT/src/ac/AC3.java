@@ -87,21 +87,13 @@ public class AC3 {
 	}
 	
 	public LinkedList<Couple> initQueue() {
-		Integer k = new Integer(0);
 		LinkedList<Couple> queue = new LinkedList<Couple>();
 		
-		for (int i = 0; i < X.size(); i++) {
-			
-			Variable xi = X.get(i);
-			
-			for (int j = 0; j < X.size(); j++) {
-				
-				if (!X.get(j).equals(xi)) {
-					Couple C = new Couple();
-					C.setXi(xi);
-					C.setXj(X.get(j));
+		for (Variable xi : X) {
+			for (Variable xj : X) {
+				if (!xi.equals(xj)) {
+					Couple C = new Couple(xi,xj);
 					queue.push(C);
-					k++;
 				}
 			}
 		}
@@ -112,12 +104,7 @@ public class AC3 {
 	public Boolean arcReduce(Variable xi, Variable xj) {
 		boolean change = false;
 		
-		// Di (Xi domain)
-		ArrayList<Integer> di = xi.getRemainingDomain();
-		
-		for (int i = 0; i < di.size(); i++) {
-			
-			Integer ai = di.get(i);
+		for (Integer ai : xi.getDomain()) {
 			
 			// Trying to find Aj | (Ai,Aj) respects every Cij constraint
 			if (!findAj(xi, xj, ai)) {
@@ -137,11 +124,10 @@ public class AC3 {
 	 * @return
 	 */
 	public boolean findAj(Variable xi, Variable xj, Integer ai) {
-		ArrayList<Integer> xjDomain = xj.getRemainingDomain();
 		boolean valid = true;
 		
 		
-		for (Integer aj : xjDomain) {
+		for (Integer aj : xj.getDomain()) {
 			
 			valid = true;
 			
