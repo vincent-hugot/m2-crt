@@ -1,7 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +44,9 @@ public class ModelTest {
 		v3 = mock(Variable.class);
 		m.newExpression(v1, v2, Global.OpType.ADD, v3);
 		e = new Expression(v1, Global.OpType.ADD, v2, v3);
-		assertTrue(m.getConstraints().contains(e));
+		
+		assertFalse(m.getConstraints().contains(e));
+		assertTrue(m.getExpressions().contains(e));
 	}
 
 	@Test
@@ -57,7 +58,9 @@ public class ModelTest {
 		v2 = mock(Variable.class);
 		m.newConstraint(v1, v2, Global.OpType.ADD);
 		c = new Constraint(v1, Global.OpType.ADD, v2);
+		
 		assertTrue(m.getConstraints().contains(c));
+		assertFalse(m.getExpressions().contains(c));
 	}
 
 }
