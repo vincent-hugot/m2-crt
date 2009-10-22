@@ -1,0 +1,74 @@
+\documentclass[12pt,a4paper]{article} 
+
+\usepackage[defhf,deflayout]{sknife}
+\input{common.tex}
+
+\pagetitle{CR - Projet CRT \dateformat20/10/2009}
+\title{Compte Rendu\\de la Quatrième Réunion\\du Projet de CRT\vspace{-0.5em}}
+\author{$\diamond$\vspace{-0.2em}}
+
+\begin{document}
+ \maketitle
+
+\section{Personnes Présentes}
+%
+\noi Étaient présents à la réunion :\mk
+\begin{itemize}
+\item \mwyd 
+\item \mmat
+\item \mlou
+\item \mmor
+\item \moli \scribe
+\item \mvin
+\item \mmed
+\item \mbed \absent
+\item \mdon 
+\end{itemize}
+
+\section{Bilan équipe développement}
+\subsection{Algorithme AC3}
+\mmed\ et \mbed\ on terminé l'implémentation de l'algorithme AC3. Malheureusement \mmed\ n'a pas réussi à commiter les changements sur le repository \svn\ et a confier sa machine à une personne pour ne la récupérer que ce soir.\mk\\
+Cependant il a envoyé son travail hier soir à son binôme et passera donc chez lui pour le récupérer. De ce fait, il sera possible lors du TP de cet après midi de se baser dessus pour commencer à réfléchir à AC6.
+Peu de contrôles on été effectués dans cet algorithme qu'il faudra remanier.
+
+\subsection{Traduction \ast\ vers modèle}
+\mmat\ a terminé le traducteur sur lequel il travaillait avec \mvin. Certains contrôles on été faits qu'il faudra probablement retirer pour s'assurer que l'algorithme ne laisse passer ces problèmes (division par zéro, par exemple).
+
+\newpage
+\subsection{Modèle}
+\moli\ a implémenté dans le modèle les fonctions nécessaires au traducteur pour la création des objets. Ainsi que les méthodes dont avait besoin l'équipe se penchant sur AC3.
+La gestion des opérateurs a été remaniée de sorte qu'une contrainte n'accepte pas d'opérateurs arithmétiques, de même qu'une contrainte n'accepte, elle que ces derniers.\bk\\
+
+\section{Bilan équipe test}
+La majeure partie du travail effectué par l'équipe test a consisté à essayer de mettre en place le serveur \hudson\ malheureusement sans succès. A ce sujet \groupmember{{Emilie} {OUDOT,}} a mentionné que le fait que nous n'ayons pas de droits administrateurs sur \hudson puisse poser des problèmes, elle viendra en TP pour nous aider à résoudre ce soucis.\mk\\
+D'autre part aucun travail n'a été fait sur \fitnesse, en outre il a été décidé d'utiliser \emma\ plutôt que \cobertura\ car certains tests ne passaient pas sous \cobertura\ et de plus \hudson\ intègre un plugin \emma.\sk
+
+\section{Discussions}
+On été clairement redéfinis les rôles des équipes quant aux divres tests à effectuer :
+\begin{itemize}
+\item L'équipe de developpement s'occupe des tests structurels, c'est à dire s'assurer que chaque méthode ``simple'' fait ce qui lui est demandé (tests unitaires avec \junit).
+\item L'équipe de test s'occupe des tests structurels plus globaux (\fitnesse).
+\end{itemize}
+
+Pour ce qui est de \fitnesse, a été décidé le fonctionnement suivant :\sk\\
+
+Dans un premire temps, l'équipe de test défini ce qui doit être testé, quelles sont les caractéristiques attendues et pour ce faire défini un langage simple et régulier.\sk
+Ensuite l'équipe de developpement se chargera d'établir la couche de traduction pour faire le lien avec le modèle. \mk\\
+
+Il a de plus été décidé de profiter de la semaine de vacances à venir pour s'avancer un maximum et pourquoi pas finir le projet. Pour ce faire la majeure partie des membres de l'équipe de développement se retrouveront à la fac et tous ceux voualnt les rejoindre seront les bienvenus. Chaque mebre postera sur le forum quel(s) jour(s) il sera présent. 
+
+\newpage
+\section{Travail a effectuer durant la prochaine itération}
+
+\subsection{Developpement}
+L'équipe se divise sur deux tâches :
+\begin{itemize}
+\item Passage de l'algotihme AC3 à AC6 : \mvin, \mbed\ et \moli
+\item Rattrapage TDD : Certains tests structurels n'ont pas été implémentés en \junit, \mmat\ et \mmed\ s'en chargeront.
+\end{itemize}
+
+\subsection{Tests}
+La première chose à faire est la mise en place du serveur \hudson, ce qui devrait être fait durant la séance de TP.\\
+Ensuite il faudra s'occuper de \fitnesse.
+\end{document}
+
