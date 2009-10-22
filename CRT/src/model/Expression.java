@@ -1,7 +1,6 @@
 package model;
 
 import java.util.TreeSet;
-import model.Global.OpType;
 
 
 /**
@@ -34,7 +33,7 @@ import model.Global.OpType;
 public class Expression extends Constraint {
 
 	protected Variable				equal;
-	protected Operator				expressionOperator;
+	protected Operator.Arithmetic	expressionOperator;
 	
 	// See Variable for use
 	/*protected ArrayList<Integer>	baseDomain;
@@ -47,21 +46,11 @@ public class Expression extends Constraint {
 	 * @param right
 	 * @param equal
 	 */
-	public Expression(Variable left, OpType op, Variable right, Variable equal)/* throws ModelException */{
-		super(left, Global.OpType.EQUAL, right);
-		Operator o = Global.getOperator(op);
-		
-		/*
-		 * if(!o.isArithmetical()){ throw new ModelException("The expression's operator must be arithmetical!"); }
-		 */
+	public Expression(Variable left, Operator.Arithmetic op, Variable right, Variable equal) {
+		super(left, Operator.Constraint.EQUAL, right);
 		
 		this.equal = equal;
-		this.expressionOperator = o;
-		
-		// Base domain is the equal part domain (thanks to the translator)
-		/*this.baseDomain = equal.getBaseDomain();
-		this.domain = equal.getBaseDomain();
-		this.excludedDomain = new ArrayList<Integer>();*/
+		this.expressionOperator = op;
 	}
 
 	public Variable getEqual() {
@@ -74,23 +63,6 @@ public class Expression extends Constraint {
 				.equals(((Expression) obj).op));
 	}
 	
-	
-	
-	
-	
-	/*public ArrayList<Integer> getBaseDomain() {
-		return baseDomain;
-	}
-	public ArrayList<Integer> getDomain() {
-		return domain;
-	}
-	public ArrayList<Integer> getExcludedDomain() {
-		return excludedDomain;
-	}
-	void resetDomain() {
-		domain.clear();
-		excludedDomain.clear();
-	}*/
 	
 	
 	
@@ -108,7 +80,7 @@ public class Expression extends Constraint {
 		for (Integer xi : left.getDomain()) {
 			for (Integer xj : right.getDomain()) {
 				
-				switch (op.getType()) {
+				switch (expressionOperator) {
 					case ADD:
 						newDom.add(new Integer(xi + xj));
 						break;

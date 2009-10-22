@@ -1,29 +1,22 @@
 package model;
 
-import model.Global.OpType;
 
 public class Constraint {
 
 	protected Variable	left;
 	protected Variable	right;
 
-	protected Operator	op;
+	protected Operator.Constraint	op;
 
 	/**
 	 * @param left
 	 * @param op
 	 * @param right
 	 */
-	public Constraint(Variable left, OpType op, Variable right)/*throws ModelException*/ {
-		
-		Operator oper = Global.getOperator(op);
-		
-		/*if(oper.isArithmetical()){
-			throw new ModelException("The constraint operator must be not arithmetical");
-		}*/
+	public Constraint(Variable left, Operator.Constraint op, Variable right) {
 		
 		this.left = left;
-		this.op = oper;
+		this.op = op;
 		this.right = right;
 	}
 
@@ -37,14 +30,13 @@ public class Constraint {
 		return right;
 	}
 
-	public Operator getOp() {
-
+	public Operator.Constraint getOp() {
 		return op;
 	}
 
 	public boolean equals(Object obj) {
 		return (obj instanceof Constraint && this.left.equals(((Constraint) obj).left)
-				&& this.op.equals(((Constraint) obj).op) && this.right.equals(((Constraint) obj).right));
+				&& this.op == ((Constraint) obj).op && this.right.equals(((Constraint) obj).right));
 	}
 	
 	public boolean areValidValues(int leftValue, int rightValue){
@@ -53,7 +45,7 @@ public class Constraint {
 		
 		if(res)
 		{
-			switch(op.getType()){
+			switch(op) {
 			
 			 case EQUAL : res = (leftValue == rightValue); 
 			 			break;

@@ -1,27 +1,15 @@
 package model;
 
+public final class Operator {
 
-import model.Global.OpType;
-
-public class Operator {
-
-	private Global.OpType	      type;
+	private Operator() {}
 	
-	public Operator(OpType type) {
-
-		this.type = type;
-	}
-
-	public OpType getType() {
-
-		return type;
-	}
-
-	public boolean equals(Object obj){
-		return (obj instanceof Operator && this.type == ((Operator) obj).type);
+	public enum Arithmetic {
+		ADD, SUB, MUL, DIV
 	}
 	
-	public boolean isArithmetical(){
-		return (type == OpType.ADD || type == OpType.MUL || type == OpType.SUB || type == OpType.DIV);
+	public enum Constraint {
+		EQUAL, NOT_EQUAL,
+		GREATER, LOWER, GREATER_OR_EQUAL, LOWER_OR_EQUAL
 	}
 }
