@@ -59,7 +59,7 @@ public class Substitution extends Constraint {
 	
 	/* Updating the EQUAL domain, according to LEFT x RIGHT */
 	public void updateDomain() {
-		Domain newDomain = left.domain.arithmetic_operation
+		Domain newDomain = left.domain.arithmeticOperation
 				(
 				expressionOperator, 
 				right.domain

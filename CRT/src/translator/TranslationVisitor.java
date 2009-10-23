@@ -211,7 +211,7 @@ public class TranslationVisitor implements ParserVisitor {
 		substitute++;
 		
 		model.Domain newDomain = 
-			left.getDomain().arithmetic_operation(
+			left.getDomain().arithmeticOperation(
 					Operator.Arithmetic.MUL, right.getDomain());
 		
 			
@@ -236,7 +236,7 @@ public class TranslationVisitor implements ParserVisitor {
 		substitute++;
 		
 		model.Domain newDomain = 
-			left.getDomain().arithmetic_operation(
+			left.getDomain().arithmeticOperation(
 					Operator.Arithmetic.DIV, right.getDomain());
 		
 			
@@ -261,7 +261,7 @@ public class TranslationVisitor implements ParserVisitor {
 		substitute++;
 		
 		model.Domain newDomain = 
-			left.getDomain().arithmetic_operation(
+			left.getDomain().arithmeticOperation(
 					Operator.Arithmetic.ADD, right.getDomain());
 		
 			
@@ -286,7 +286,7 @@ public class TranslationVisitor implements ParserVisitor {
 		substitute++;
 		
 		model.Domain newDomain = 
-			left.getDomain().arithmetic_operation(
+			left.getDomain().arithmeticOperation(
 					Operator.Arithmetic.SUB, right.getDomain());
 		
 			

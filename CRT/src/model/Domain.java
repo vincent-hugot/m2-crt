@@ -100,7 +100,7 @@ public class Domain extends TreeSet<Integer> {
 	 * @param d another domain
 	 * @return the set of c such that c = a OP b
 	 */
-	public Domain arithmetic_operation(Operator.Arithmetic op, Domain d) {
+	public Domain arithmeticOperation(Operator.Arithmetic op, Domain d) {
 		Domain resultingDomain = new Domain();
 		for (Integer a : this) {
 			for (Integer b : d) {
