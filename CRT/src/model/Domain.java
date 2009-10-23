@@ -20,7 +20,7 @@ public class Domain extends TreeSet<Integer> {
 	 * Build the empty set
 	 */
 	public Domain() {
-		
+		super();
 	}
 	
 	/**
@@ -29,6 +29,7 @@ public class Domain extends TreeSet<Integer> {
 	 * @param max
 	 */
 	public Domain(int min, int max) {
+		super();
 		for (int i = min; i <= max ; i++) {
 			this.add(i);
 		}
