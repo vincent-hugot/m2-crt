@@ -19,7 +19,7 @@ public class Constant extends Variable {
 		return value;
 	}
 	
-	public boolean equals(Object obj){
+	public boolean equals(Object obj) {
 		return (obj instanceof Constant && this.value == ((Constant) obj).value);
 	}
 }

@@ -50,7 +50,7 @@ public class ModelTest {
 	}
 
 	@Test
-	public void testNewConstraint() /*throws ModelException*/ {
+	public void testNewConstraint() {
 		Constraint c;
 		Variable v1, v2;
 		m = new Model();

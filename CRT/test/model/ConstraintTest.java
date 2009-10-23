@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class ConstraintTest {
 	
-	
+	// TODO : Redo with formal coverage
 	/**
 	 * Depends on isValidValue on both sides
 	 */
