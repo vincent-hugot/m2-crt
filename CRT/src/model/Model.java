@@ -85,4 +85,11 @@ public class Model {
 		return res;
 	}
 
+	public Variable newVariable(String name, Domain newDomain, boolean artificial) {
+		Variable v = new Variable(name, newDomain, artificial);
+		variables.add(v);
+
+		return v;
+	}
+
 }

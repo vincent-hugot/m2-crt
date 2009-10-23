@@ -96,8 +96,9 @@ public class CheckingVisitor implements ParserVisitor {
 		}
 		
 		Variable v = declaredVars.get(varName);
-		if (v.minBound() == v.maxBound()) // Variable value known (for /0 check)
-			return v.minBound();
+		if (v.getDomain().least() == v.getDomain().greatest()) 
+			// Variable value known (for /0 check)
+			return v.getDomain().least();
 		
 		return null;
 	}

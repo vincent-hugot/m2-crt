@@ -41,7 +41,7 @@ public class Constraint {
 	
 	public boolean areValidValues(int leftValue, int rightValue){
 		boolean res;
-		res = (left.isValidValue(leftValue) && right.isValidValue(rightValue));
+		res = (left.domain.contains(leftValue) && right.domain.contains(rightValue));
 		
 		if(res)
 		{

@@ -9,9 +9,12 @@ import java.util.TreeSet;
  * @author Vincent HUGOT
  *
  */
-public class Domain {
+public class Domain extends TreeSet<Integer> {
 	
-	TreeSet<Integer> set = new TreeSet<Integer>();
+	/**
+	 * Eclipse WTF.
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Build the empty set
@@ -27,32 +30,21 @@ public class Domain {
 	 */
 	public Domain(int min, int max) {
 		for (int i = min; i <= max ; i++) {
-			set.add(i);
+			this.add(i);
 		}
 	}
 	
-	/**
-	 * add an element to the domain
-	 * @param n
-	 */
-	public void add(int n) {
-		set.add(n);
+
+	
+		
+	public int greatest() {
+		return last();
 	}
 	
-	/**
-	 * remove an element from the domain
-	 * @param n
-	 */
-	public void remove(int n) {
-		set.remove(n);
+	public int least() {
+		return first();
 	}
 	
-	/**
-	 * Returns the greatest element of the set
-	 */
-	public void last() {
-		set.last();
-	}
 	
 	/**
 	 * Returns the least element in this set greater 
@@ -60,8 +52,8 @@ public class Domain {
 	 * there is no such element.
 	 * @param n
 	 */
-	public void next(int n) {
-		set.ceiling(n);
+	public int next(int n) {
+		return ceiling(n);
 	}
 	
 	/**
@@ -71,7 +63,7 @@ public class Domain {
 	 * @param d another domain, unaffected by the operation
 	 */
 	public void restrict (Domain d) {
-		set.removeAll(d.set);
+		this.removeAll(d);
 	}
 	
 	/**
@@ -81,7 +73,7 @@ public class Domain {
 	 * @param d another domain, unaffected by the operation
 	 */
 	public void extend(Domain d){
-		set.addAll(d.set);
+		addAll(d);
 	}
 	
 	
@@ -91,7 +83,7 @@ public class Domain {
 	 * @return
 	 */
 	public boolean contains(int n) {
-		return set.contains(n);
+		return contains(n);
 	}
 	
 	/**
@@ -109,9 +101,9 @@ public class Domain {
 	 */
 	public Domain arithmetic_operation(Operator.Arithmetic op, Domain d) {
 		Domain resultingDomain = new Domain();
-		for (Integer a : set) {
-			for (Integer b : d.set) {
-				int c = 0;
+		for (Integer a : this) {
+			for (Integer b : d) {
+				Integer c = null;
 				switch (op) {
 				case ADD:
 					c = a+b;
@@ -120,13 +112,13 @@ public class Domain {
 					c = a-b;
 					break;
 				case DIV:
-					c = a/b;
+					if (b != 0) c = a/b;
 					break;
 				case MUL:
 					c = a*b;
 					break;
 				}
-				resultingDomain.add(c);
+				if (c != null) resultingDomain.add(c);
 			}
 		}
 		return resultingDomain;

@@ -108,7 +108,7 @@ public class AC3 {
 			
 			// Trying to find Aj | (Ai,Aj) respects every Cij constraint
 			if (!findAj(xi, xj, ai)) {
-				xi.exclude(ai);
+				xi.getDomain().remove(ai);
 				change = true;
 			}
 		}

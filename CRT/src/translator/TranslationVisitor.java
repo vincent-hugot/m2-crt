@@ -210,20 +210,12 @@ public class TranslationVisitor implements ParserVisitor {
 		String name = SUBSTITUTE + substitute;
 		substitute++;
 		
-		/* Boundary calculation for our substitute domain, the dumb way.
-		 * That is, apply the operation between min/max of left/right
-		 * (L.min+R.min, L.max+R.min, L.min+R.max, L.max+R.max)
-		 * Min and max bound are amongst those resulsts
-		 */
-		int minmin = left.minBound() * right.minBound();
-		int minmax = left.minBound() * right.maxBound();
-		int maxmin = left.maxBound() * right.minBound();
-		int maxmax = left.maxBound() * right.maxBound();
+		model.Domain newDomain = 
+			left.getDomain().arithmetic_operation(
+					Operator.Arithmetic.MUL, right.getDomain());
 		
-		int min = Math.min(Math.min(minmin,minmax), Math.min(maxmin,maxmax));
-		int max = Math.max(Math.max(minmin,minmax), Math.max(maxmin,maxmax));
-		
-		Variable equal = model.newVariable(name, min, max, true);
+			
+		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
 		model.newExpression(left, right, Operator.Arithmetic.MUL, equal);
@@ -243,45 +235,12 @@ public class TranslationVisitor implements ParserVisitor {
 		String name = SUBSTITUTE + substitute;
 		substitute++;
 		
-		/* Boundary calculation for our substitute domain, the dumb way.
-		 * That is, apply the operation between min/max of left/right
-		 * (L.min+R.min, L.max+R.min, L.min+R.max, L.max+R.max)
-		 * Min and max bound are amongst those resulsts
-		 */
+		model.Domain newDomain = 
+			left.getDomain().arithmetic_operation(
+					Operator.Arithmetic.DIV, right.getDomain());
 		
-		/* Division by 0 case
-		 * Right operand is studied by excluding 0 if it is a boundary:
-		 * if min=0 && max>0, right.exclude(0) then 1 used as min
-		 * if min<0 && max=0, right.exclude(0) then -1 used as max
-		 * if min=0 && max=0, well, CheckingVisitor should have prevented it, since
-		 *   no domain can be calculated.
-		 */
-		int minmin, minmax, maxmin, maxmax;
-		
-		if (right.minBound() == 0) {
-			right.exclude(0);
-			minmin = left.minBound() / 1;
-			maxmin = left.maxBound() / 1;
-		}
-		else {
-			minmin = left.minBound() / right.minBound();
-			maxmin = left.maxBound() / right.minBound();
-		}
-		
-		if (right.maxBound() == 0) {
-			right.exclude(0);
-			minmax = left.minBound() / -1;
-			maxmax = left.maxBound() / -1;
-		}
-		else {
-			minmax = left.minBound() / right.maxBound();
-			maxmax = left.maxBound() / right.maxBound();
-		}
-		
-		int min = Math.min(Math.min(minmin,minmax), Math.min(maxmin,maxmax));
-		int max = Math.max(Math.max(minmin,minmax), Math.max(maxmin,maxmax));
-		
-		Variable equal = model.newVariable(name, min, max, true);
+			
+		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
 		model.newExpression(left, right, Operator.Arithmetic.DIV, equal);
@@ -301,20 +260,12 @@ public class TranslationVisitor implements ParserVisitor {
 		String name = SUBSTITUTE + substitute;
 		substitute++;
 		
-		/* Boundary calculation for our substitute domain, the dumb way.
-		 * That is, apply the operation between min/max of left/right
-		 * (L.min+R.min, L.max+R.min, L.min+R.max, L.max+R.max)
-		 * Min and max bound are amongst those resulsts
-		 */
-		int minmin = left.minBound() + right.minBound();
-		int minmax = left.minBound() + right.maxBound();
-		int maxmin = left.maxBound() + right.minBound();
-		int maxmax = left.maxBound() + right.maxBound();
+		model.Domain newDomain = 
+			left.getDomain().arithmetic_operation(
+					Operator.Arithmetic.ADD, right.getDomain());
 		
-		int min = Math.min(Math.min(minmin,minmax), Math.min(maxmin,maxmax));
-		int max = Math.max(Math.max(minmin,minmax), Math.max(maxmin,maxmax));
-		
-		Variable equal = model.newVariable(name, min, max, true);
+			
+		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
 		model.newExpression(left, right, Operator.Arithmetic.ADD, equal);
@@ -334,20 +285,12 @@ public class TranslationVisitor implements ParserVisitor {
 		String name = SUBSTITUTE + substitute;
 		substitute++;
 		
-		/* Boundary calculation for our substitute domain, the dumb way.
-		 * That is, apply the operation between min/max of left/right
-		 * (L.min+R.min, L.max+R.min, L.min+R.max, L.max+R.max)
-		 * Min and max bound are amongst those resulsts
-		 */
-		int minmin = left.minBound() - right.minBound();
-		int minmax = left.minBound() - right.maxBound();
-		int maxmin = left.maxBound() - right.minBound();
-		int maxmax = left.maxBound() - right.maxBound();
+		model.Domain newDomain = 
+			left.getDomain().arithmetic_operation(
+					Operator.Arithmetic.SUB, right.getDomain());
 		
-		int min = Math.min(Math.min(minmin,minmax), Math.min(maxmin,maxmax));
-		int max = Math.max(Math.max(minmin,minmax), Math.max(maxmin,maxmax));
-		
-		Variable equal = model.newVariable(name, min, max, true);
+			
+		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
 		model.newExpression(left, right, Operator.Arithmetic.SUB, equal);

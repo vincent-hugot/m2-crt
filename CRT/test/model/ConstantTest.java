@@ -1,7 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-import java.util.ArrayList;
 import org.junit.Test;
 
 
@@ -18,22 +17,12 @@ public class ConstantTest {
 	@Test
 	public void testConstantIsARestrictedVariable() {
 		Constant c = new Constant(42);
-		ArrayList<Integer> domain = new ArrayList<Integer>();
-		domain.add(42);
+        Domain domain = new Domain(42,42);
 		
-		assertEquals(c.getBaseDomain(),domain);
-		assertEquals(c.getDomain(),domain);
+		assertEquals(c.getDomain() ,domain);
 		assertEquals(c.getName(), "42");
 	}
 	
-	
-	@Test
-	public void testValueDomain() {
-		Constant c = new Constant(42);
-
-		assertEquals(c.getBaseDomain().size(), 1);
-		assertEquals(c.getBaseDomain().get(0).intValue(), c.getValue());
-	}
 	
 	
 	@Test
