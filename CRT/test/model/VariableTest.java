@@ -171,7 +171,7 @@ public class VariableTest {
 		assertEquals(v.getAssociatedExpressions().size(), 0);
 		assertEquals(v.getNeighbors().size(), 0);
 		
-			v.addExpression(mock(Expression.class));
+			v.addExpression(mock(Substitution.class));
 		assertEquals(v.getAssociatedConstraints().size(), 1);
 		assertEquals(v.getAssociatedExpressions().size(), 1);
 		assertEquals(v.getNeighbors().size(), 0);

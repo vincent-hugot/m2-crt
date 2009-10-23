@@ -30,7 +30,7 @@ import java.util.TreeSet;
  * 
  * @author Mathias COQBLIN
  */
-public class Expression extends Constraint {
+public class Substitution extends Constraint {
 
 	protected Variable				equal;
 	protected Operator.Arithmetic	expressionOperator;
@@ -46,7 +46,7 @@ public class Expression extends Constraint {
 	 * @param right
 	 * @param equal
 	 */
-	public Expression(Variable left, Operator.Arithmetic op, Variable right, Variable equal) {
+	public Substitution(Variable left, Operator.Arithmetic op, Variable right, Variable equal) {
 		super(left, Operator.Constraint.EQUAL, right);
 		
 		this.equal = equal;
@@ -58,9 +58,9 @@ public class Expression extends Constraint {
 	}
 
 	public boolean equals(Object obj) {
-		return (obj instanceof Expression && this.left.equals(((Expression) obj).left)
-				&& this.right.equals(((Expression) obj).right) && this.equal.equals(((Expression) obj).equal) && this.op
-				.equals(((Expression) obj).op));
+		return (obj instanceof Substitution && this.left.equals(((Substitution) obj).left)
+				&& this.right.equals(((Substitution) obj).right) && this.equal.equals(((Substitution) obj).equal) && this.op
+				.equals(((Substitution) obj).op));
 	}
 	
 	

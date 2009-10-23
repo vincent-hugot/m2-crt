@@ -6,12 +6,12 @@ public class Model {
 
 	private ArrayList<Variable>		variables;
 	private ArrayList<Constraint>	constraints;
-	private ArrayList<Expression>	expressions;
+	private ArrayList<Substitution>	expressions;
 
 	public Model() {
 		variables = new ArrayList<Variable>();
 		constraints = new ArrayList<Constraint>();
-		expressions = new ArrayList<Expression>();
+		expressions = new ArrayList<Substitution>();
 	}
 
 	public Variable newVariable(String name, int minBoundary, int maxBoundary, boolean artificial) {
@@ -32,7 +32,7 @@ public class Model {
 	}
 
 	public void newExpression(Variable operand1, Variable operand2, Operator.Arithmetic operator, Variable equal) {
-		Expression e = new Expression(operand1, operator, operand2, equal);
+		Substitution e = new Substitution(operand1, operator, operand2, equal);
 		operand1.addExpression(e);
 		operand2.addExpression(e);
 		equal.addConstraint(e);
@@ -57,7 +57,7 @@ public class Model {
 		return constraints;
 	}
 
-	public ArrayList<Expression> getExpressions() {
+	public ArrayList<Substitution> getExpressions() {
 		return expressions;
 	}
 

@@ -36,14 +36,14 @@ public class ModelTest {
 
 	@Test
 	public void testNewExpression() /*throws ModelException*/ {
-		Expression e;
+		Substitution e;
 		Variable v1, v2, v3;
 		m = new Model();
 		v1 = mock(Variable.class);
 		v2 = mock(Variable.class);
 		v3 = mock(Variable.class);
 		m.newExpression(v1, v2, Operator.Arithmetic.ADD, v3);
-		e = new Expression(v1, Operator.Arithmetic.ADD, v2, v3);
+		e = new Substitution(v1, Operator.Arithmetic.ADD, v2, v3);
 		
 		assertFalse(m.getConstraints().contains(e));
 		assertTrue(m.getExpressions().contains(e));

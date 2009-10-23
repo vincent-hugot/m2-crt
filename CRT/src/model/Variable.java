@@ -15,7 +15,7 @@ public class Variable {
 	
 	
 	protected ArrayList<Constraint> associatedConstraints;
-	protected ArrayList<Expression> associatedExpressions;
+	protected ArrayList<Substitution> associatedExpressions;
 	protected ArrayList<Variable>	neighbors;
 
 	
@@ -59,7 +59,7 @@ public class Variable {
 		this.excludedDomain = new ArrayList<Integer>();
 		
 		this.associatedConstraints = new ArrayList<Constraint>();
-		this.associatedExpressions = new ArrayList<Expression>();
+		this.associatedExpressions = new ArrayList<Substitution>();
 		this.neighbors = new ArrayList<Variable>();
 	}
 
@@ -112,10 +112,10 @@ public class Variable {
 		associatedConstraints.add(c);
 	}
 	
-	public ArrayList<Expression> getAssociatedExpressions() {
+	public ArrayList<Substitution> getAssociatedExpressions() {
 		return associatedExpressions;
 	}
-	public void addExpression(Expression e){
+	public void addExpression(Substitution e){
 		associatedExpressions.add(e);
 	}
 	
