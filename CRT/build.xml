@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="complete-build" default="unittest">
+	
+	<property name="tests.src.dir" value="./test"/><!-- emplacement des fichiers sources de tests *Test.java unittest-src-->
+	<property name="java.src.dir" value="./src"/>
+	<property name="lib.dir" value="./lib"/>
+	<property name="classes.output.dir" value="./bin"/>
+	<property name="instr.dir" value="./instr"/>
+	<property name="target.dir" value="./targets"/>
+	
+	<property name="reports.dir" value="./reports"/>
+	<property name="tests.reports.dir" value="${reports.dir}/tests-reports"/>
+	<property name="tests.log.file" value="tests.log"/>
+	<property name="findbugs.reports.dir" value="${reports.dir}/findbugs-reports"/>
+	<property name="emma.reports.dir" value="${reports.dir}/emma-reports"/>
+	
+	
+	<path id="src.classpath">
+		<fileset dir="./lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	<path id="unittest-src.classpath" >
+		<pathelement location="${classes.output.dir}" />
+		<path refid="src.classpath" />
+	</path>
+	<path id="build.classpath">    
+		<pathelement path="${classes.output.dir}"/>  
+	</path>  
+	<path id="ant-lib.classpath">
+		<fileset dir="${lib.dir}/ant-lib">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+	
+	
+	<target name="compile" description="compile sources">
+		<delete dir="${classes.output.dir}"/>
+		<mkdir dir="${classes.output.dir}"/>
+		<javac srcdir="${java.src.dir}" destdir="${classes.output.dir}" classpathref="src.classpath" debug="true" debuglevel="lines,source"/>
+	</target>
+	
+	<target name="test-compile" depends="compile" description="compile test classes">		
+		<javac srcdir="${tests.src.dir}" destdir="${classes.output.dir}" classpathref="src.classpath" debug="true" />
+	</target>
+	
+	
+	<taskdef resource="emma_ant.properties" classpathref="ant-lib.classpath" />
+
+	
+	<target name="with-emma">
+		<mkdir dir="${emma.reports.dir}" />
+		<property name="emma.enabled" value="true"/>
+		<taskdef resource="emma_ant.properties" />
+		<path id="unittest-src.classpath">
+			<pathelement location="${instr.dir}" />
+			<pathelement location="${classes.output.dir}"/>
+			<path refid="ant-lib.classpath"/>	           
+		</path>
+	</target>
+	
+	
+	
+	<target name="instr" depends="compile" if="emma.enabled" >
+		<mkdir dir="${instr.dir}"/>
+		<taskdef resource="emma_ant.properties" />
+		<emma>
+			<instr instrpathref="build.classpath"
+			       destdir="${instr.dir}"
+			       metadatafile="${emma.reports.dir}/metadata.emma"
+			       merge="true">
+				<filter excludes="*Test*" /><!-- UNITEST -->
+			</instr>
+		</emma>
+	</target>
+	
+	
+	<target name="unittest" depends="instr, test-compile" description="run all unit tests">		
+		<mkdir dir="${tests.reports.dir}"/>
+		<record name="${tests.reports.dir}/${tests.log.file}" loglevel="error" />    
+		
+		<junit failureProperty="test.failure" printsummary="yes" fork="yes" haltonfailure="no" timeout="10000">
+			
+			<classpath refid="unittest-src.classpath" />
+			<classpath refid="src.classpath" /><!-- va chercher le jar de mockito dans /lib -->
+			<formatter  type="xml" usefile="true"/>
+			
+			
+			
+			<batchtest todir="${tests.reports.dir}">
+				<!--<fileset dir="${tests.src.dir}" includes="**/*UnitTest.java" />
+				nos noms de fichiers de test finissent par Test 
+				-->
+				<fileset dir="${tests.src.dir}" includes="**/*Test.java" />
+			</batchtest>
+			
+			<jvmarg value="-Demma.coverage.out.file=${emma.reports.dir}/coverage.emma" />  
+			<jvmarg value="-Demma.coverage.out.merge=true" />  
+			
+		</junit>	    
+		<fail message="TESTS FAILED OR FINISHED WITH ERRORS - SEE REPORT" if="test.failure" />
+		
+		<junitreport todir="${tests.reports.dir}">
+			<fileset dir="${tests.reports.dir}">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="${tests.reports.dir}/html"/>
+		</junitreport>
+		
+		
+		<antcall target="emma-report-coverage"/>
+		
+	</target>
+	
+	<target name="emma-report-coverage" if="emma.enabled" >
+		<taskdef resource="emma_ant.properties" />		
+		<emma>
+			<report sourcepath="${java.src.dir}" >
+				<fileset dir="${emma.reports.dir}" >
+					<include name="*.emma" />
+				</fileset>
+				<xml outfile="${emma.reports.dir}/coverage.xml" />
+				<html outfile="${emma.reports.dir}/coverage.html" />
+			</report>
+		</emma>
+	</target>
+	
+	
+	
+	
+	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="ant-lib.classpath"/>
+	
+	<target name="findbugs">
+		<mkdir dir="${findbugs.reports.dir}"/>
+		<findbugs home="${lib.dir}/findbugs-1.3.9"
+			  output="xml:withMessages"
+			  outputFile="${findbugs.reports.dir}/findbugs.xml" >
+			<sourcePath path="${java.src.dir}" />
+			<class location="${classes.output.dir}/" />
+			<auxClasspath refid="src.classpath" />
+		</findbugs>
+	</target>
+	
+	
+	<target name="package" depends="compile">
+		<mkdir dir="${target.dir}"/>
+		<jar manifest="META-INF/MANIFEST.MF" destfile="${target.dir}/SimpleMath.jar">
+			<!--<fileset dir="${classes.output.dir}" excludes="**/*UnitTest*.class" />-->		            
+			<fileset dir="${classes.output.dir}" excludes="**/*Test*.class" />
+		</jar>
+	</target>
+	
+	<target name="clean">
+		<delete  dir="${classes.output.dir}"/>
+		<delete dir="${instr.dir}"/>
+		<delete dir="${reports.dir}"/>
+		<delete dir="${target.dir}"/>
+	</target>
+	
+	
+	
+	
+</project>
