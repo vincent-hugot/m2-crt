@@ -5,8 +5,6 @@ import java.util.TreeSet;
 
 /**
  * Mutable domain with arithmetic facilities.
- * 
- * @author Vincent HUGOT
  *
  */
 public class Domain extends TreeSet<Integer> {
@@ -58,7 +56,9 @@ public class Domain extends TreeSet<Integer> {
 	}
 	
 	/**
-	 * Remove from this domain the elements of another domain
+	 * Remove from this domain the elements which are not also
+	 * in another domain.
+	 * 
 	 * Corresponds to a mutable intersection
 	 * 
 	 * @param d another domain, unaffected by the operation
@@ -98,7 +98,7 @@ public class Domain extends TreeSet<Integer> {
 	 * Both this domain and D remain unchanged. 
 	 * 
 	 * For instance this.arithmeticOperation(OP, D) is 
-	 * { c | exists a in this and b in D, c = a OP b }
+	 * { a OP b | a in this and b in D }
 	 * @param op an arithmetic operator
 	 * @param d another domain
 	 * @return the set of c such that c = a OP b
