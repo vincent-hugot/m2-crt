@@ -29,10 +29,8 @@ public class TranslatorErrorsTest {
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue("Test - Parsing error - Invalid character",
-				translator.fail()); // same as: !spy.getErrors().isEmpty()
-		assertNull("Test - Parsing error - Invalide character (no model)",
-				translator.getModel());
+		assertTrue(translator.fail()); // same as: !spy.getErrors().isEmpty()
+		assertNull(translator.getModel());
 	}
 	
 	
@@ -46,10 +44,8 @@ public class TranslatorErrorsTest {
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue("Test - Parsing error - Domain after constraints",
-				translator.fail()); // same as: !spy.getErrors().isEmpty()
-		assertNull("Test - Parsing error - Domain after constraints (no model)",
-				translator.getModel());
+		assertTrue(translator.fail()); // same as: !spy.getErrors().isEmpty()
+		assertNull(translator.getModel());
 	}
 	
 	
@@ -63,10 +59,8 @@ public class TranslatorErrorsTest {
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue("Test - Parsing error - Invalid operator",
-				translator.fail()); // same as: !spy.getErrors().isEmpty()
-		assertNull("Test - Parsing error - Invalid operator (no model)",
-				translator.getModel());
+		assertTrue(translator.fail()); // same as: !spy.getErrors().isEmpty()
+		assertNull(translator.getModel());
 	}
 	
 	
@@ -80,10 +74,8 @@ public class TranslatorErrorsTest {
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue("Test - Parsing error - No colon",
-				translator.fail()); // same as: !spy.getErrors().isEmpty()
-		assertNull("Test - Parsing error - No colon (no model)",
-				translator.getModel());
+		assertTrue(translator.fail()); // same as: !spy.getErrors().isEmpty()
+		assertNull(translator.getModel());
 	}
 	
 	
@@ -97,10 +89,8 @@ public class TranslatorErrorsTest {
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue("Test - Parsing error - No semicolon",
-				translator.fail()); // same as: !spy.getErrors().isEmpty()
-		assertNull("Test - Parsing error - No semicolon (no model)",
-				translator.getModel());
+		assertTrue(translator.fail()); // same as: !spy.getErrors().isEmpty()
+		assertNull(translator.getModel());
 	}
 	
 	
@@ -114,9 +104,7 @@ public class TranslatorErrorsTest {
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue("Test - Parsing error - Bad domain syntax",
-				translator.fail()); // same as: !spy.getErrors().isEmpty()
-		assertNull("Test - Parsing error - Bad domain syntax (no model)",
-				translator.getModel());
+		assertTrue(translator.fail()); // same as: !spy.getErrors().isEmpty()
+		assertNull(translator.getModel());
 	}
 }

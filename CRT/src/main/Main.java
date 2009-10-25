@@ -1,10 +1,18 @@
 package main;
 
+import model.Model;
+import translator.Translator;
+
+
 public class Main {
 
 	public static void main(String[] args) throws Exception {
 		
-		//String file = "src/parser/test.txt";
+		String file = "src/parser/test.txt";
+		Translator tr = new Translator(file);
+		Model m = tr.translate();
+		
+		System.out.println(m);
 	}
 
 }

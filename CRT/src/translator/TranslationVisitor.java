@@ -40,7 +40,7 @@ import parser.*;
 public class TranslationVisitor implements ParserVisitor {
 	
 	/** Substitute variable prefix, using an invalid char to avoid conflicts */
-	public static final String SUBSTITUTE = "S@";
+	public static final String SUBSTITUTE = "@S";
 	
 	/** Iterator for substitute naming */
 	private int substitute;

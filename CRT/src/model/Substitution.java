@@ -83,4 +83,26 @@ public class Substitution extends Constraint {
 		
 		return res;
 	}
+	
+	
+	
+	
+	public String toString() {
+		String str = substitutionVariable.getName() + " = " + left.getName();
+		
+		switch (substitutionOperator) {
+			case ADD: str += " + ";
+				break;
+			case SUB: str += " - ";
+				break;
+			case MUL: str += " * ";
+				break;
+			case DIV: str += " / ";
+				break;
+		}
+		
+		str += right.getName();
+		
+		return str;
+	}
 }

@@ -151,8 +151,8 @@ public class Translator {
 	public void translation() {
 		if (fail()) return;
 		
-		//TranslationVisitor tv = new TranslationVisitor(ast);
-		//model = tv.translate();
+		TranslationVisitor tv = new TranslationVisitor(ast);
+		model = tv.translate();
 	}
 	
 	

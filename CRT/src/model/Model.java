@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import main.Tools;
 
 public class Model {
 
@@ -31,20 +32,22 @@ public class Model {
 		return c;
 	}
 
-	public void newSubstitution(Variable operand1, Variable operand2, Operator.Arithmetic operator, Variable equal) {
+	public Substitution newSubstitution(Variable operand1, Variable operand2, Operator.Arithmetic operator, Variable equal) {
 		Substitution e = new Substitution(operand1, operator, operand2, equal);
 		operand1.addSubstitution(e);
 		operand2.addSubstitution(e);
-		equal.addConstraint(e);
+		equal.addSubstitution(e);
 		substitutions.add(e);
+		return e;
 	}
 
-	public void newConstraint(Variable operand1, Variable operand2, Operator.Constraint operator) {
+	public Constraint newConstraint(Variable operand1, Variable operand2, Operator.Constraint operator) {
 		Constraint c = new Constraint(operand1, operator, operand2);
 		operand1.addConstraint(c);
 		operand2.addConstraint(c);
 		
 		constraints.add(c);
+		return c;
 	}
 
 	public ArrayList<Variable> getVariables() {
@@ -64,16 +67,23 @@ public class Model {
 				.equals(((Model) obj).constraints) && this.substitutions.equals(((Model) obj).substitutions));
 	}
 
-	public ArrayList<Constraint> getConstraintConcerningVariables(Variable v1, Variable v2) {
-		ArrayList<Constraint> res, al1, al2;
-		res = new ArrayList<Constraint>();
-		al1 = v1.getAssociatedConstraints();
-		al2 = v2.getAssociatedConstraints();
+	
+	/**
+	 * Calculate and return the list of constraints between v1 and v2.
+	 * (List of Cij between Xi and Xj)
+	 * @param xi
+	 * @param xj
+	 * @return
+	 */
+	public ArrayList<Constraint> getConstraintConcerningVariables(Variable xi, Variable xj) {
+		ArrayList<Constraint> res = new ArrayList<Constraint>();
 		
-		for (Constraint constraint : al1) {
-			if (al2.contains(constraint))
-				res.add(constraint);
-		}
+		// Getting every Xi constraint (Cik)
+		res.addAll(xi.getAssociatedConstraints());
+		
+		// Retaining only those into Xj (Cij)
+		res.retainAll(xj.getAssociatedConstraints());
+		
 		return res;
 	}
 
@@ -83,5 +93,17 @@ public class Model {
 
 		return v;
 	}
-
+	
+	
+	public String toString() {
+		String str = "";
+		
+		str += Tools.implode(variables, ",\n");
+		str += ";\n\n";
+		str += Tools.implode(constraints, ",\n");
+		str += ",\n";
+		str += Tools.implode(substitutions, ",\n");
+		
+		return str;
+	}
 }

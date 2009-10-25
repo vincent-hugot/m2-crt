@@ -92,8 +92,8 @@ public class VariableTest {
 	 * 
 	 * TODO : this will go in future Domain class.
 	 */
-	@Test
+	/*@Test
 	public void testInvariantDomain() {
 		
-	}
+	}*/
 }

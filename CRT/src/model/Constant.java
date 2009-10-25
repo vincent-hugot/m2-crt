@@ -25,4 +25,8 @@ public class Constant extends Variable {
 	public boolean equals(Object obj) {
 		return (obj instanceof Constant && this.value == ((Constant) obj).value);
 	}
+	
+	public String toString() {
+		return String.valueOf(value) + " : " + domain;
+	}
 }

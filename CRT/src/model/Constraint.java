@@ -68,4 +68,28 @@ public class Constraint {
 		}
 		return res;
 	}
+	
+	
+	public String toString() {
+		String str = left.getName();
+		
+		switch (op) {
+			case EQUAL: str += " = ";
+				break;
+			case NOT_EQUAL: str += " != ";
+				break;
+			case GREATER: str += " > ";
+				break;
+			case LOWER: str += " < ";
+				break;
+			case GREATER_OR_EQUAL: str += " >= ";
+				break;
+			case LOWER_OR_EQUAL: str += " <= ";
+				break;
+		}
+		
+		str += right.getName();
+		
+		return str;
+	}
 }
