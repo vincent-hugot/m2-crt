@@ -16,18 +16,18 @@ import parser.*;
  * <br>- A #var node returns the Variable object from its name
  * <br>- An #integer node creates a Constant, then returns it
  * <br>- An expression node will create a substitute Variable,
- * create an Expression from whatever Variable/Constant their child may return,
+ * create a Substitution from whatever Variable/Constant their child may return,
  * then return the variable created
  * <br>- A constraint node creates the Constraint with whatever Variable/Constant
  * object their child may return
  * 
- * <br><br>The behavior of expressions is fully recursive,
+ * <br><br>The behavior of substitutions is fully recursive,
  * starting from #var/#integer, up to the constraint node.
  * This way, "A < B + C * 42":
  * <br>- A, B and C are returned according to their declaration (Variable object)
  * <br>- 42 creates a constant and returns it
- * <br>- "*"-node creates the S1 = C * 42 expression (returns S1)
- * <br>- "+"-node creates the S2 = B + S1 expression (returns S2)
+ * <br>- "*"-node creates the S1 = C * 42 substitution (returns S1)
+ * <br>- "+"-node creates the S2 = B + S1 substitution (returns S2)
  * <br>- "<"-node creates the A < S2 constraint
  * 
  * <br>A symbols table (declaredVars) and an iterator (substitute naming) are used.
@@ -218,7 +218,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
-		model.newExpression(left, right, Operator.Arithmetic.MUL, equal);
+		model.newSubstitution(left, right, Operator.Arithmetic.MUL, equal);
 		
 		return equal;
 	}
@@ -243,7 +243,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
-		model.newExpression(left, right, Operator.Arithmetic.DIV, equal);
+		model.newSubstitution(left, right, Operator.Arithmetic.DIV, equal);
 		
 		return equal;
 	}
@@ -268,7 +268,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
-		model.newExpression(left, right, Operator.Arithmetic.ADD, equal);
+		model.newSubstitution(left, right, Operator.Arithmetic.ADD, equal);
 		
 		return equal;
 	}
@@ -293,7 +293,7 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable equal = model.newVariable(name, newDomain, true);
 		
 		
-		model.newExpression(left, right, Operator.Arithmetic.SUB, equal);
+		model.newSubstitution(left, right, Operator.Arithmetic.SUB, equal);
 		
 		return equal;
 	}

@@ -10,8 +10,7 @@ public class Variable {
 	protected Domain 				domain;
 	
 	protected ArrayList<Constraint> 	associatedConstraints;
-	protected ArrayList<Substitution> 	associatedExpressions;
-	protected ArrayList<Variable>		neighbors;
+	protected ArrayList<Substitution> 	associatedSubstitutions;
 
 	
 	/**
@@ -40,8 +39,7 @@ public class Variable {
 		this.domain = domain2;
 		
 		this.associatedConstraints = new ArrayList<Constraint>();
-		this.associatedExpressions = new ArrayList<Substitution>();
-		this.neighbors = new ArrayList<Variable>();
+		this.associatedSubstitutions = new ArrayList<Substitution>();
 	}
 
 	public String getName() {
@@ -66,30 +64,23 @@ public class Variable {
 		associatedConstraints.add(c);
 	}
 	
-	public ArrayList<Substitution> getAssociatedExpressions() {
-		return associatedExpressions;
+	public ArrayList<Substitution> getAssociatedSubstitutions() {
+		return associatedSubstitutions;
 	}
 	
-	public void addExpression(Substitution e){
-		associatedExpressions.add(e);
+	public void addSubstitution(Substitution e){
+		associatedSubstitutions.add(e);
 	}
 	
-	public ArrayList<Variable> getNeighbors() {
-		return neighbors;
-	}
-	public void addNeighbor(Variable v){
-		neighbors.add(v);
-	}
 	
-	/*
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Variable)) return false;
 		Variable v = (Variable) obj;
 		
 		return (name.equals(v.name) && artificial == v.artificial
-				&& baseDomain.equals(v.baseDomain) && domain.equals(v.domain)
-				&& excludedDomain.equals(v.excludedDomain));
+				&& domain.equals(v.domain));
+		//return this == obj;
 	}
-	*/
+	
 	
 }

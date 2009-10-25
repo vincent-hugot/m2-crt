@@ -1,6 +1,9 @@
 package model;
 
 
+/**
+ * Simple wraper class for "constant" variables.
+ */
 public class Constant extends Variable {
 
 	private int	value;

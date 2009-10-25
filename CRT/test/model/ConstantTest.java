@@ -19,8 +19,8 @@ public class ConstantTest {
 		Constant c = new Constant(42);
         Domain domain = new Domain(42,42);
 		
-		assertEquals(c.getDomain() ,domain);
-		assertEquals(c.getName(), "42");
+		assertEquals(c.getDomain(),domain);
+		assertEquals(c.getName(),"42");
 	}
 	
 	

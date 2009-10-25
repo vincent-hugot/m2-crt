@@ -62,9 +62,12 @@ public class Domain extends TreeSet<Integer> {
 	 * Corresponds to a mutable intersection
 	 * 
 	 * @param d another domain, unaffected by the operation
+	 * 
+	 * @return true if there was a restriction done
+	 * 		(ie true if this TreeSet changed from removeAll call)
 	 */
-	public void restrict (Domain d) {
-		this.removeAll(d);
+	public boolean restrict(Domain d) {
+		return retainAll(d);
 	}
 	
 	/**
@@ -72,20 +75,20 @@ public class Domain extends TreeSet<Integer> {
 	 * Corresponds to a mutable union
 	 * 
 	 * @param d another domain, unaffected by the operation
+	 * 
+	 * @return true if there was an extension done
+	 * 		(ie true if this TreeSet changed from addAll call)
 	 */
-	public void extend(Domain d){
-		addAll(d);
+	public boolean extend(Domain d) {
+		return addAll(d);
 	}
 	
 	
-	/**
-	 * Returns true if n is in the domain
-	 * @param n
-	 * @return
-	 */
-	public boolean contains(int n) {
-		return contains(n);
+	
+	public void remove(int n) {
+		this.remove(new Integer(n));
 	}
+	
 	
 	/**
 	 * Returns a new domain, which is the "product" of this domain
@@ -94,7 +97,7 @@ public class Domain extends TreeSet<Integer> {
 	 * 
 	 * Both this domain and D remain unchanged. 
 	 * 
-	 * For instance this.arithmetic_operation(OP, D) is 
+	 * For instance this.arithmeticOperation(OP, D) is 
 	 * { c | exists a in this and b in D, c = a OP b }
 	 * @param op an arithmetic operator
 	 * @param d another domain

@@ -11,7 +11,6 @@
 	<property name="reports.dir" value="./reports"/>
 	<property name="tests.reports.dir" value="${reports.dir}/tests-reports"/>
 	<property name="tests.log.file" value="tests.log"/>
-	<property name="findbugs.reports.dir" value="${reports.dir}/findbugs-reports"/>
 	<property name="emma.reports.dir" value="${reports.dir}/emma-reports"/>
 	
 	
@@ -126,25 +125,9 @@
 	</target>
 	
 	
-	
-	
-	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="ant-lib.classpath"/>
-	
-	<target name="findbugs">
-		<mkdir dir="${findbugs.reports.dir}"/>
-		<findbugs home="${lib.dir}/findbugs-1.3.9"
-			  output="xml:withMessages"
-			  outputFile="${findbugs.reports.dir}/findbugs.xml" >
-			<sourcePath path="${java.src.dir}" />
-			<class location="${classes.output.dir}/" />
-			<auxClasspath refid="src.classpath" />
-		</findbugs>
-	</target>
-	
-	
 	<target name="package" depends="compile">
 		<mkdir dir="${target.dir}"/>
-		<jar manifest="META-INF/MANIFEST.MF" destfile="${target.dir}/SimpleMath.jar">
+		<jar manifest="manifest.mf" destfile="${target.dir}/ConstraintSolver.jar">
 			<!--<fileset dir="${classes.output.dir}" excludes="**/*UnitTest*.class" />-->		            
 			<fileset dir="${classes.output.dir}" excludes="**/*Test*.class" />
 		</jar>

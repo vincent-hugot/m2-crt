@@ -1,8 +1,6 @@
 package model;
 
 public final class Operator {
-
-	private Operator() {}
 	
 	public enum Arithmetic {
 		ADD, SUB, MUL, DIV

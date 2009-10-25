@@ -42,11 +42,11 @@ public class ModelTest {
 		v1 = mock(Variable.class);
 		v2 = mock(Variable.class);
 		v3 = mock(Variable.class);
-		m.newExpression(v1, v2, Operator.Arithmetic.ADD, v3);
+		m.newSubstitution(v1, v2, Operator.Arithmetic.ADD, v3);
 		e = new Substitution(v1, Operator.Arithmetic.ADD, v2, v3);
 		
 		assertFalse(m.getConstraints().contains(e));
-		assertTrue(m.getExpressions().contains(e));
+		assertTrue(m.getSubstitutions().contains(e));
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class ModelTest {
 		c = new Constraint(v1, Operator.Constraint.EQUAL, v2);
 		
 		assertTrue(m.getConstraints().contains(c));
-		assertFalse(m.getExpressions().contains(c));
+		assertFalse(m.getSubstitutions().contains(c));
 	}
 
 }

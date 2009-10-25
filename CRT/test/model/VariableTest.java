@@ -1,7 +1,6 @@
 package model;
 
 import static org.junit.Assert.*;
-import java.util.ArrayList;
 import org.junit.Test;
 
 
@@ -72,8 +71,7 @@ public class VariableTest {
 	 */
 	@Test
 	public void testGetters() {
-		ArrayList<Integer> domain123 = new ArrayList<Integer>();
-		domain123.add(1); domain123.add(2); domain123.add(3);
+		Domain domain123 = new Domain(1,3);
 		
 		Variable v = new Variable("X",1,3);
 		
@@ -81,7 +79,7 @@ public class VariableTest {
 		assertFalse(v.isArtificial());
 		assertEquals(v.getDomain(), domain123);
 		
-		// Node : Constraints, Expressions, and Neighbors lists are tested elsewhere
+		// Node : Constraints and Substitutions lists are tested elsewhere
 	}
 	
 		
