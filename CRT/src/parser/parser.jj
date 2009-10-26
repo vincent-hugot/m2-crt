@@ -72,27 +72,27 @@ TOKEN : {
   | < RB:     "]" >
   | < LP:     "(" >
   | < RP:     ")" >
-  | < BOUNDS: ",...," >
+  | < BOUNDS: ",...,"|"..." >
   | < COMMA:  "," >
   | < SEMICOLON: ";" >
   
   /** OPERATORS */
 
-  | < DOMAIN_DEF:   "*:" >
+  | < DOMAIN_DEF:   ":" >
 
-  | < PLUS:         "*+" >
-  | < MINUS:        "*-">
-  | < TIMES:        "***" >
-  | < DIV:          "*/" >
+  | < PLUS:         "+" >
+  | < MINUS:        "-">
+  | < TIMES:        "*" >
+  | < DIV:          "/" >
 
-  | < NEQ:          "*/=" >
-  | < EQ:           "*=" >
+  | < NEQ:          "/="|"<>" >
+  | < EQ:           "=" >
 
-  | < LEQ:          "*=<" > 
-  | < GEQ:          "*>=" >
+  | < LEQ:          "=<" > 
+  | < GEQ:          ">=" >
   
-  | < G:            "*>" >
-  | < L:            "*<" >
+  | < G:            ">" >
+  | < L:            "<" >
   
 } // END TOKENS 
 

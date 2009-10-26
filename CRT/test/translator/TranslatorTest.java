@@ -27,12 +27,12 @@ public class TranslatorTest {
 		
 		// Test "file"
 		String content =
-			"A *: [0,...,5],\n" +
-			"B *: [1,...,2],\n" +
-			"C *: [5,...,10];\n" +
-			"A *= B,\n" +
-			"A *+ B *= A *** 42 *+ C";
-		// Won't pass : "(A *+ B) *< (A *** 42 *+ C)";
+			"A : [0,...,5],\n" +
+			"B : [1,...,2],\n" +
+			"C : [5,...,10];\n" +
+			"A = B,\n" +
+			"A + B = A * 42 + C";
+		// Won't pass : "(A + B) *< (A * 42 + C)";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -67,7 +67,7 @@ public class TranslatorTest {
 		
 		// Substitution @S3 = @S2+C
 		Domain dS3 = S2.getDomain().arithmeticOperation(
-			Operator.Arithmetic.ADD, C.getDomain()); // All of Aj+5...Aj+10, Aj € D(S2)
+			Operator.Arithmetic.ADD, C.getDomain()); // All of Aj+5...Aj+10, Aj in D(S2)
 		Variable S3 = m.newVariable(TranslationVisitor.SUBSTITUTE + "3", dS3, true);
 		m.newSubstitution(S2, C, Operator.Arithmetic.ADD, S3);
 		
@@ -96,7 +96,7 @@ public class TranslatorTest {
 	public void testErrorLexerInvalidCharacter() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5]; X $= 2";
+		String content = "X : [0,...,5]; X $= 2";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -111,7 +111,7 @@ public class TranslatorTest {
 	public void testErrorParserDomainAfterConstraint() {
 		
 		// Test "file"
-		String content = "2 *< 3; X *: [0,...,5];";
+		String content = "2 < 3; X : [0,...,5];";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -126,7 +126,7 @@ public class TranslatorTest {
 	public void testErrorParserInvalidOperator() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5]; X *+ 3";
+		String content = "X : [0,...,5]; X + 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -141,7 +141,7 @@ public class TranslatorTest {
 	public void testErrorParserNoColon() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5]; X *< 3 X *> 5";
+		String content = "X : [0,...,5]; X < 3 X > 5";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -156,7 +156,7 @@ public class TranslatorTest {
 	public void testErrorParserNoSemicolon() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5] X *< 3";
+		String content = "X : [0,...,5] X < 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -171,7 +171,7 @@ public class TranslatorTest {
 	public void testErrorParserBadDomainSyntax() {
 		
 		// Test "file"
-		String content = "X *: [0,..,5]; X *< 3";
+		String content = "X : [0,..,5]; X < 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -186,7 +186,7 @@ public class TranslatorTest {
 	public void testErrorDoubleDeclaration() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5], X *: [0,...,5], X *: [0,...,5]; X *< 3";
+		String content = "X : [0,...,5], X : [0,...,5], X : [0,...,5]; X < 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -201,7 +201,7 @@ public class TranslatorTest {
 	public void testErrorNotDeclared() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5]; Y *< 3";
+		String content = "X : [0,...,5]; Y < 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -220,7 +220,7 @@ public class TranslatorTest {
 	public void testErrorNoDomain() {
 		
 		// Test "file"
-		String content = "1 *< 3";
+		String content = "1 < 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -235,7 +235,7 @@ public class TranslatorTest {
 	public void testErrorNoConstraint() {
 		
 		// Test "file"
-		String content = "X *: [0,...,5];";
+		String content = "X : [0,...,5];";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
