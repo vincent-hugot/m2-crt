@@ -18,7 +18,7 @@ public class TranslationVisitorTest {
 		TranslationVisitor visitor = new TranslationVisitor(ast);
 		Model model = visitor.translate();
 		
-		assertNotNull("CheckingVisitor - Model created/returned",model);
+		assertNotNull(model);
 	}
 	
 }

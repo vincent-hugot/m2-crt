@@ -15,7 +15,7 @@ import parser.*;
  * <br>- Domain definition = Variable creation (+ add in symbols table)
  * <br>- A #var node returns the Variable object from its name
  * <br>- An #integer node creates a Constant, then returns it
- * <br>- An expression node will create a substitute Variable,
+ * <br>- An expression node will create a substituteNbr Variable,
  * create a Substitution from whatever Variable/Constant their child may return,
  * then return the variable created
  * <br>- A constraint node creates the Constraint with whatever Variable/Constant
@@ -30,7 +30,7 @@ import parser.*;
  * <br>- "+"-node creates the S2 = B + S1 substitution (returns S2)
  * <br>- "<"-node creates the A < S2 constraint
  * 
- * <br>A symbols table (declaredVars) and an iterator (substitute naming) are used.
+ * <br>A symbols table (declaredVars) and an iterator (substituteNbr naming) are used.
  * 
  * <br>Last note: this translator is confident enough for being used AFTER checking.
  * (ie: #var in constraint is considered already declared, no checking is done)
@@ -42,8 +42,8 @@ public class TranslationVisitor implements ParserVisitor {
 	/** Substitute variable prefix, using an invalid char to avoid conflicts */
 	public static final String SUBSTITUTE = "@S";
 	
-	/** Iterator for substitute naming */
-	private int substitute;
+	/** Iterator for substituteNbr naming */
+	private int substituteNbr;
 	
 	private SimpleNode ast;
 	private Model model;
@@ -55,7 +55,7 @@ public class TranslationVisitor implements ParserVisitor {
 		this.ast = ast;
 		this.model = new Model();
 		this.declaredVars = new HashMap<String,Variable>();
-		this.substitute = 0;
+		this.substituteNbr = 1;
 	}
 	
 	
@@ -206,9 +206,9 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
 		
-		// Creating a substitute from left and right, then an expression linking them
-		String name = SUBSTITUTE + substitute;
-		substitute++;
+		// Creating a substituteNbr from left and right, then an expression linking them
+		String name = SUBSTITUTE + substituteNbr;
+		substituteNbr++;
 		
 		model.Domain newDomain = 
 			left.getDomain().arithmeticOperation(
@@ -231,9 +231,9 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
 		
-		// Creating a substitute from left and right, then an expression linking them
-		String name = SUBSTITUTE + substitute;
-		substitute++;
+		// Creating a substituteNbr from left and right, then an expression linking them
+		String name = SUBSTITUTE + substituteNbr;
+		substituteNbr++;
 		
 		model.Domain newDomain = 
 			left.getDomain().arithmeticOperation(
@@ -256,9 +256,9 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
 		
-		// Creating a substitute from left and right, then an expression linking them
-		String name = SUBSTITUTE + substitute;
-		substitute++;
+		// Creating a substituteNbr from left and right, then an expression linking them
+		String name = SUBSTITUTE + substituteNbr;
+		substituteNbr++;
 		
 		model.Domain newDomain = 
 			left.getDomain().arithmeticOperation(
@@ -281,9 +281,9 @@ public class TranslationVisitor implements ParserVisitor {
 		Variable right = (Variable) node.jjtGetChild(1).jjtAccept(this,data);
 		
 		
-		// Creating a substitute from left and right, then an expression linking them
-		String name = SUBSTITUTE + substitute;
-		substitute++;
+		// Creating a substituteNbr from left and right, then an expression linking them
+		String name = SUBSTITUTE + substituteNbr;
+		substituteNbr++;
 		
 		model.Domain newDomain = 
 			left.getDomain().arithmeticOperation(
