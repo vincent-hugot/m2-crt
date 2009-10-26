@@ -65,6 +65,11 @@ TOKEN : {
   | < DIGIT :       ["0"-"9"] >
   | < LETTER :      ["a"-"z", "A"-"Z"] >
   | < SPECIALSYMB : ["_", "'"] >
+      
+  /** Keywords */
+  
+  | < DOMAINS:  "DOMAINS:">
+  | < CONSTRAINTS: "CONSTRAINTS:">
 
   /** Symbols */
 
@@ -72,9 +77,9 @@ TOKEN : {
   | < RB:     "]" >
   | < LP:     "(" >
   | < RP:     ")" >
-  | < BOUNDS: ",...,"|"..." >
+  | < BOUNDS: ",...,"|"..."|".." >
   | < COMMA:  "," >
-  | < SEMICOLON: ";" >
+  //| < SEMICOLON: ";" >
   
   /** OPERATORS */
 
@@ -133,9 +138,12 @@ SimpleNode constraints() : {/*@bgen(jjtree) constraints */
 {/*@bgen(jjtree) constraints */
   try {
 /*@egen*/
-  domain_definition() (<COMMA> domain_definition())*
-  <SEMICOLON>
-  constraint() (<COMMA> constraint()) *
+  ( <DOMAINS>
+    domain_definition() (<COMMA> domain_definition())*
+  )?
+  (
+    <CONSTRAINTS> constraint() (<COMMA> constraint()) *
+  )?
   <EOF>/*@bgen(jjtree)*/
         {
           jjtree.closeNodeScope(jjtn000, true);

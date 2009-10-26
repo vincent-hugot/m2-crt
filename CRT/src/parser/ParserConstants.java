@@ -23,43 +23,45 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int SPECIALSYMB = 10;
   /** RegularExpression Id. */
-  int LB = 11;
+  int DOMAINS = 11;
   /** RegularExpression Id. */
-  int RB = 12;
+  int CONSTRAINTS = 12;
   /** RegularExpression Id. */
-  int LP = 13;
+  int LB = 13;
   /** RegularExpression Id. */
-  int RP = 14;
+  int RB = 14;
   /** RegularExpression Id. */
-  int BOUNDS = 15;
+  int LP = 15;
   /** RegularExpression Id. */
-  int COMMA = 16;
+  int RP = 16;
   /** RegularExpression Id. */
-  int SEMICOLON = 17;
+  int BOUNDS = 17;
   /** RegularExpression Id. */
-  int DOMAIN_DEF = 18;
+  int COMMA = 18;
   /** RegularExpression Id. */
-  int PLUS = 19;
+  int DOMAIN_DEF = 19;
   /** RegularExpression Id. */
-  int MINUS = 20;
+  int PLUS = 20;
   /** RegularExpression Id. */
-  int TIMES = 21;
+  int MINUS = 21;
   /** RegularExpression Id. */
-  int DIV = 22;
+  int TIMES = 22;
   /** RegularExpression Id. */
-  int NEQ = 23;
+  int DIV = 23;
   /** RegularExpression Id. */
-  int EQ = 24;
+  int NEQ = 24;
   /** RegularExpression Id. */
-  int LEQ = 25;
+  int EQ = 25;
   /** RegularExpression Id. */
-  int GEQ = 26;
+  int LEQ = 26;
   /** RegularExpression Id. */
-  int G = 27;
+  int GEQ = 27;
   /** RegularExpression Id. */
-  int L = 28;
+  int G = 28;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 32;
+  int L = 29;
+  /** RegularExpression Id. */
+  int SINGLE_LINE_COMMENT = 33;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -81,13 +83,14 @@ public interface ParserConstants {
     "<DIGIT>",
     "<LETTER>",
     "<SPECIALSYMB>",
+    "\"DOMAINS:\"",
+    "\"CONSTRAINTS:\"",
     "\"[\"",
     "\"]\"",
     "\"(\"",
     "\")\"",
     "<BOUNDS>",
     "\",\"",
-    "\";\"",
     "\":\"",
     "\"+\"",
     "\"-\"",
@@ -100,10 +103,10 @@ public interface ParserConstants {
     "\">\"",
     "\"<\"",
     "\"*/\"",
-    "<token of kind 30>",
+    "<token of kind 31>",
     "\"//\"",
     "<SINGLE_LINE_COMMENT>",
-    "<token of kind 33>",
+    "<token of kind 34>",
   };
 
 }

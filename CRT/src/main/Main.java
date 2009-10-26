@@ -12,6 +12,7 @@ public class Main {
 		Translator tr = new Translator(file);
 		Model m = tr.translate();
 		tr.dumpErrors();
+		tr.getAST().dump(">");
 		
 		System.out.println(m);
 	}
