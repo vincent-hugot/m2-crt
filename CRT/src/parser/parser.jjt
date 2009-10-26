@@ -44,6 +44,8 @@ PARSER_END(Parser)
 
 SKIP : { 
   " " | "\r" | "\t" | "\n" 
+  /* Switch to comment block mode */
+  | < OPEN_COMMENT_BLOCK : "/*"> : IN_COMMENT_BLOCK
 }  
 
 TOKEN : {
@@ -91,10 +93,35 @@ TOKEN : {
 } // END TOKENS 
 
 
+<IN_COMMENT_BLOCK> SKIP : {
+  "*/" : DEFAULT
+}
+
+
+<IN_COMMENT_BLOCK> MORE : {
+  <~[]> 
+}
+
+
+MORE : {
+    "//": IN_SINGLE_LINE_COMMENT 
+}
+
+      
+< IN_SINGLE_LINE_COMMENT > SPECIAL_TOKEN : {
+    < SINGLE_LINE_COMMENT: "\n"|"\r"|"\r\n" > : DEFAULT 
+}
+
+      
+< IN_SINGLE_LINE_COMMENT > MORE : {
+    <  ~[] >
+} 
+
+
 /** PARSER */
 
 /* Rroot node */
-SimpleNode constraints() #parse : {} 
+SimpleNode constraints() : {} 
 {
   domain_definition() (<COMMA> domain_definition())*
   <SEMICOLON>
