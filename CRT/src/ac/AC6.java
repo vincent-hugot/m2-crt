@@ -1,6 +1,7 @@
 package ac;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import model.Constraint;
 import model.Model;
@@ -9,10 +10,12 @@ import model.Variable;
 public class AC6 {
 	private Model				model;
 	private ArrayList<Variable>	variables;
+	private LinkedList<Value>	waitingList;
 
 	public AC6(Model m) {
 		model = m;
 		variables = m.getVariables();
+		waitingList = new LinkedList<Value>();
 	}
 
 	/**
@@ -58,5 +61,11 @@ public class AC6 {
 		}
 		b = new Integer(tmpb);
 		return emptySupport;
+	}
+
+	private void init() {
+		for (Constraint cons : model.getConstraints()) {
+			//TODO
+		}
 	}
 }
