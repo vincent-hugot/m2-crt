@@ -160,66 +160,22 @@ void integer() #integer : {
     }
 }
 
-void cons_eq() #eq : {
-	jjtThis.setLine(getToken(1).beginLine);
-}
+void constraint() : { Token t;}
 {
-   expression() <EQ> expression()
-}
-
-void cons_leq() #leq : {
-	jjtThis.setLine(getToken(1).beginLine);
-}
-{
-   expression() <LEQ> expression()
-}
-
-void cons_geq() #geq : {
-	jjtThis.setLine(getToken(1).beginLine);
-}
-{
-   expression() <GEQ> expression()
-}
-
-void cons_neq() #neq : {
-	jjtThis.setLine(getToken(1).beginLine);
-}
-{
-   expression() <NEQ> expression()
-}
-
-void cons_g() #g : {
-	jjtThis.setLine(getToken(1).beginLine);
-}
-{
-   expression() <G> expression()
-}
-
-void cons_l() #l : {
-	jjtThis.setLine(getToken(1).beginLine);
-}
-{
-   expression() <L> expression()
-}
-
-void constraint() : {}
-{
-  LOOKAHEAD(2)
-  cons_eq() 
-  | 
-  LOOKAHEAD(2)
-  cons_leq()
-  |
-  LOOKAHEAD(2)
-  cons_geq() 
-  |
-  LOOKAHEAD(2)
-  cons_l()
-  |
-  LOOKAHEAD(2)
-  cons_g() 
-  |
-  cons_neq()
+  expression()
+  (
+    (t= <EQ> expression() {jjtThis.setLine(t.beginLine);} #eq(2))
+    |
+    (t=<NEQ> expression() {jjtThis.setLine(t.beginLine);} #neq(2))
+    |
+    (t=<LEQ> expression() {jjtThis.setLine(t.beginLine);} #leq(2))
+    |
+    (t=<GEQ> expression() {jjtThis.setLine(t.beginLine);} #geq(2))
+    |
+    (t=  <G> expression() {jjtThis.setLine(t.beginLine);} #g(2))
+    |
+    (t=  <L> expression() {jjtThis.setLine(t.beginLine);} #l(2))
+  )
 }
 
 

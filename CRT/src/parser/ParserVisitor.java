@@ -8,16 +8,16 @@ public interface ParserVisitor
   public Object visit(ASTdomain node, Object data);
   public Object visit(ASTvar node, Object data);
   public Object visit(ASTinteger node, Object data);
+  public Object visit(ASTconstraint node, Object data);
   public Object visit(ASTeq node, Object data);
+  public Object visit(ASTneq node, Object data);
   public Object visit(ASTleq node, Object data);
   public Object visit(ASTgeq node, Object data);
-  public Object visit(ASTneq node, Object data);
   public Object visit(ASTg node, Object data);
   public Object visit(ASTl node, Object data);
-  public Object visit(ASTconstraint node, Object data);
   public Object visit(ASTmul node, Object data);
   public Object visit(ASTdiv node, Object data);
   public Object visit(ASTplus node, Object data);
   public Object visit(ASTminus node, Object data);
 }
-/* JavaCC - OriginalChecksum=e002a9b087ab680f65bd1e8a08780cf5 (do not edit this line) */
+/* JavaCC - OriginalChecksum=47ae35b6ac10edd46b79d6c834241ef4 (do not edit this line) */
