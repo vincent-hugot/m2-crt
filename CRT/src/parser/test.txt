@@ -5,7 +5,9 @@ DOMAINS:
 
 CONSTRAINTS:
  /* some comment */
-A < B + 42;
+A < B + 42,
+B <= C +56
+;
 
 // some inline comment
 
