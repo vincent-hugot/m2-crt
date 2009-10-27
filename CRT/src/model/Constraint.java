@@ -39,34 +39,57 @@ public class Constraint {
 				&& this.op == ((Constraint) obj).op && this.right.equals(((Constraint) obj).right));
 	}
 	
-	public boolean areValidValues(int leftValue, int rightValue) {
-		boolean res;
-		res = (left.domain.contains(leftValue) && right.domain.contains(rightValue));
+	
+	/**
+	 * Calculate if Ai and Aj are valid values of Xi and Xj, according to this constraint.
+	 * Xi and Xj are used to determine what Variable is the left/right one.
+	 * 
+	 * If Xi is left and Xj is right, we treat Ai [op] Aj
+	 * If Xi is right and Xj is left, we treat Aj [op] Ai
+	 * (Anytime Ai is in Xi and Aj in Xj, only Xi/Xj and left/right matches matters)
+	 * 
+	 * @param xi might be left or right
+	 * @param xj is the other
+	 * @param ai MUST be the element of D(xi) studied (=> if Xi is right, Ai is in right)
+	 * @param aj MUST be the element of D(xj) studied
+	 * @return
+	 */
+	public boolean areValidValues(Variable xi, Variable xj, int ai, int aj) {	
 		
-		if (res) {
+		// Invalid variables (we must find Left and Right amongst Xi and Xj
+		if (!((xi == left && xj == right) || (xi == right || xj == left))) return false;
+		
+		// Invalid values (considering Ai in Xi, Aj in Xj)
+		if (!xi.domain.contains(ai) || !xj.domain.contains(aj)) return false;
+		
+		
+		// left/right determination
+		if (xi == left) { // Constraint is Xi [op] Xj (same order)
+			
 			switch (op) {
-				
-				case EQUAL:
-					res = (leftValue == rightValue);
-					break;
-				case NOT_EQUAL:
-					res = (leftValue != rightValue);
-					break;
-				case GREATER:
-					res = (leftValue > rightValue);
-					break;
-				case LOWER:
-					res = (leftValue < rightValue);
-					break;
-				case GREATER_OR_EQUAL:
-					res = (leftValue >= rightValue);
-					break;
-				case LOWER_OR_EQUAL:
-					res = (leftValue <= rightValue);
-					break;
+				case EQUAL: return (ai == aj);
+				case NOT_EQUAL: return (ai != aj);
+				case GREATER: return (ai > aj);
+				case LOWER: return (ai < aj);
+				case GREATER_OR_EQUAL: return (ai >= aj);
+				case LOWER_OR_EQUAL: return (ai <= aj);
 			}
 		}
-		return res;
+		
+		else { // Constraint is Xj [op] Xi (reverse order)
+			
+			switch (op) {
+				case EQUAL: return (aj == ai);
+				case NOT_EQUAL: return (aj != ai);
+				case GREATER: return (aj > ai);
+				case LOWER: return (aj < ai);
+				case GREATER_OR_EQUAL: return (aj >= ai);
+				case LOWER_OR_EQUAL: return (aj <= ai);
+			}
+		}
+		
+		// If anything else fail.
+		return false;
 	}
 	
 	

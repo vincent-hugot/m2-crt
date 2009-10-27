@@ -30,7 +30,7 @@ public class AC3Test {
 	 * 
 	 * Retracing:
 	 * A = B, A = {0,1}, B = {1,2}
-	 * A < A+B+C, C = {1,2}
+	 * A < B+C+A, C = {1,2}
 	 * => S1=B+C, S2=A+S1,  S1 = {2,3,4}, S2 = {2,3,4,5}
 	 * => A = B, A < S2
 	 * 
@@ -53,13 +53,13 @@ public class AC3Test {
 		Variable S1 = m.newVariable("S1",2,4);
 		Variable S2 = m.newVariable("S2",2,5);
 		m.newConstraint(A,B,Operator.Constraint.EQUAL);
-		m.newConstraint(A,S1,Operator.Constraint.LOWER);
+		m.newConstraint(A,S2,Operator.Constraint.LOWER);
 		m.newSubstitution(B,C,Operator.Arithmetic.ADD,S1);
 		m.newSubstitution(A,S1,Operator.Arithmetic.ADD,S2);
 		
 		A.getDomain().remove(0);
 		B.getDomain().remove(2);
-		
+		System.out.println(S1);System.out.println(S2);
 		AC3 ac3 = new AC3(m);
 		
 		// Should be obvious, just for visual comparison

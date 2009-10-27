@@ -39,4 +39,8 @@ public class Couple {
 			&& (this.xi == ((Couple)c).xi)
 			&& (this.xj == ((Couple)c).xj);
 	}
+	
+	public String toString() {
+		return "(" + xi.getName() + "," + xj.getName() + ")";
+	}
 }

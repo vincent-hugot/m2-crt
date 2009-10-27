@@ -58,6 +58,15 @@ public class Substitution extends Constraint {
 	}
 	
 	
+	/**
+	 * Variable identification doesn't matter here (see Constraint.areValidValues),
+	 * since equal, left and right are (and must be) given in that exact order
+	 * 
+	 * @param equal
+	 * @param left
+	 * @param right
+	 * @return
+	 */
 	public boolean areValidValues(int equal, int left, int right) {
 		boolean res;
 		res = (this.substitutionVariable.domain.contains(equal)

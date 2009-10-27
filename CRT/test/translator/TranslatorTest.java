@@ -27,16 +27,16 @@ public class TranslatorTest {
 		
 		// Test "file"
 		String content =
-			"DOMAINS:\n A : [0,...,5],\n" +
+			"DOMAINS:\n" +
+			"A : [0,...,5],\n" +
 			"B : [1,...,2],\n" +
-			"C : [5,...,10]\nCONSTRAINTS:\n" +
+			"C : [5,...,10];\n" +
+			"CONSTRAINTS:\n" +
 			"A = B,\n" +
-			"A + B = A * 42 + C,\n" +
-		    "(A + B) < (A * 42 + C)";
+			"A + B < A * 42 + C;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
-		
 		
 		Model m = new Model();
 		
@@ -72,18 +72,12 @@ public class TranslatorTest {
 		m.newSubstitution(S2, C, Operator.Arithmetic.ADD, S3);
 		
 		// At last
-		m.newConstraint(S1, S3, Operator.Constraint.EQUAL); // TODO : .LOWER
+		m.newConstraint(S1, S3, Operator.Constraint.LOWER);
 		
 		System.out.println(m);
-		System.out.println("***");
-		System.out.println(translator.getModel());
-		translator.dumpErrors();
-		
 		// Are there any error ?
 		assertFalse(translator.fail());
-		//TODO: update
-		//assertEquals(translator.getModel(), m);
-		
+		assertEquals(translator.getModel(), m);
 	}
 	
 	
@@ -97,7 +91,7 @@ public class TranslatorTest {
 	public void testErrorLexerInvalidCharacter() {
 		
 		// Test "file"
-		String content = "X : [0,...,5]; X $= 2";
+		String content = "DOMAINS: X : [0,...,5]; CONSTRAINTS: X ? 2;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -112,7 +106,7 @@ public class TranslatorTest {
 	public void testErrorParserDomainAfterConstraint() {
 		
 		// Test "file"
-		String content = "2 < 3; X : [0,...,5];";
+		String content = "CONSTRAINTS: 2 < 3; DOMAINS: X : [0,...,5];";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -127,7 +121,7 @@ public class TranslatorTest {
 	public void testErrorParserInvalidOperator() {
 		
 		// Test "file"
-		String content = "X : [0,...,5]; X + 3";
+		String content = "DOMAINS: X : [0,...,5]; CONSTRAINTS: X + 3;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -139,10 +133,10 @@ public class TranslatorTest {
 	
 	
 	@Test
-	public void testErrorParserNoColon() {
+	public void testErrorParserNoSeparator() {
 		
 		// Test "file"
-		String content = "X : [0,...,5]; X < 3 X > 5";
+		String content = "DOMAINS: X : [0,...,5]; CONSTRAINTS: X < 3 X > 5;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -157,7 +151,7 @@ public class TranslatorTest {
 	public void testErrorParserNoSemicolon() {
 		
 		// Test "file"
-		String content = "X : [0,...,5] X < 3";
+		String content = "DOMAINS: X : [0,...,5] CONSTRAINTS: X < 3";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -172,7 +166,7 @@ public class TranslatorTest {
 	public void testErrorParserBadDomainSyntax() {
 		
 		// Test "file"
-		String content = "X : [0,..,5]; X < 3";
+		String content = "DOMAINS: X : [0,..,5]; CONSTRAINTS: X < 3;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -187,7 +181,7 @@ public class TranslatorTest {
 	public void testErrorDoubleDeclaration() {
 		
 		// Test "file"
-		String content = "X : [0,...,5], X : [0,...,5], X : [0,...,5]; X < 3";
+		String content = "DOMAINS: X : [0,...,5], X : [0,...,5], X : [0,...,5];";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -202,7 +196,7 @@ public class TranslatorTest {
 	public void testErrorNotDeclared() {
 		
 		// Test "file"
-		String content = "X : [0,...,5]; Y < 3";
+		String content = "CONSTRAINTS: X < 3;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
@@ -214,35 +208,39 @@ public class TranslatorTest {
 	
 	
 	
-	// TODO : Last 2 tests should be reversed after AST change
-	// (allows no domain/no constraint)
-	
 	@Test
-	public void testErrorNoDomain() {
+	public void testNoDomainOK() {
 		
 		// Test "file"
-		String content = "1 < 3";
+		String content = "CONSTRAINTS: 1 < 3;";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue(translator.fail()); // same as: !translator.getErrors().isEmpty()
-		assertNull(translator.getModel());
+		assertFalse(translator.fail()); // same as: !translator.getErrors().isEmpty()
+		
+		
+		// Free: checking this useless model
+		Model m = new Model();
+		Constant c1 = m.newConstant(1);
+		Constant c2 = m.newConstant(3);
+		m.newConstraint(c1,c2,Operator.Constraint.LOWER);
+		assertEquals(translator.getModel(), m);
 	}
 	
 	
 	@Test
-	public void testErrorNoConstraint() {
+	public void testNoConstraintOK() {
 		
 		// Test "file"
-		String content = "X : [0,...,5];";
+		String content = "DOMAINS: X : [0,...,5];";
 		
 		Translator translator = new Translator("testfile",content);
 		translator.translate();
 		
 		// Are there any error ?
-		assertTrue(translator.fail()); // same as: !translator.getErrors().isEmpty()
-		assertNull(translator.getModel());
+		assertFalse(translator.fail());
+		assertNotNull(translator.getModel());
 	}
 }

@@ -136,14 +136,20 @@ public class AC3 {
 	 */
 	public Boolean revise(Variable xi, Variable xj) {
 		boolean reduce = false;
+		Domain toRemove = new Domain();
 		
+		// No constraints, no reduce.
+		if (model.getConstraintConcerningVariables(xi,xj).isEmpty()) return false;
+		
+		// Note: not removing directly, since iteration AND removal is prohibited
 		for (Integer ai : xi.getDomain()) {
 			
 			// Trying to find Aj | (Ai,Aj) respects every Cij constraint
 			if (!findAj(xi, xj, ai)) {
 				
 				// No Aj valid: Ai makes like a tree, and leaves. (HURR DURR sorry.)
-				xi.getDomain().remove(ai);
+				//xi.getDomain().remove(ai);
+				toRemove.add(ai);
 				
 				reduce = true; // There was a reduction
 				
@@ -152,6 +158,9 @@ public class AC3 {
 					updateSubstitutions();
 			}
 		}
+		
+		// Removing what was reduced
+		xi.getDomain().removeAll(toRemove);
 		
 		return reduce;
 	}
@@ -176,7 +185,7 @@ public class AC3 {
 			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
 				
 				// Only 1 non-respected constraint => Aj gets away.
-				if (!crt.areValidValues(ai,aj))
+				if (!crt.areValidValues(xi,xj,ai,aj))
 					valid = false;
 			}
 			
@@ -232,4 +241,49 @@ public class AC3 {
 			// TODO : Step 2/3 + Their tests (BEFORE!11!!!)
 		}
 	}
+	
+	
+	/**
+	 * Special findAj version, for substitution.
+	 * Checks if a value of A or B doesn't break the substitution
+	 * (it break if Z was reduced, and val in A or B can no longer give a value in Z)
+	 * 
+	 * For Z=A+B, we are given:
+	 * - The substitution
+	 * - Value of A or B to be tested
+	 * - Were (out of A and B) does this value belong
+	 * 
+	 * If val in A, we tests Z/B values, else we test Z/A ones.
+	 * 
+	 * Idea is that we must have a triplet of values so that
+	 * Az = Aa [operator] Ab
+	 * 
+	 * @param sub the Substitution to test
+	 * @param val the A or B value to check if it doesn't outright the substitution
+	 * @param reference the Variable that contains val (A or B, aka left or right)
+	 * @return true if there was a compatible aj, false otherwise
+	 */
+	/*public boolean findSubstitutionVals(Substitution sub, int val, Variable reference) {
+		boolean valid = true;
+		
+		// For each value of D(Xj)
+		for (Integer aj : xj.getDomain()) {
+			
+			valid = true;
+			
+			// For each Cij
+			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
+				
+				// Only 1 non-respected constraint => Aj gets away.
+				if (!crt.areValidValues(xi,xj,ai,aj))
+					valid = false;
+			}
+			
+			// Every Cij passed for (Ai,Aj), an Aj was found.
+			if (valid == true) return true;
+		}
+		
+		// No valid Aj was found, good bye Ai.
+		return false;
+	}*/
 }

@@ -13,6 +13,8 @@ public class ConstraintTest {
 	/**
 	 * left/right not in domains, 6 constraints types, true/false study
 	 * => 12+2 = 14 cases for good condition coverage.
+	 * 
+	 * UPDATE: Doubling number of tests to test cases with reversed values
 	 */
 	@Test
 	public void testValidValues() {
@@ -28,32 +30,61 @@ public class ConstraintTest {
 		Constraint c6 = new Constraint(v1, Operator.Constraint.NOT_EQUAL, v2);
 		
 		// Out of domain
-		assertFalse(c1.areValidValues(3,3));
-		assertFalse(c1.areValidValues(1,1));
+		assertFalse(c1.areValidValues(v1,v2, 3,3));
+		assertFalse(c1.areValidValues(v1,v2, 1,1));
+		
+		// Fail (stupid variables)
+		assertFalse(c1.areValidValues(v1,v2bis, 1,1));
+		assertFalse(c1.areValidValues(v2bis,v2, 1,1));
+		
 		
 		// EQUAL
-		assertTrue(c1.areValidValues(2,2));
-		assertFalse(c1.areValidValues(2,3));
+		assertTrue(c1.areValidValues(v1,v2, 2,2));
+		assertFalse(c1.areValidValues(v1,v2, 2,3));
+		
+		assertTrue(c1.areValidValues(v2,v1, 2,2));
+		assertFalse(c1.areValidValues(v2,v1, 3,2));
+		
 		
 		// GREATER
-		assertTrue(c2.areValidValues(2,1));
-		assertFalse(c2.areValidValues(1,1));
+		assertTrue(c2.areValidValues(v1,v2bis, 2,1));
+		assertFalse(c2.areValidValues(v1,v2bis, 1,1));
+		
+		assertTrue(c2.areValidValues(v2bis,v1, 1,2));
+		assertFalse(c2.areValidValues(v2bis,v1, 1,1));
+		
 		
 		// GREATER_OR_EQUAL
-		assertTrue(c3.areValidValues(2,2));
-		assertFalse(c3.areValidValues(2,3));
+		assertTrue(c3.areValidValues(v1,v2, 2,2));
+		assertFalse(c3.areValidValues(v1,v2, 2,3));
+		
+		assertTrue(c3.areValidValues(v2,v1, 2,2));
+		assertFalse(c3.areValidValues(v2,v1, 3,2));
+		
 		
 		// LOWER
-		assertTrue(c4.areValidValues(1,2));
-		assertFalse(c4.areValidValues(2,2));
+		assertTrue(c4.areValidValues(v1,v2, 1,2));
+		assertFalse(c4.areValidValues(v1,v2, 2,2));
+		
+		assertTrue(c4.areValidValues(v2,v1, 2,1));
+		assertFalse(c4.areValidValues(v2,v1, 2,2));
+		
 		
 		// LOWER_OR_EQUAL
-		assertTrue(c5.areValidValues(2,2));
-		assertFalse(c5.areValidValues(2,1));
+		assertTrue(c5.areValidValues(v1,v2bis, 2,2));
+		assertFalse(c5.areValidValues(v1,v2bis, 2,1));
+		
+		assertTrue(c5.areValidValues(v2bis,v1, 2,2));
+		assertFalse(c5.areValidValues(v2bis,v1, 1,2));
+		
 		
 		// NOT_EQUAL
-		assertTrue(c6.areValidValues(1,2));
-		assertFalse(c6.areValidValues(2,2));
+		assertTrue(c6.areValidValues(v1,v2, 1,2));
+		assertFalse(c6.areValidValues(v1,v2, 2,2));
+		
+		assertTrue(c6.areValidValues(v2,v1, 2,1));
+		assertFalse(c6.areValidValues(v2,v1, 2,2));
+		
 	}
 	
 }

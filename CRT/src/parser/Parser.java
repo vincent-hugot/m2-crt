@@ -30,6 +30,7 @@ package parser;
           jj_consume_token(COMMA);
           domain_definition();
         }
+        jj_consume_token(SEMICOLON);
         break;
       default:
         jj_la1[1] = jj_gen;
@@ -52,6 +53,7 @@ package parser;
           jj_consume_token(COMMA);
           constraint();
         }
+        jj_consume_token(SEMICOLON);
         break;
       default:
         jj_la1[3] = jj_gen;
@@ -435,7 +437,7 @@ package parser;
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40000,0x800,0x40000,0x1000,0x3f000000,0x80c0,0xc00000,0xc00000,0x300000,0x300000,};
+      jj_la1_0 = new int[] {0x40000,0x800,0x40000,0x1000,0x7e000000,0x80c0,0x1800000,0x1800000,0x600000,0x600000,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
@@ -551,14 +553,16 @@ package parser;
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.List jj_expentries = new java.util.ArrayList();
+  @SuppressWarnings("unchecked")
+private java.util.List jj_expentries = new java.util.ArrayList();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
   /** Generate ParseException. */
-  public ParseException generateParseException() {
+  @SuppressWarnings("unchecked")
+public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[35];
+    boolean[] la1tokens = new boolean[36];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -575,7 +579,7 @@ package parser;
         }
       }
     }
-    for (int i = 0; i < 35; i++) {
+    for (int i = 0; i < 36; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

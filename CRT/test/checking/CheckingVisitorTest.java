@@ -22,16 +22,13 @@ public class CheckingVisitorTest {
 		
 		CheckingVisitor visitor = new CheckingVisitor(ast,"");
 		
-		assertNotNull("CheckingVisitor - fail() - Error list created",
-				visitor.getErrors());
-		assertTrue("CheckingVisitor - fail() - Error list empty",
-				visitor.getErrors().isEmpty());
+		assertNotNull(visitor.getErrors());
+		assertTrue(visitor.getErrors().isEmpty());
 		
 		for (int i=1; i<=5; i++) {
 			int nbrErrors = visitor.getErrors().size();
 			visitor.fail("Whoops", 42);
-			assertEquals("CheckingVisitor - fail() - Error "+i+" added",
-					visitor.getErrors().size(), nbrErrors+1);
+			assertEquals(visitor.getErrors().size(), nbrErrors+1);
 		}
 	}
 	

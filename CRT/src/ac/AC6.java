@@ -47,14 +47,14 @@ public class AC6 {
 				tmpb++;
 			}
 
-			while (!cons.areValidValues(tmpa, tmpb) && !emptySupport) {
+			/*while (!cons.areValidValues(tmpa, tmpb) && !emptySupport) {
 				if (tmpb < right.getDomain().last()) {
 					tmpb = right.getDomain().next(tmpb);
 				}
 				else {
 					emptySupport = true;
 				}
-			}
+			}*/
 		}
 		else {
 			emptySupport = true;

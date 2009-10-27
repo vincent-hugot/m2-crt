@@ -75,7 +75,7 @@ TOKEN : {
   | < RP:     ")" >
   | < BOUNDS: ",...,"|"..."|".." >
   | < COMMA:  "," >
-  //| < SEMICOLON: ";" >
+  | < SEMICOLON: ";" >
   
   /** OPERATORS */
 
@@ -129,10 +129,10 @@ MORE : {
 SimpleNode constraints() : {} 
 {
   ( <DOMAINS>
-    domain_definition() (<COMMA> domain_definition())*
+    domain_definition() (<COMMA> domain_definition())* <SEMICOLON>
   )?
   (
-    <CONSTRAINTS> constraint() (<COMMA> constraint()) *
+    <CONSTRAINTS> constraint() (<COMMA> constraint())* <SEMICOLON>
   )?
   <EOF> { return jjtThis; }
 }

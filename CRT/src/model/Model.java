@@ -98,11 +98,12 @@ public class Model {
 	public String toString() {
 		String str = "";
 		
-		str += Tools.implode(variables, ",\n");
-		str += ";\n\n";
-		str += Tools.implode(constraints, ",\n");
-		str += ",\n";
-		str += Tools.implode(substitutions, ",\n");
+		str += "DOMAINS:\n  ";
+		str += Tools.implode(variables, "\n  ");
+		str += "\nCONSTRAINTS:\n  ";
+		str += Tools.implode(constraints, "\n  ");
+		str += "\nSUBSTITUTIONS:\n  ";
+		str += Tools.implode(substitutions, "\n  ");
 		
 		return str;
 	}
