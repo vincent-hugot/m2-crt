@@ -553,12 +553,14 @@ package parser;
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.List jj_expentries = new java.util.ArrayList();
+  @SuppressWarnings("unchecked")
+private java.util.List jj_expentries = new java.util.ArrayList();
   private int[] jj_expentry;
   private int jj_kind = -1;
 
   /** Generate ParseException. */
-  public ParseException generateParseException() {
+  @SuppressWarnings("unchecked")
+public ParseException generateParseException() {
     jj_expentries.clear();
     boolean[] la1tokens = new boolean[36];
     if (jj_kind >= 0) {

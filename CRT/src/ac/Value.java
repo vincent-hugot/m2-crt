@@ -2,8 +2,6 @@ package ac;
 
 import java.util.HashSet;
 
-import fitlibrary.traverse.workflow.SetVariableFixture;
-
 import model.Variable;
 
 public class Value {

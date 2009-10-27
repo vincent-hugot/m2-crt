@@ -19,7 +19,7 @@ import model.Variable;
  * 
  * <br>- The 2 main functions: ac3() and revise() (main algorithm and REVISE)
  * <br>
- * <br>- AC3 uses initQueue(): the part that initialize QUEUE with every (xi,xj)
+ * <br>- AC3 uses initQueue(): the part that initialize QUEUE with every (xi,xj) in R
  * <br>- AC3 uses reduce(): the part that adds new (xk,xi) couples after a positive
  * return value from REVISE(xi,xj)
  * <br>
@@ -58,8 +58,8 @@ import model.Variable;
  * done in 3 steps (example of S1=B+C):
  * <br>- D(B+C) is recalculated (in the case of previous B or C reduction), then
  * D(S1) is restricted according to new D(B+C)
- * <br>- Observing from B, for each Ab value of D(B), if there is no As1 � D(S1)
- * and Ab � D(B) combination so that As1 = Ab + Ac (or any operator), Ab is remove from
+ * <br>- Observing from B, for each Ab value of D(B), if there is no As1 in D(S1)
+ * and Ab in D(B) combination so that As1 = Ab + Ac (or any operator), Ab is remove from
  * D(B).
  * <br>- Same thing from C to restrain D(C).
  * 
@@ -70,6 +70,7 @@ import model.Variable;
  * 
  * <br><br>This update is done through updateSubstitutions() method, and in the
  * substitutions creation order (every dependency is respected.)
+ * <br>It uses the findSubstitutionVals method, a Substitution version of findAj
  */
 public class AC3 {
 	
@@ -118,10 +119,11 @@ public class AC3 {
 		
 		for (Variable xi : X) {
 			for (Variable xj : X) {
-				//if (!xi.equals(xj)) {
+				//if (!xi.equals(xj)) { // For the first time, we allow them
+				if (!model.getConstraintConcerningVariables(xi,xj).isEmpty()) {
 					Couple C = new Couple(xi,xj);
 					queue.push(C);
-				//}
+				}
 			}
 		}
 		return queue;
@@ -229,14 +231,20 @@ public class AC3 {
 	
 	/**
 	 * Method used when reacting to a positive "reduce" value in AC3's REVISE call:
-	 * Add any (xk,xi) couple to "queue", so that xk != xi && xk != xj
+	 * Add any (xk,xi) couple to "queue", so that xk != xi && xk != xj,
+	 * and there is a relation/constraint betweend Xk and Xi
+	 * 
+	 * xk != xj is in the algorithm.
+	 * xk != xi is because we do not need to treat (Xi,Xi) case anymore
+	 * (it is a one-time reduce-or-not by adding them in the initial queue)
+	 * 
 	 * @param xi
 	 * @param xj
 	 */
 	public void reduce(Variable xi, Variable xj) {
 		
 		for (Variable xk : X) {
-			if (xk != xj)
+			if (xk != xi && xk != xj && !model.getConstraintConcerningVariables(xk,xi).isEmpty())
 				queue.offer(new Couple(xk, xi));
 		}
 	}
@@ -254,24 +262,32 @@ public class AC3 {
 	 */
 	public void updateSubstitutions() {
 		
-		for (Substitution s : model.getSubstitutions()) {
+		for (Substitution sub : model.getSubstitutions()) {
 			
 			// Step 1: D(Z) reduction from D(A+B)
-			Domain newDomain = s.getLeft().getDomain().arithmeticOperation(
-					s.getSubstitutionOperator(),
-					s.getRight().getDomain()
+			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
+					sub.getSubstitutionOperator(),
+					sub.getRight().getDomain()
 			);
 			
-			// Restriction + reduce on every
-			if (s.getSubstitutionVariable().getDomain().restrict(newDomain))
-				reduce(s.getSubstitutionVariable(),s.getSubstitutionVariable());
+			// Restriction + reduce on every (xk,Z)
+			if (sub.getSubstitutionVariable().getDomain().restrict(newDomain))
+				reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
 			
 			
 			// Step 2: restraining A
-			/*for (Integer aa : s.getLeft().getDomain()) {
+			for (Integer aa : sub.getLeft().getDomain()) {
 				
-				//if ()
-			}*/
+				if (findSubstitutionVals(sub, aa, sub.getLeft())) // reduce on every (xk,A)
+					reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+			}
+			
+			// Step 3: restraining B
+			for (Integer ab : sub.getRight().getDomain()) {
+				
+				if (findSubstitutionVals(sub, ab, sub.getRight())) // reduce on every (xk,B)
+					reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+			}
 		}
 	}
 	

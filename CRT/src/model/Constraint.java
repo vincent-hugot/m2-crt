@@ -40,6 +40,20 @@ public class Constraint {
 	}
 	
 	
+	
+	/**
+	 * True if this is a constraint between Xi and Xj, and Xi != Xj UNLESS left = right
+	 * @param xi
+	 * @param xj
+	 * @return
+	 */
+	public boolean isCij(Variable xi, Variable xj) {
+		if (xi == left && xj == right) return true;
+		if (xi == right && xj == left) return true;
+		return false;
+	}
+	
+	
 	/**
 	 * Calculate if Ai and Aj are valid values of Xi and Xj, according to this constraint.
 	 * Xi and Xj are used to determine what Variable is the left/right one.

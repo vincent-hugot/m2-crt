@@ -83,12 +83,17 @@ public class Model {
 	 */
 	public ArrayList<Constraint> getConstraintConcerningVariables(Variable xi, Variable xj) {
 		ArrayList<Constraint> res = new ArrayList<Constraint>();
+				/*
+				// Getting every Xi constraint (Cik)
+				res.addAll(xi.getAssociatedConstraints());
 
-		// Getting every Xi constraint (Cik)
-		res.addAll(xi.getAssociatedConstraints());
-
-		// Retaining only those into Xj (Cij)
-		res.retainAll(xj.getAssociatedConstraints());
+				// Retaining only those into Xj (Cij)
+				res.retainAll(xj.getAssociatedConstraints());
+				*/
+				
+				for (Constraint constraint : constraints) {
+					if (constraint.isCij(xi, xj)) res.add(constraint);
+				}
 
 		return res;
 	}

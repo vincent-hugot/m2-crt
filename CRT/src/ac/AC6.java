@@ -137,7 +137,7 @@ public class AC6 {
 
 	private void propagation() {
 		Value valb, valc;
-		Integer c;
+		//Integer c;
 		while (!waitingList.isEmpty()) {
 			valb = waitingList.pop();
 
