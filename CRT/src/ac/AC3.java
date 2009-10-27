@@ -58,8 +58,8 @@ import model.Variable;
  * done in 3 steps (example of S1=B+C):
  * <br>- D(B+C) is recalculated (in the case of previous B or C reduction), then
  * D(S1) is restricted according to new D(B+C)
- * <br>- Observing from B, for each Ab value of D(B), if there is no As1 € D(S1)
- * and Ab € D(B) combination so that As1 = Ab + Ac (or any operator), Ab is remove from
+ * <br>- Observing from B, for each Ab value of D(B), if there is no As1 ï¿½ D(S1)
+ * and Ab ï¿½ D(B) combination so that As1 = Ab + Ac (or any operator), Ab is remove from
  * D(B).
  * <br>- Same thing from C to restrain D(C).
  * 
@@ -91,7 +91,7 @@ public class AC3 {
 	/**
 	 * Applying AC3
 	 */
-	public void ac3() {
+	public void run() {
 		
 		queue = initQueue();
 		

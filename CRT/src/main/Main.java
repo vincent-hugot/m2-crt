@@ -86,7 +86,7 @@ public class Main {
 			else if (cmd.equals("ac3"))
 			{
 				AC3 ac3 = new AC3(currentModel);
-				ac3.ac3();
+				ac3.run();
 			}
 			else if (cmd.equals("ac6"))
 			{
