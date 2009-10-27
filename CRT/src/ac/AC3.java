@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import model.Constraint;
 import model.Domain;
 import model.Model;
+import model.Operator;
 import model.Substitution;
 import model.Variable;
 
@@ -117,10 +118,10 @@ public class AC3 {
 		
 		for (Variable xi : X) {
 			for (Variable xj : X) {
-				if (!xi.equals(xj)) {
+				//if (!xi.equals(xj)) {
 					Couple C = new Couple(xi,xj);
 					queue.push(C);
-				}
+				//}
 			}
 		}
 		return queue;
@@ -141,6 +142,32 @@ public class AC3 {
 		// No constraints, no reduce.
 		if (model.getConstraintConcerningVariables(xi,xj).isEmpty()) return false;
 		
+		
+		/* Special case: Xi [op] Xi.
+		 * If every [op] is =, <= or >=, domain is left.
+		 * If any [op] is !=, < or >, domain is emptied.
+		 * No other constraint study is done
+		 */
+		if (xi == xj) {
+			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
+				
+				// If one Cij is not an equal-type, emptying and reduction
+				if (crt.getOp() == Operator.Constraint.NOT_EQUAL
+						|| crt.getOp() == Operator.Constraint.GREATER
+						|| crt.getOp() == Operator.Constraint.LOWER) {
+					
+					xi.getDomain().clear();
+					
+					// Xi is reduced and belongs to a substitution
+					if (!xi.getAssociatedSubstitutions().isEmpty())
+						updateSubstitutions();
+					
+					return true; // There was a reduction
+				}
+			}
+		}
+		
+		
 		// Note: not removing directly, since iteration AND removal is prohibited
 		for (Integer ai : xi.getDomain()) {
 			
@@ -153,7 +180,7 @@ public class AC3 {
 				
 				reduce = true; // There was a reduction
 				
-				// Xi is reduce and belongs to a substitution
+				// Xi is reduced and belongs to a substitution
 				if (!xi.getAssociatedSubstitutions().isEmpty())
 					updateSubstitutions();
 			}
@@ -184,6 +211,7 @@ public class AC3 {
 			// For each Cij
 			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
 				
+				
 				// Only 1 non-respected constraint => Aj gets away.
 				if (!crt.areValidValues(xi,xj,ai,aj))
 					valid = false;
@@ -208,7 +236,7 @@ public class AC3 {
 	public void reduce(Variable xi, Variable xj) {
 		
 		for (Variable xk : X) {
-			if (xk != xi && xk != xj)
+			if (xk != xj)
 				queue.offer(new Couple(xk, xi));
 		}
 	}
@@ -234,26 +262,33 @@ public class AC3 {
 					s.getRight().getDomain()
 			);
 			
+			// Restriction + reduce on every
 			if (s.getSubstitutionVariable().getDomain().restrict(newDomain))
 				reduce(s.getSubstitutionVariable(),s.getSubstitutionVariable());
 			
 			
-			// TODO : Step 2/3 + Their tests (BEFORE!11!!!)
+			// Step 2: restraining A
+			/*for (Integer aa : s.getLeft().getDomain()) {
+				
+				//if ()
+			}*/
 		}
 	}
 	
 	
 	/**
+	 * (Assuming a Z=A+B substitution example)
+	 * 
 	 * Special findAj version, for substitution.
 	 * Checks if a value of A or B doesn't break the substitution
-	 * (it break if Z was reduced, and val in A or B can no longer give a value in Z)
+	 * (it breaks if Z was reduced, and val in A or B can no longer give a single value in Z)
 	 * 
-	 * For Z=A+B, we are given:
+	 * We are given:
 	 * - The substitution
 	 * - Value of A or B to be tested
 	 * - Were (out of A and B) does this value belong
 	 * 
-	 * If val in A, we tests Z/B values, else we test Z/A ones.
+	 * If val in A, we tests Z&B values, else we test Z&A ones.
 	 * 
 	 * Idea is that we must have a triplet of values so that
 	 * Az = Aa [operator] Ab
@@ -263,27 +298,41 @@ public class AC3 {
 	 * @param reference the Variable that contains val (A or B, aka left or right)
 	 * @return true if there was a compatible aj, false otherwise
 	 */
-	/*public boolean findSubstitutionVals(Substitution sub, int val, Variable reference) {
-		boolean valid = true;
+	public boolean findSubstitutionVals(Substitution sub, int val, Variable reference) {
 		
-		// For each value of D(Xj)
-		for (Integer aj : xj.getDomain()) {
+		/* reference/val is Left (A) */
+		if (reference == sub.getLeft()) {
 			
-			valid = true;
-			
-			// For each Cij
-			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
+			// For each Az value of D(Z)
+			for (Integer az : sub.getSubstitutionVariable().getDomain()) {
 				
-				// Only 1 non-respected constraint => Aj gets away.
-				if (!crt.areValidValues(xi,xj,ai,aj))
-					valid = false;
+				// For each Ab of D(B)
+				for (Integer ab : sub.getRight().getDomain()) {
+					
+					// YATTA! Az = val + Ab
+					if (sub.areValidValues(az, val, ab))
+						return true;
+				}
 			}
+		}
+
+		/* reference/val is Right (B) */
+		if (reference == sub.getRight()) {
 			
-			// Every Cij passed for (Ai,Aj), an Aj was found.
-			if (valid == true) return true;
+			// For each Az value of D(Z)
+			for (Integer az : sub.getSubstitutionVariable().getDomain()) {
+				
+				// For each Aa of D(A)
+				for (Integer aa : sub.getLeft().getDomain()) {
+					
+					// YATTA! Az = Aa + val
+					if (sub.areValidValues(az, aa, val))
+						return true;
+				}
+			}
 		}
 		
-		// No valid Aj was found, good bye Ai.
+		// If no valid value, or reference/val is not left nor right, no value found
 		return false;
-	}*/
+	}
 }

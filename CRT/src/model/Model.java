@@ -35,7 +35,8 @@ public class Model {
 	public Substitution newSubstitution(Variable operand1, Variable operand2, Operator.Arithmetic operator, Variable equal) {
 		Substitution e = new Substitution(operand1, operator, operand2, equal);
 		operand1.addSubstitution(e);
-		operand2.addSubstitution(e);
+		if (operand1 != operand2) operand2.addSubstitution(e);
+		
 		equal.addSubstitution(e);
 		substitutions.add(e);
 		return e;
@@ -44,7 +45,7 @@ public class Model {
 	public Constraint newConstraint(Variable operand1, Variable operand2, Operator.Constraint operator) {
 		Constraint c = new Constraint(operand1, operator, operand2);
 		operand1.addConstraint(c);
-		operand2.addConstraint(c);
+		if (operand1 != operand2) operand2.addConstraint(c);
 		
 		constraints.add(c);
 		return c;
