@@ -1,6 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
+import ac.Value;
+
 import main.Tools;
 
 public class Model {
@@ -32,7 +36,8 @@ public class Model {
 		return c;
 	}
 
-	public Substitution newSubstitution(Variable operand1, Variable operand2, Operator.Arithmetic operator, Variable equal) {
+	public Substitution newSubstitution(Variable operand1, Variable operand2, Operator.Arithmetic operator,
+			Variable equal) {
 		Substitution e = new Substitution(operand1, operator, operand2, equal);
 		operand1.addSubstitution(e);
 		if (operand1 != operand2) operand2.addSubstitution(e);
@@ -46,7 +51,7 @@ public class Model {
 		Constraint c = new Constraint(operand1, operator, operand2);
 		operand1.addConstraint(c);
 		if (operand1 != operand2) operand2.addConstraint(c);
-		
+
 		constraints.add(c);
 		return c;
 	}
@@ -64,27 +69,27 @@ public class Model {
 	}
 
 	public boolean equals(Object obj) {
-		return (obj instanceof Model && this.variables.equals(((Model) obj).variables) && this.constraints
-				.equals(((Model) obj).constraints) && this.substitutions.equals(((Model) obj).substitutions));
+		return (obj instanceof Model && this.variables.equals(((Model) obj).variables)
+				&& this.constraints.equals(((Model) obj).constraints) && this.substitutions
+				.equals(((Model) obj).substitutions));
 	}
 
-	
 	/**
-	 * Calculate and return the list of constraints between v1 and v2.
-	 * (List of Cij between Xi and Xj)
+	 * Calculate and return the list of constraints between v1 and v2. (List of Cij between Xi and Xj)
+	 * 
 	 * @param xi
 	 * @param xj
 	 * @return
 	 */
 	public ArrayList<Constraint> getConstraintConcerningVariables(Variable xi, Variable xj) {
 		ArrayList<Constraint> res = new ArrayList<Constraint>();
-		
+
 		// Getting every Xi constraint (Cik)
 		res.addAll(xi.getAssociatedConstraints());
-		
+
 		// Retaining only those into Xj (Cij)
 		res.retainAll(xj.getAssociatedConstraints());
-		
+
 		return res;
 	}
 
@@ -94,18 +99,26 @@ public class Model {
 
 		return v;
 	}
-	
-	
+
 	public String toString() {
 		String str = "";
-		
+
 		str += "DOMAINS:\n  ";
 		str += Tools.implode(variables, "\n  ");
 		str += "\nCONSTRAINTS:\n  ";
 		str += Tools.implode(constraints, "\n  ");
 		str += "\nSUBSTITUTIONS:\n  ";
 		str += Tools.implode(substitutions, "\n  ");
-		
+
 		return str;
+	}
+
+	public HashSet<Value> getValues() {
+		HashSet<Value> res = new HashSet<Value>();
+		
+		for (Variable var : this.variables) {
+			res.addAll(var.getValues());
+		}
+		return res;
 	}
 }

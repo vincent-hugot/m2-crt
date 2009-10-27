@@ -1,6 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
+import ac.Value;
 
 public class Variable {
 
@@ -85,5 +88,16 @@ public class Variable {
 	
 	public String toString() {
 		return name + " : " + domain;
+	}
+	
+	public HashSet<Value> getValues()
+	{
+		HashSet<Value> res = new HashSet<Value>();
+		
+		for (Integer val : domain) {
+			res.add(new Value(this, val));
+		}
+		
+		return res;
 	}
 }

@@ -2,6 +2,8 @@ package ac;
 
 import java.util.HashSet;
 
+import fitlibrary.traverse.workflow.SetVariableFixture;
+
 import model.Variable;
 
 public class Value {
@@ -19,6 +21,13 @@ public class Value {
 		var = null;
 		val = null;
 		sVarVal = null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Value(Value v){
+		this.var = v.var;
+		this.val = new Integer(v.val);
+		this.sVarVal = (HashSet<Value>) v.sVarVal.clone();
 	}
 
 	public Value(Variable var, Integer val) {
@@ -45,6 +54,14 @@ public class Value {
 
 	public boolean equals(Object obj) {
 		return (obj instanceof Value && this.equals((Value) obj));
+	}
+	
+	public void add(Value v) {
+		sVarVal.add(v);
+	}
+
+	public void setVal(Integer val) {
+		this.val = val;
 	}
 
 }
