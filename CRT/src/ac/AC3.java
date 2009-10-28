@@ -182,14 +182,15 @@ public class AC3 {
 				
 				reduce = true; // There was a reduction
 				
-				// Xi is reduced and belongs to a substitution
-				if (!xi.getAssociatedSubstitutions().isEmpty())
-					updateSubstitutions();
 			}
 		}
 		
 		// Removing what was reduced
 		xi.getDomain().removeAll(toRemove);
+		
+		// if Xi is reduced and belongs to a substitution
+		if (reduce && !xi.getAssociatedSubstitutions().isEmpty())
+			updateSubstitutions();
 		
 		return reduce;
 	}
@@ -212,7 +213,6 @@ public class AC3 {
 			
 			// For each Cij
 			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
-				
 				
 				// Only 1 non-respected constraint => Aj gets away.
 				if (!crt.areValidValues(xi,xj,ai,aj))
@@ -261,6 +261,8 @@ public class AC3 {
 	 * Comments are done from example: Z = A + B
 	 */
 	public void updateSubstitutions() {
+		Domain toRemove = new Domain();
+		
 		
 		for (Substitution sub : model.getSubstitutions()) {
 			
@@ -276,18 +278,27 @@ public class AC3 {
 			
 			
 			// Step 2: restraining A
+			toRemove.clear();
 			for (Integer aa : sub.getLeft().getDomain()) {
 				
-				if (findSubstitutionVals(sub, aa, sub.getLeft())) // reduce on every (xk,A)
+				if (!findSubstitutionVals(sub, aa, sub.getLeft())) { // reduce on every (xk,A)
+					toRemove.add(aa);
 					reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+				}
 			}
+			sub.getLeft().getDomain().removeAll(toRemove);
+			
 			
 			// Step 3: restraining B
+			toRemove.clear();
 			for (Integer ab : sub.getRight().getDomain()) {
 				
-				if (findSubstitutionVals(sub, ab, sub.getRight())) // reduce on every (xk,B)
+				if (!findSubstitutionVals(sub, ab, sub.getRight())) { // reduce on every (xk,B)
+					toRemove.add(ab);
 					reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+				}
 			}
+			sub.getRight().getDomain().removeAll(toRemove);
 		}
 	}
 	

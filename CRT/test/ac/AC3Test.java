@@ -124,8 +124,7 @@ public class AC3Test {
 		// See javadoc comment for new domain calculus
 		// - Step 2: B reduced to {0}
 		// - Step 3: C reduced to {1}
-		//assertEquals(B.getDomain(), new Domain(0,0));
-		//assertEquals(C.getDomain(), new Domain(1,1));
-		// TODO : ACTIVATE WHEN AC3 DONE.
+		assertEquals(B.getDomain(), new Domain(0,0));
+		assertEquals(C.getDomain(), new Domain(1,1));
 	}
 }
