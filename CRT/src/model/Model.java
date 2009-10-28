@@ -148,15 +148,40 @@ public class Model {
 		double radiusDoms = Math.max(3.5, 3.5 / Math.sin(alpha));
 		
 		/* preamble */
-		sb.append("\\pspicture(-"+radiusDoms+",-"+radiusDoms+")("+radiusDoms+","+radiusDoms+")\n");
+		sb.append("\\pspicture(-"+radiusDoms+",-"+radiusDoms+")("
+				+radiusDoms+","+radiusDoms+")\n");
 		
 		for (Variable var : variables) {
+			
+			String displayedName = var.getName();
+			if (var.isArtificial())
+			{
+				for (Substitution sub : substitutions) {
+					if (sub.substitutionVariable == var) {
+						switch (sub.substitutionOperator) {
+						case ADD:
+							displayedName += "$+$";
+							break;
+						case DIV:
+							displayedName += "$\\div$";
+							break;
+						case MUL:
+							displayedName += "$\\times$";
+							break;
+						case SUB:
+							displayedName += "$-$";
+							break;
+						}
+						break;
+					}
+				}
+			}
 			
 			double varX = radiusVars * Math.cos(counter * alpha);
 			double varY = radiusVars * Math.sin(counter * alpha);
 			sb.append("%%VAR: " + var + "\n");
 			sb.append("\\rput("+varX+","+varY+"){\\rnode{" + var.getName() + 
-					"}{\\psshadowbox{\\bf " + var.getName() + "}}}\n");
+					"}{\\psshadowbox{\\bf " + displayedName + "}}}\n");
 			
 			double domX = radiusDoms * Math.cos(counter * alpha);
 			double domY = radiusDoms * Math.sin(counter * alpha);
@@ -169,7 +194,7 @@ public class Model {
 			counter++;
 		}
 		
-		sb.append("\\psset{arrowscale=1.4}");
+		sb.append("\\psset{arrowscale=1.4}\n");
 		
 		for (Constraint con : constraints) {
 			sb.append("%%CON: " + con + "\n");
@@ -208,7 +233,7 @@ public class Model {
 		
 		for (Substitution sub : substitutions) {
 			sb.append("%%SUB: " + sub + "\n");
-			sb.append("\\ncline[linestyle=dotted]{o-}{"+
+			sb.append("\\ncline[linestyle=dotted]{*-}{"+
 					sub.substitutionVariable.getName() +
 					"}{"+ sub.left.getName() + "}\n");
 			sb.append("\\ncline[linestyle=dotted]{o-}{"+

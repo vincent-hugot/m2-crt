@@ -1,17 +1,18 @@
+// TEST CONSTRAINTS FILE
 DOMAINS:
   A : [1,...,5],
   C : [8...9],
-  B : [1,...,3];
-
-CONSTRAINTS:
- /* some comment */
-A < B * C,
-B <= C + A,
-A > C,
-B >= C,
-42 /= 56,
-A = B
+  B : [1,...,3]
 ;
 
-// some inline comment
-
+CONSTRAINTS:
+ /* This does not make any sense, it's a test file
+   showing all possible constraint operators.
+  */
+  A < B * C,
+  B <= C + A,
+  A > C,
+  B >= C,
+  42 /= 56,
+  A = B
+;
