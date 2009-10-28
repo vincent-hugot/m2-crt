@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import ac.Value;
+import ac.ValuedVariable;
 
 import main.Tools;
 
@@ -118,8 +118,8 @@ public class Model {
 		return str;
 	}
 
-	public HashSet<Value> getValues() {
-		HashSet<Value> res = new HashSet<Value>();
+	public HashSet<ValuedVariable> getValues() {
+		HashSet<ValuedVariable> res = new HashSet<ValuedVariable>();
 		
 		for (Variable var : this.variables) {
 			res.addAll(var.getValues());

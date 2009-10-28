@@ -9,18 +9,34 @@ import model.Constraint;
 import model.Model;
 import model.Variable;
 
+/**
+ * Implementation of Arc Consistency algorithm AC6.
+ * 
+ * @author olivier
+ * 
+ */
 public class AC6 {
-	private Model				model;
-	private HashSet<Value>		values;
-	private LinkedList<Value>	waitingList;
 
+	private Model						model;
+	private HashSet<ValuedVariable>		values;
+	private LinkedList<ValuedVariable>	waitingList;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param m
+	 *            The model we want to run the algorithm on
+	 */
 	public AC6(Model m) {
 		model = m;
 		values = null;
-		waitingList = new LinkedList<Value>();
+		waitingList = new LinkedList<ValuedVariable>();
 	}
-	
-	public void run(){
+
+	/**
+	 * Run the algorithm
+	 */
+	public void run() {
 		init();
 		propagation();
 	}
@@ -72,25 +88,33 @@ public class AC6 {
 		return emptySupport;
 	}
 
-	private boolean nextSupport(Value valA, Value valB) {
-		Variable i, j; 
+	/**
+	 * Used to find in all the constraints beetween the variables stored in valA and valB and see if they support the
+	 * given values for each variable (or at least not smaller than the one of valB)
+	 * 
+	 * @param valA
+	 *            A couple Variable / Value
+	 * @param valB
+	 *            Another couple Variable / Value whose value can be modified
+	 * @return true if all the constraints are satisfied
+	 */
+	private boolean nextSupport(ValuedVariable valA, ValuedVariable valB) {
+		Variable i, j;
 		Integer a, b;
-		
+
 		i = valA.getVar();
-		j = valB.getVar();		
-		
+		j = valB.getVar();
+
 		ArrayList<Constraint> constraints = model.getConstraintConcerningVariables(i, j);
 		boolean res;
 		Integer tmp;
 		Integer tmp2;
 
-
-		
 		a = valA.getVal();
 		b = valB.getVal();
-		
+
 		tmp = new Integer(b.intValue());
-		
+
 		res = !constraints.isEmpty();
 
 		for (Constraint cons : constraints) {
@@ -106,53 +130,58 @@ public class AC6 {
 		return res;
 	}
 
+	/**
+	 * The initialisation of the algorithm
+	 */
 	private void init() {
 
-		Value tmp;
+		ValuedVariable tmp, tmp2;
 		Integer b;
 		values = model.getValues();
 
 		for (Constraint cons : model.getConstraints()) {
 			for (Integer a : cons.getLeft().getDomain()) {
 				b = new Integer(1);
-
+				
+				tmp = findValue(cons.getLeft(), a);
 				if (nextSupport(cons, a, b)) {
 					cons.getLeft().getDomain().remove(a.intValue());
-					tmp = findValue(cons.getLeft(), a);
-
+					
 					if (tmp != null) {
 						waitingList.add(tmp);
 					}
-
 				}
 				else {
-					tmp = findValue(cons.getRight(), b);
-					if (tmp != null) {
-						tmp.add(tmp);
+					tmp2 = findValue(cons.getRight(), b);
+					if (tmp != null && tmp2 != null) {
+						tmp2.add(tmp);
 					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * The propagation of the algorithm
+	 */
 	private void propagation() {
-		Value valb, valc;
-		//Integer c;
+		ValuedVariable valb, valc;
+
 		while (!waitingList.isEmpty()) {
 			valb = waitingList.pop();
 
-			for (Value vala : valb.getSVarVal()) {
+			for (ValuedVariable vala : valb.getSVarVal()) {
 				vala.getSVarVal().remove(vala);
 
 				if (vala.getVar().getDomain().contains(vala.getVal())) {
-					valc = new Value(valb);
-					
+					valc = new ValuedVariable(valb);
+
 					if (nextSupport(vala, valc)) {
 						vala.getVar().getDomain().remove(vala.getVal().intValue());
 						waitingList.add(vala);
-						
+
 					}
-					else{
+					else {
 						valc.getSVarVal().add(vala);
 					}
 				}
@@ -160,9 +189,18 @@ public class AC6 {
 		}
 	}
 
-	private Value findValue(Variable var, Integer val) {
-		Value v = null;
-		Iterator<Value> it = values.iterator();
+	/**
+	 * Find the value contaning the given Variable and Value
+	 * 
+	 * @param var
+	 *            The variable in question
+	 * @param val
+	 *            Its value
+	 * @return The searched value
+	 */
+	private ValuedVariable findValue(Variable var, Integer val) {
+		ValuedVariable v = null;
+		Iterator<ValuedVariable> it = values.iterator();
 		boolean finished = !(it.hasNext());
 
 		while (!finished) {

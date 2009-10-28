@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import ac.Value;
+import ac.ValuedVariable;
 
 public class Variable {
 
@@ -90,12 +90,12 @@ public class Variable {
 		return name + " : " + domain;
 	}
 	
-	public HashSet<Value> getValues()
+	public HashSet<ValuedVariable> getValues()
 	{
-		HashSet<Value> res = new HashSet<Value>();
+		HashSet<ValuedVariable> res = new HashSet<ValuedVariable>();
 		
 		for (Integer val : domain) {
-			res.add(new Value(this, val));
+			res.add(new ValuedVariable(this, val));
 		}
 		
 		return res;
