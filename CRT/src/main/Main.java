@@ -85,8 +85,14 @@ public class Main {
 			}
 			else if (cmd.equals("ac3"))
 			{
+				System.out.println("Applying AC3 algorithm...");
 				AC3 ac3 = new AC3(currentModel);
 				ac3.run();
+			}
+			else if (cmd.equals("latex"))
+			{
+				System.out.println("% LaTeX graph of the current model:");
+				System.out.println(currentModel.toLaTeX());
 			}
 			else if (cmd.equals("ac6"))
 			{

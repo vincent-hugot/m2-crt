@@ -11,7 +11,7 @@ package model;
  * 
  * <br>
  * A substitution is similar to a constraint, only it has another variable
- * ("equal = left [operator] right")
+ * ("substitutionVariable = left [operator] right")
  * 
  * <br>
  * Lastly, since expression is not binary anymore, its handling is slightly

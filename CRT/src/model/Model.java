@@ -117,6 +117,96 @@ public class Model {
 
 		return str;
 	}
+	
+	/** LATEX output: 
+	 * Returns a nice PS-Tricks LaTeX graph 
+	 * representing the model.
+	 * 
+	 * Variables are represented on a virtual circle, 
+	 * whose radius is computed in such a way that variables
+	 * are separated by exactly 2cm (minimum radius = 2cm).
+	 * 
+	 * The different kinds of constraints are represented by 
+	 * different styles of lines.
+	 * 
+	 * It is still a work in progress, contact me if you 
+	 * have any question and please don't touch this method
+	 * until I'm done with it :)
+	 *  
+	 * @author Vincent HUGOT
+	 * */
+	public String toLaTeX()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		/* Some trigonometry... */
+		int counter = 0;
+		double alpha = 2 * Math.PI / variables.size();
+		double radius = Math.max(2, 2 / Math.sin(alpha));
+		
+		/* preamble */
+		sb.append("\\psset{unit=1cm,arrowscale=1.4}"+
+			"\\pspicture(-"+radius+",-"+radius+")("+radius+","+radius+")\n");
+		
+		for (Variable var : variables) {
+			double x = radius * Math.cos(counter * alpha);
+			double y = radius * Math.sin(counter * alpha);
+			sb.append("%%VAR: " + var + "\n");
+			sb.append("\\rput("+x+","+y+"){\\rnode{" + var.getName() + 
+					"}{\\psshadowbox{\\bf " + var.getName() + "}}}\n");
+			counter++;
+		}
+		
+		for (Constraint con : constraints) {
+			sb.append("%%CON: " + con + "\n");
+			String linestyle = "";
+			String type = "-";
+			switch (con.op) {
+			case  EQUAL:
+				linestyle = "doubleline=true,linestyle=dashed";
+				type = "-";
+				break;
+			case GREATER_OR_EQUAL:
+				linestyle = "doubleline=true,linestyle=solid";
+				type = "->";
+				break;
+			case GREATER:
+				linestyle = "doubleline=false,linestyle=solid";
+				type = "->";
+				break;
+			case LOWER_OR_EQUAL:
+				linestyle = "doubleline=true,linestyle=solid";
+				type = "<-";
+				break;
+			case LOWER:
+				linestyle = "doubleline=false,linestyle=solid";
+				type = "<-";
+				break;
+			case NOT_EQUAL:
+				linestyle = "doubleline=true,linestyle=dashed";
+				type = "|-|";
+			default:
+				break;
+			}
+			sb.append("\\ncarc[" + linestyle + "]{" + type + "}{" + con.left.getName() + "}{" +
+					con.right.getName() + "}\n");
+		}
+		
+		for (Substitution sub : substitutions) {
+			sb.append("%%SUB: " + sub + "\n");
+			sb.append("\\ncline[linestyle=dotted]{o-}{"+
+					sub.substitutionVariable.getName() +
+					"}{"+ sub.left.getName() + "}\n");
+			sb.append("\\ncline[linestyle=dotted]{o-}{"+
+					sub.substitutionVariable.getName() +
+					"}{"+ sub.right.getName() + "}\n");
+		}
+		
+		/* postamble */
+		sb.append("\\endpspicture");
+		
+		return sb.toString();
+	}
 
 	public HashSet<ValuedVariable> getValues() {
 		HashSet<ValuedVariable> res = new HashSet<ValuedVariable>();
