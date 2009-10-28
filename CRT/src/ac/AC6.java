@@ -43,7 +43,8 @@ public class AC6 {
 
 	/**
 	 * Used for a Constraint to find the smallest in the domain of the right variable not smaller than the given value b
-	 * and supporting the given value a for the left variable.
+	 * and supporting the given value a for the left variable. (The return value meaning was changed compared to the
+	 * original algorithm)
 	 * 
 	 * @param cons
 	 *            The constraint we are interested in..
@@ -68,10 +69,13 @@ public class AC6 {
 
 		if (tmpb <= right.getDomain().last()) {
 			emptySupport = false;
+
+			// Search for the smallest value greater or equal than b that belongs right's domain
 			while (!right.getDomain().contains(tmpb)) {
 				tmpb++;
 			}
 
+			// Search of the smallest support for the couple (left, a) in right's domain
 			while (!cons.areValidValues(left, right, tmpa, tmpb) && !emptySupport) {
 				if (tmpb < right.getDomain().last()) {
 					tmpb = right.getDomain().next(tmpb);
@@ -85,7 +89,7 @@ public class AC6 {
 			emptySupport = true;
 		}
 		b = new Integer(tmpb);
-		return emptySupport;
+		return !emptySupport;
 	}
 
 	/**
@@ -93,18 +97,27 @@ public class AC6 {
 	 * given values for each variable (or at least not smaller than the one of valB)
 	 * 
 	 * @param valA
-	 *            A couple Variable / Value
+	 *            A couple Variable / Value for the left variable
 	 * @param valB
-	 *            Another couple Variable / Value whose value can be modified
+	 *            Another couple Variable / Value for the right variable whose value can be modified
 	 * @return true if all the constraints are satisfied
 	 */
 	private boolean nextSupport(ValuedVariable valA, ValuedVariable valB) {
+
+		/*
+		 * The principle here is basicaly the same as previously except that rather than searching in a unique
+		 * constraint we look at all the constraints concerning the two given variables.
+		 * 
+		 * The function will return true if and only if there exist support for each constraint. The new value contained
+		 * in valB if modified is the smallest of all the obtained values for the constraints.
+		 */
 		Variable i, j;
 		Integer a, b;
 
 		i = valA.getVar();
 		j = valB.getVar();
 
+		// Here we retrieve all the constraints concerning the two given variables
 		ArrayList<Constraint> constraints = model.getConstraintConcerningVariables(i, j);
 		boolean res;
 		Integer tmp;
@@ -117,6 +130,7 @@ public class AC6 {
 
 		res = !constraints.isEmpty();
 
+		// Then for each constraint we apply nextValue
 		for (Constraint cons : constraints) {
 			tmp2 = new Integer(b.intValue());
 			res = (res && nextSupport(cons, a, tmp2));
@@ -137,21 +151,34 @@ public class AC6 {
 
 		ValuedVariable tmp, tmp2;
 		Integer b;
+
+		// We build and retrieve in values all the possible couples (Variable, value) in the model
 		values = model.getValues();
 
+		// For each constraint
 		for (Constraint cons : model.getConstraints()) {
+
+			// For each possible value of the left's variable
 			for (Integer a : cons.getLeft().getDomain()) {
 				b = new Integer(1);
-				
+
+				// We retrieve from the set the ValuedVariable corresponding to the current Variable and value
 				tmp = findValue(cons.getLeft(), a);
-				if (nextSupport(cons, a, b)) {
+
+				// If there is no support in the constraint
+				if (!nextSupport(cons, a, b)) {
+
+					// We remove the current unnecessary value from the model
 					cons.getLeft().getDomain().remove(a.intValue());
-					
+
+					// And then add the modified ValuedVariable to the waiting list
 					if (tmp != null) {
 						waitingList.add(tmp);
 					}
 				}
 				else {
+					// If this is the case we simply add the current couple (tmp) to the corresponding's one (tmp2)
+					// support set
 					tmp2 = findValue(cons.getRight(), b);
 					if (tmp != null && tmp2 != null) {
 						tmp2.add(tmp);
@@ -167,21 +194,32 @@ public class AC6 {
 	private void propagation() {
 		ValuedVariable valb, valc;
 
+		// Browsing through the waiting list
 		while (!waitingList.isEmpty()) {
 			valb = waitingList.pop();
 
+			// For each of the ValuedVariables corresponding to the current one (valb)
 			for (ValuedVariable vala : valb.getSVarVal()) {
 				vala.getSVarVal().remove(vala);
 
+				// If the given value for vala belongs to its domain (actually its Variable's domain)
 				if (vala.getVar().getDomain().contains(vala.getVal())) {
+
+					// Creating a copy of valb
 					valc = new ValuedVariable(valb);
 
-					if (nextSupport(vala, valc)) {
+					// Checking if there is support for all the constraints between the two variables
+					if (!nextSupport(vala, valc)) {
+
+						// If not yet again we remove the value from the domain and replace the couple in the waiting
+						// list
 						vala.getVar().getDomain().remove(vala.getVal().intValue());
 						waitingList.add(vala);
 
 					}
 					else {
+						// If there is we simply add the current couple (vala) to the corresponding's one (valc) support
+						// set
 						valc.getSVarVal().add(vala);
 					}
 				}
@@ -190,19 +228,20 @@ public class AC6 {
 	}
 
 	/**
-	 * Find the value contaning the given Variable and Value
+	 * Find the ValuedVariable correponding the given Variable and Value
 	 * 
 	 * @param var
 	 *            The variable in question
 	 * @param val
 	 *            Its value
-	 * @return The searched value
+	 * @return The searched valuedVariable if it exist int he set. null if not.
 	 */
 	private ValuedVariable findValue(Variable var, Integer val) {
 		ValuedVariable v = null;
 		Iterator<ValuedVariable> it = values.iterator();
 		boolean finished = !(it.hasNext());
 
+		// Browsing the set until a match is found or the end is reached
 		while (!finished) {
 			v = it.next();
 
