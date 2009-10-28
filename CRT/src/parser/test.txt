@@ -1,11 +1,11 @@
 DOMAINS:
   A : [1,...,5],
-  C : [1...5],
+  C : [8...9],
   B : [1,...,3];
 
 CONSTRAINTS:
  /* some comment */
-A < B + C,
+A < B * C,
 B <= C + A,
 A > C,
 B >= C,

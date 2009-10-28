@@ -89,6 +89,68 @@ public class Domain extends TreeSet<Integer> {
 		this.remove(new Integer(n));
 	}
 	
+	/**
+	 * Yields a compact LaTeX string representing 
+	 * the domain
+	 * @return a LaTeX string
+	 */
+	public String toLaTeX()
+	{
+		if (this.isEmpty())
+		{
+			return "$\\emptyset$";
+		}
+		
+		StringBuilder res = new StringBuilder("$\\{");
+		
+		int head = last() +1;
+		int tail = head;
+		
+		for (int i : this) {
+			if (i < head)
+			{//init
+				head = tail = i;
+			}
+			else if (i == tail+1)
+			{
+				tail++;
+			}
+			else
+			{
+				if (head == tail)
+				{
+					res.append("," + head);
+				}
+				else if (tail == head + 1)
+				{
+					res.append(head + "," + tail);
+				}
+				else
+				{
+					res.append(head + ".." + tail);
+				}
+				head = tail = i;
+			}
+		}
+		
+		if (head == tail)
+		{
+			if (size() > 1)
+				res.append(",");
+			res.append(head);
+		}
+		else if (tail == head + 1)
+		{
+			res.append(head + "," + tail);
+		}
+		else
+		{
+			res.append(head + ".." + tail);
+		}
+		
+		return res + "\\}$";
+	}
+	
 	
 	/**
 	 * Returns a new domain, which is the "product" of this domain

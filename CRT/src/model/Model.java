@@ -126,6 +126,8 @@ public class Model {
 	 * whose radius is computed in such a way that variables
 	 * are separated by exactly 2cm (minimum radius = 2cm).
 	 * 
+	 * Same thing with domains, circling the variables (3.5cm).
+	 * 
 	 * The different kinds of constraints are represented by 
 	 * different styles of lines.
 	 * 
@@ -142,20 +144,32 @@ public class Model {
 		/* Some trigonometry... */
 		int counter = 0;
 		double alpha = 2 * Math.PI / variables.size();
-		double radius = Math.max(2, 2 / Math.sin(alpha));
+		double radiusVars = Math.max(2, 2 / Math.sin(alpha));
+		double radiusDoms = Math.max(3.5, 3.5 / Math.sin(alpha));
 		
 		/* preamble */
-		sb.append("\\psset{unit=1cm,arrowscale=1.4}"+
-			"\\pspicture(-"+radius+",-"+radius+")("+radius+","+radius+")\n");
+		sb.append("\\pspicture(-"+radiusDoms+",-"+radiusDoms+")("+radiusDoms+","+radiusDoms+")\n");
 		
 		for (Variable var : variables) {
-			double x = radius * Math.cos(counter * alpha);
-			double y = radius * Math.sin(counter * alpha);
+			
+			double varX = radiusVars * Math.cos(counter * alpha);
+			double varY = radiusVars * Math.sin(counter * alpha);
 			sb.append("%%VAR: " + var + "\n");
-			sb.append("\\rput("+x+","+y+"){\\rnode{" + var.getName() + 
+			sb.append("\\rput("+varX+","+varY+"){\\rnode{" + var.getName() + 
 					"}{\\psshadowbox{\\bf " + var.getName() + "}}}\n");
+			
+			double domX = radiusDoms * Math.cos(counter * alpha);
+			double domY = radiusDoms * Math.sin(counter * alpha);
+			sb.append("\\rput("+domX+","+domY+"){\\rnode{@@DOM" + var.getName() + 
+					"}{\\psframebox[framearc=.4]{\\scriptsize " + var.getDomain().toLaTeX() + "}}}\n");
+			
+			sb.append("\\ncline[linestyle=solid]{*-*}{"+
+					var.getName() +
+					"}{@@DOM"+ var.getName() + "}\n");
 			counter++;
 		}
+		
+		sb.append("\\psset{arrowscale=1.4}");
 		
 		for (Constraint con : constraints) {
 			sb.append("%%CON: " + con + "\n");
