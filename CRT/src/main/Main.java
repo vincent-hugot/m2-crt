@@ -92,7 +92,9 @@ public class Main {
 			else if (cmd.equals("latex"))
 			{
 				System.out.println("% LaTeX graph of the current model:");
-				System.out.println(currentModel.toLaTeX());
+				// default warp values are +0.01 to avoid X.XXX E-30 or something
+				// which LaTeX doesn't like (loss of float precision with sinus)
+				System.out.println(currentModel.toLaTeX(2, 3.5, 0.51, 0.01));
 			}
 			else if (cmd.equals("ac6"))
 			{

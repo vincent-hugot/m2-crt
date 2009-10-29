@@ -117,16 +117,16 @@ public class Model {
 
 		return str;
 	}
-	
+
 	/** LATEX output: 
 	 * Returns a nice PS-Tricks LaTeX graph 
 	 * representing the model.
 	 * 
 	 * Variables are represented on a virtual circle, 
 	 * whose radius is computed in such a way that variables
-	 * are separated by exactly 2cm (minimum radius = 2cm).
+	 * are separated by at least a fixed distance.
 	 * 
-	 * Same thing with domains, circling the variables (3.5cm).
+	 * Same thing with domains, circling the variables.
 	 * 
 	 * The different kinds of constraints are represented by 
 	 * different styles of lines.
@@ -136,20 +136,36 @@ public class Model {
 	 * until I'm done with it :)
 	 *  
 	 * @author Vincent HUGOT
-	 * */
-	public String toLaTeX()
+	 * 
+	 * @param distanceVars minimum distance between two variables.
+	 * 	The radius of the circle of variables is computed from this data, and
+	 *  also depends on the number of variables in the model, of course.
+	 *  This is used rather than giving the radius directly because it is a 
+	 *  much better indicator of visual quality.
+	 * @param distanceDoms minimum distance between two domains
+	 * @param warpVars rotation of the circle of variables, in "slices" 
+	 * @param warpDoms rotation of the circle of domains, in "slices" 
+	 * @return a LaTeX PSTricks figure
+	 */
+	public String toLaTeX(double distanceVars, double distanceDoms, double warpVars, double warpDoms)
 	{
 		StringBuilder sb = new StringBuilder();
 		
 		/* Some trigonometry... */
 		int counter = 0;
 		double alpha = 2 * Math.PI / variables.size();
-		double radiusVars = Math.max(2, 2 / Math.sin(alpha));
-		double radiusDoms = Math.max(3.5, 3.5 / Math.sin(alpha));
+		double radiusVars = Math.max(distanceVars, distanceVars / Math.sin(alpha));
+		double radiusDoms = Math.max(distanceDoms, distanceDoms / Math.sin(alpha));
+		double totalRadius = Math.max(radiusVars, radiusDoms) + 0.6;
+		double betaV = warpVars * alpha;
+		double betaD = warpDoms * alpha;
 		
 		/* preamble */
-		sb.append("\\pspicture(-"+radiusDoms+",-"+radiusDoms+")("
-				+radiusDoms+","+radiusDoms+")\n");
+		sb.append("\\pspicture(-"+totalRadius+",-"+totalRadius+")("
+				+totalRadius+","+totalRadius+")\n");
+		
+		sb.append("%%CRT to LaTeX: " + "; " + distanceVars + "; " +  distanceDoms + "; " 
+				+  warpVars + "; " +  warpDoms + "\n");
 		
 		for (Variable var : variables) {
 			
@@ -177,14 +193,14 @@ public class Model {
 				}
 			}
 			
-			double varX = radiusVars * Math.cos(counter * alpha);
-			double varY = radiusVars * Math.sin(counter * alpha);
+			double varX = radiusVars * Math.cos(counter * alpha + betaV);
+			double varY = radiusVars * Math.sin(counter * alpha + betaV);
 			sb.append("%%VAR: " + var + "\n");
 			sb.append("\\rput("+varX+","+varY+"){\\rnode{" + var.getName() + 
 					"}{\\psshadowbox{\\bf " + displayedName + "}}}\n");
 			
-			double domX = radiusDoms * Math.cos(counter * alpha);
-			double domY = radiusDoms * Math.sin(counter * alpha);
+			double domX = radiusDoms * Math.cos(counter * alpha + betaD);
+			double domY = radiusDoms * Math.sin(counter * alpha + betaD);
 			sb.append("\\rput("+domX+","+domY+"){\\rnode{@@DOM" + var.getName() + 
 					"}{\\psframebox[framearc=.4]{\\scriptsize " + var.getDomain().toLaTeX() + "}}}\n");
 			
