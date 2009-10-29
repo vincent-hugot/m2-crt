@@ -210,7 +210,7 @@ public class Model {
 			counter++;
 		}
 		
-		sb.append("\\psset{arrowscale=1.4}\n");
+		sb.append("\\psset{arrowscale=2}\n");
 		
 		for (Constraint con : constraints) {
 			sb.append("%%CON: " + con + "\n");
@@ -222,7 +222,7 @@ public class Model {
 				type = "-";
 				break;
 			case GREATER_OR_EQUAL:
-				linestyle = "doubleline=true,linestyle=solid";
+				linestyle = "doubleline=true,linestyle=solid,arrowscale=1";
 				type = "->";
 				break;
 			case GREATER:
@@ -230,7 +230,7 @@ public class Model {
 				type = "->";
 				break;
 			case LOWER_OR_EQUAL:
-				linestyle = "doubleline=true,linestyle=solid";
+				linestyle = "doubleline=true,linestyle=solid,arrowscale=1";
 				type = "<-";
 				break;
 			case LOWER:
@@ -238,7 +238,7 @@ public class Model {
 				type = "<-";
 				break;
 			case NOT_EQUAL:
-				linestyle = "doubleline=true,linestyle=dashed";
+				linestyle = "doubleline=true,linestyle=dashed,arrowscale=0.8";
 				type = "|-|";
 			default:
 				break;
@@ -249,10 +249,10 @@ public class Model {
 		
 		for (Substitution sub : substitutions) {
 			sb.append("%%SUB: " + sub + "\n");
-			sb.append("\\ncline[linestyle=dotted]{*-}{"+
+			sb.append("\\ncline[linestyle=dotted,arrowscale=1.35]{*-}{"+
 					sub.substitutionVariable.getName() +
 					"}{"+ sub.left.getName() + "}\n");
-			sb.append("\\ncline[linestyle=dotted]{o-}{"+
+			sb.append("\\ncline[linestyle=dotted,arrowscale=1.35]{o-}{"+
 					sub.substitutionVariable.getName() +
 					"}{"+ sub.right.getName() + "}\n");
 		}
