@@ -1,0 +1,62 @@
+\documentclass[12pt,a4paper]{article} 
+
+\usepackage[defhf,deflayout]{sknife}
+\input{../common/common.tex}
+
+\pagetitle{CR - Projet CRT \dateformat20/10/2009}
+\title{Compte Rendu\\de la Sixième Réunion\\du Projet de CRT\vspace{-0.5em}}
+\author{$\diamond$\vspace{-0.2em}}
+
+\begin{document}
+ \maketitle
+
+\section{Personnes Présentes}
+%
+\noi Étaient présents à la réunion :\mk
+\begin{itemize}
+\item \mwyd \absent
+\item \mmat \scribe
+\item \mlou
+\item \mmor \absent
+\item \moli 
+\item \mvin 
+\item \mmed \absent
+\item \mbed \absent
+\item \mdon 
+\end{itemize}
+
+\section{Bilan général}
+\subsection{SVN}
+
+Le serveur SVN de la fac nous ayant été ``interdit'', le SVN du projet a été projeté sur \texttt{Google Code} : \texttt{http://code.google.com/p/m2-crt/source/checkout}
+
+\section{Bilan équipe développement}
+\subsection{Algorithme AC3}
+L'algorithme AC3 n'était pas totalement au point, il manquait la gestion des substitutions. \mmat\ a terminé l'implémentation et l'a testé.
+
+\subsection{Algorithme AC6}
+\moli\ a terminé le l'implementation de AC6, dans un état similaire à AC3 la réunion d'avant (non-testé et sans gestion des substitutions).
+
+\subsection{Sortie graphique}
+\mvin\ a mis en place une sortie \LaTeX\ du graphe de contraintes, et concu un \texttt{main} pour utiliser l'application (lire un fichier, passer un algorithme, sortie \LaTeX).
+
+\section{Bilan équipe test}
+\hudson\ a été abandonné car incompatible avec le SVN. \fitnesse\ est lui en place, quelques tests ont été effectuer au préalable.
+
+%\section{Discussions}
+
+
+\newpage
+\section{Travail à effectuer durant la prochaine itération}
+
+Cette itération sera la dernière, le projet sera bouclé. \textbf{Une séance de programmation/réunion a été fixé le vendredi 27/11 à 13h30 en 401C.}
+
+\subsection{Developpement}
+Il ne reste plus que l'AC6 à terminer, l'ensemble de l'équipe s'y emploie.
+
+\subsection{Tests}
+Reflexions sur les cas de tests, puis mise en place de ces tests avec l'aide de l'équipe de développement.
+
+
+\end{document}
+
