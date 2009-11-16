@@ -1,0 +1,19 @@
+!|translator.Translator|un test valide|DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3];CONSTRAINTS: A < B + 42,B <= C +56;|
+|translate!|=ac3.AC()|getErrors?|fail?|
+||[]||false|
+
+!|translator.Translator|un test valide| $ID |
+|translate!|getErrors?|fail?|
+|$ID=|[]|false|
+ 
+!|ac.AC3|$ID|
+|run!|
+||
+
+!|ac.AC3|salut|
+|run!|
+||
+
+!|translator.Translator|un test valide| DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3];CONSTRAINTS: A < B + 42,B <= C +56; |
+|=translate()|
+|key|

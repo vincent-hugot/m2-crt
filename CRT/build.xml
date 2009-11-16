@@ -13,6 +13,7 @@
 	<property name="tests.log.file" value="tests.log"/>
 	<property name="emma.reports.dir" value="${reports.dir}/emma-reports"/>
 	
+	<property name="repertoire.de.fitnesse" value="./lib"/>
 	
 	<path id="src.classpath">
 		<fileset dir="./lib">
@@ -140,7 +141,13 @@
 		<delete dir="${target.dir}"/>
 	</target>
 	
-	
+	<target name="fitnesse" depends="compile">
+	    <java jar="${repertoire.de.fitnesse}/fitnesse.jar " fork="true">
+			<arg line="-p 80"/>
+			<arg line="-r ./lib/FitNesseRoot"/>
+		</java>
+	</target>
+
 	
 	
 </project>

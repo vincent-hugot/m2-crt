@@ -1,0 +1,38 @@
+Voici un test de base
+!|translator.Translator|un test valide|DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3];CONSTRAINTS: A < B + 42,B <= C +56;|
+|translate!|getErrors?|fail?|
+|$ID=|[]|false|
+
+si on met les contraintes avant le domaine
+!|Translator|si on met les contraintes avant le domaine|CONSTRAINTS:A < B + 42,B <= C +56;DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3];|
+|translate?|getErrors?|fail?|
+|null|$ERR=|true|
+
+!|Translator|si on oublie le ; dans apres avoir defini le domaine|DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3] CONSTRAINTS:A < B + 42,B <= C +56;|
+|translate?|getErrors!|fail?|
+|null|$ERR=|true|
+
+
+!|Translator|si on oublie le ; dans apres avoir defini les contraintes|DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3];CONSTRAINTS: A < B + 42,B <= C +56|
+|translate?|getErrors!|fail?|
+|null|$ERR=|true|
+
+!|Translator|si une variable est cree en double: 2 definitions de domaine pour la meme variable|DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3],  A : [1,...,44]  ;CONSTRAINTS: A < B + 42,B <= C +56;|
+|translate?|getErrors!|fail?|
+|null|$ERR=|true|
+
+!|Translator|si on applique des contraintes sur une variable non cree|DOMAINS:  A : [1,...,5],  C : [1...5],  B : [1,...,3]  ;CONSTRAINTS: A < B + 42,B <= C +56,B <= X +56;|
+|translate?|getErrors!|fail?|
+|null|$ERR=|true|
+
+!|Translator|domaine avec une borne le + petit à droite, et le + grand a gauche|DOMAINS:  A : [1,...,5],  C : [5...1],  B : [1,...,3]  ;CONSTRAINTS: A < B + 42,B <= C +56;|
+|translate?|getErrors!|fail?|
+|null|$ERR=|true|
+
+!|Translator|fichier inconsistant|DOMAINS: X : [-10,...,10],  Y : [-10,...,10],  Z : [-10,...,10]; CONSTRAINTS: 1+X = 2*Y+Z, Z-X=3, X+Y=5+Z; |
+|translate!|getErrors?|fail?|
+|$ID=|[]|false|
+
+!|Translator|fichier avec 4 erreurs|DOMAINS:  A : [1,...,5]  C : [1...5],  B : [1,...,3] CONSTRAINTS: A < B + 42B <= C +56|
+|translate?|getErrors!|fail?|
+|null|$ERR=|true|

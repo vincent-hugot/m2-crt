@@ -1,0 +1,10 @@
+!contents -R2 -g -p -f -h
+
+!path lib/fitnesse.jar
+!path ./bin
+
+
+!define TEST_SYSTEM {slim}
+ 
+!define COLLAPSE_SETUP {true}
+!define COLLAPSE_TEARDOWN {true}
