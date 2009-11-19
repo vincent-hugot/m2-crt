@@ -362,4 +362,12 @@ public class AC3 {
 		// If no valid value, or reference/val is not left nor right, no value found
 		return false;
 	}
+
+
+	/**
+	 * @return the x
+	 */
+	public ArrayList<Variable> getX() {
+		return X;
+	}
 }

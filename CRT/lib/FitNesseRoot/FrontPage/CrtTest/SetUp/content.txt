@@ -4,4 +4,4 @@
 |model|
 
 !|import|
-|ac|
+|fitnesse|
