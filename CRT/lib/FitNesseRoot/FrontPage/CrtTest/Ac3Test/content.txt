@@ -1,10 +1,13 @@
 !define TEST_SYSTEM {slim}
 
 
-!|script|AC3Fitnesse|DOMAINS:  X : [0,...,9]; CONSTRAINTS: X > 2; |
+!|script|AC3Fitnesse|DOMAINS:  X : [0,...,10], Y : [0,...,6], Z : [5,...,10]; CONSTRAINTS: X = Y, X<>3, X<>Z; |
 |show|toString|
-|check|ListeValeur|[1, 2]|Hors Du Domaine De|X|true|
-|check|ListeValeur|[3, 4, 5, 6, 7, 8, 9]|Appartient Au Domaine De|X|true|
+|check|ListeValeur|[0, 1, 2, 4, 5, 6]|Appartient Au Domaine De|X|true|
+|check|ListeValeur|[0, 1, 2, 4, 5, 6]|Appartient Au Domaine De|Y|true|
+|check|ListeValeur|[3, 7, 8, 9, 10]|Hors Du Domaine De|X|true|
+|check|ListeValeur|[3]|Hors Du Domaine De|Y|true|
+|check|ListeValeur|[5, 6, 7, 8, 9, 10]|Appartient Au Domaine De|Z|true|
 
 !|script|AC3Fitnesse|DOMAINS:  X : [0,...,9], Y : [0,...,9]; CONSTRAINTS: X = Y + 2; |
 |check|ListeValeur|[0, 1]|Hors Du Domaine De|X|true|

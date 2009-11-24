@@ -38,6 +38,7 @@
 		<delete dir="${classes.output.dir}"/>
 		<mkdir dir="${classes.output.dir}"/>
 		<javac srcdir="${java.src.dir}" destdir="${classes.output.dir}" classpathref="src.classpath" debug="true" debuglevel="lines,source"/>
+		<javac srcdir="./testfonctionnel" destdir="${classes.output.dir}" classpathref="src.classpath" debug="true" debuglevel="lines,source"/>
 	</target>
 	
 	<target name="test-compile" depends="compile" description="compile test classes">		
