@@ -59,7 +59,7 @@ public class AC6 {
 	 * @return Whether or not a relevant value can be found for b.
 	 */
 	private boolean nextSupport(Constraint cons, Integer a, Integer b) {
-	
+		//TODO Correct it for the smallest value
 		boolean emptySupport;
 		int tmpa, tmpb;
 
@@ -160,7 +160,7 @@ public class AC6 {
 
 		ValuedVariable tmp, tmp2;
 		Integer b;
-		ArrayList<Integer> toRemove = new ArrayList<Integer>();
+		ArrayList<Integer> toRemove;
 
 		// We build and retrieve in values all the possible couples (Variable, value) in the model
 		values = model.getValues();
@@ -169,11 +169,11 @@ public class AC6 {
 		for (Constraint cons : model.getConstraints()) {
 
 			// For each possible value of the left's variable
-			
+			toRemove = new ArrayList<Integer>();
 			for (Integer a : cons.getLeft().getDomain()) {
 				
 				
-				b = new Integer(1);
+				b = cons.getRight().getDomain().least();
 
 				// We retrieve from the set the ValuedVariable corresponding to the current Variable and value
 				tmp = findValue(cons.getLeft(), a);
@@ -200,7 +200,6 @@ public class AC6 {
 						tmp2.add(tmp);
 					}
 				}
-				toRemove = new ArrayList<Integer>();
 			}
 			cons.getLeft().getDomain().removeAll(toRemove);
 		}
