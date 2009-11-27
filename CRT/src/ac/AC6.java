@@ -202,6 +202,9 @@ public class AC6 {
 				}
 			}
 			cons.getLeft().getDomain().removeAll(toRemove);
+			
+			if(!toRemove.isEmpty() && !cons.getLeft().getAssociatedSubstitutions().isEmpty())
+				updateSubstitutions();
 		}
 	}
 
@@ -231,6 +234,10 @@ public class AC6 {
 						// If not yet again we remove the value from the domain and replace the couple in the waiting
 						// list
 						vala.getVar().getDomain().remove(vala.getVal().intValue());
+						
+						if(!vala.getVar().getAssociatedSubstitutions().isEmpty())
+							updateSubstitutions();
+						
 						waitingList.add(vala);
 
 					}
