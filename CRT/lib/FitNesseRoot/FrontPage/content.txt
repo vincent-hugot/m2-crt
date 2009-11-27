@@ -14,4 +14,4 @@ To add your first "page", click the [[Edit][FrontPage?edit]] button and add a [[
 
 >CrtTest
 
-http://localhost/?responder=shutdown
+http://localhost:1342/?responder=shutdown

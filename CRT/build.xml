@@ -144,7 +144,7 @@
 	
 	<target name="fitnesse" depends="compile">
 	    <java jar="${repertoire.de.fitnesse}/fitnesse.jar " fork="true">
-			<arg line="-p 80"/>
+			<arg line="-p 1342"/>
 			<arg line="-r ./lib/FitNesseRoot"/>
 		</java>
 	</target>
