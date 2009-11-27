@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import model.Constraint;
+import model.Domain;
 import model.Model;
+import model.Substitution;
 import model.Variable;
 
 /**
@@ -253,5 +255,141 @@ public class AC6 {
 			}
 		}
 		return v;
+	}
+	
+	
+	
+	
+	
+	
+	
+	/* Substitution handling (from AC3) */
+	
+	
+	
+	/**
+	 * General substitutions update, every step is done for every substitution
+	 * (see AC3 class description)
+	 * 
+	 * Note: manual REDUCE calls are done on (Xi,Xi) couple
+	 * (we wanna make propagation, but don't have any Xj exclude)
+	 * 
+	 * Comments are done from example: Z = A + B
+	 */
+	public void updateSubstitutions() {
+		Domain toRemove = new Domain();
+		
+		
+		//for (Substitution sub : model.getSubstitutions()) {
+		for (int i=model.getSubstitutions().size()-1; i>=0; i--) {
+			
+			Substitution sub = model.getSubstitutions().get(i);
+			
+			
+			// Step 1: D(Z) reduction from D(A+B)
+			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
+					sub.getSubstitutionOperator(),
+					sub.getRight().getDomain()
+			);
+			
+			// Restriction + reduce on every (xk,Z)
+			if (sub.getSubstitutionVariable().getDomain().restrict(newDomain)) {
+				
+				for (Integer val : sub.getSubstitutionVariable().getDomain()) {
+					waitingList.add(new ValuedVariable(sub.getSubstitutionVariable(), val));
+				}
+				
+			}
+			
+			
+			// Step 2: restraining A
+			toRemove.clear();
+			for (Integer aa : sub.getLeft().getDomain()) {
+				
+				if (!findSubstitutionVals(sub, aa, sub.getLeft())) { // reduce on every (xk,A)
+					toRemove.add(aa);
+					
+					for (Integer val : sub.getSubstitutionVariable().getDomain()) {
+						waitingList.add(new ValuedVariable(sub.getSubstitutionVariable(), val));
+					}
+				}
+			}
+			sub.getLeft().getDomain().removeAll(toRemove);
+			
+			
+			// Step 3: restraining B
+			toRemove.clear();
+			for (Integer ab : sub.getRight().getDomain()) {
+				
+				if (!findSubstitutionVals(sub, ab, sub.getRight())) { // reduce on every (xk,B)
+					toRemove.add(ab);
+					for (Integer val : sub.getSubstitutionVariable().getDomain()) {
+						waitingList.add(new ValuedVariable(sub.getSubstitutionVariable(), val));
+					}
+				}
+			}
+			sub.getRight().getDomain().removeAll(toRemove);
+		}
+	}
+	
+	
+	/**
+	 * (Assuming a Z=A+B substitution example)
+	 * 
+	 * Special findAj version, for substitution.
+	 * Checks if a value of A or B doesn't break the substitution
+	 * (it breaks if Z was reduced, and val in A or B can no longer give a single value in Z)
+	 * 
+	 * We are given:
+	 * - The substitution
+	 * - Value of A or B to be tested
+	 * - Were (out of A and B) does this value belong
+	 * 
+	 * If val in A, we tests Z&B values, else we test Z&A ones.
+	 * 
+	 * Idea is that we must have a triplet of values so that
+	 * Az = Aa [operator] Ab
+	 * 
+	 * @param sub the Substitution to test
+	 * @param val the A or B value to check if it doesn't outright the substitution
+	 * @param reference the Variable that contains val (A or B, aka left or right)
+	 * @return true if there was a compatible aj, false otherwise
+	 */
+	public boolean findSubstitutionVals(Substitution sub, int val, Variable reference) {
+		
+		/* reference/val is Left (A) */
+		if (reference == sub.getLeft()) {
+			
+			// For each Az value of D(Z)
+			for (Integer az : sub.getSubstitutionVariable().getDomain()) {
+				
+				// For each Ab of D(B)
+				for (Integer ab : sub.getRight().getDomain()) {
+					
+					// YATTA! Az = val + Ab
+					if (sub.areValidValues(az, val, ab))
+						return true;
+				}
+			}
+		}
+
+		/* reference/val is Right (B) */
+		if (reference == sub.getRight()) {
+			
+			// For each Az value of D(Z)
+			for (Integer az : sub.getSubstitutionVariable().getDomain()) {
+				
+				// For each Aa of D(A)
+				for (Integer aa : sub.getLeft().getDomain()) {
+					
+					// YATTA! Az = Aa + val
+					if (sub.areValidValues(az, aa, val))
+						return true;
+				}
+			}
+		}
+		
+		// If no valid value, or reference/val is not left nor right, no value found
+		return false;
 	}
 }
