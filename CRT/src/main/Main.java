@@ -98,7 +98,10 @@ public class Main {
 			}
 			else if (cmd.equals("ac6"))
 			{
-				System.out.println("AC6 not implemented yet... please come back later.");
+				System.out.println("Applying AC3 algorithm...");
+				AC3 ac3 = new AC3(currentModel);
+				ac3.run();
+				//System.out.println("AC6 not implemented yet... please come back later.");
 			}
 			else 
 			{
