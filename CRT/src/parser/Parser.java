@@ -553,8 +553,7 @@ package parser;
       return (jj_ntk = jj_nt.kind);
   }
 
-  @SuppressWarnings("unchecked")
-private java.util.List jj_expentries = new java.util.ArrayList();
+  private java.util.List jj_expentries = new java.util.ArrayList();
   private int[] jj_expentry;
   private int jj_kind = -1;
 

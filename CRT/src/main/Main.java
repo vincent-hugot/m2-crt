@@ -105,7 +105,7 @@ public class Main {
 			}
 			else 
 			{
-				System.err.println("Unknown command! Ignoring it...");
+				System.err.println("Unknown command \""+cmd+"\"! Ignoring it...");
 			}
 		} /* end iteration over array of commands */
 		

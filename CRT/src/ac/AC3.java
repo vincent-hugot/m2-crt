@@ -264,7 +264,11 @@ public class AC3 {
 		Domain toRemove = new Domain();
 		
 		
-		for (Substitution sub : model.getSubstitutions()) {
+		//for (Substitution sub : model.getSubstitutions()) {
+		for (int i=model.getSubstitutions().size()-1; i>=0; i--) {
+			
+			Substitution sub = model.getSubstitutions().get(i);
+			
 			
 			// Step 1: D(Z) reduction from D(A+B)
 			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
