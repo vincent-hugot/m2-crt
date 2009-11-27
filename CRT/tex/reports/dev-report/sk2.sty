@@ -1,0 +1,220 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Package file SwissKnife 2 (sk2) - Vincent HUGOT      %
+%   2.0                                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{sk2}[2009/10/24 Generic tools to make one's life easier, version 2.]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\OPTcommon{0}
+\DeclareOption{common}{
+  \def\OPTcommon{1}
+
+%%%% SHORTCUTS
+\newcommand{\bk}{\bigskip}
+\newcommand{\mk}{\medskip}
+\newcommand\sk\smallskip
+\newcommand\ie{\emph{ie.\ }}
+\newcommand\noi\noindent
+
+%%%% COSMETIC IMPROVEMENTS
+\renewcommand\labelitemi{$\diamond$}
+\renewcommand\labelitemii{$\triangleright$}
+\renewcommand\labelitemiii{$\star$}
+\renewcommand\labelitemiv{$\circ$}
+
+\renewcommand{\thefootnote}{\,(\arabic{footnote})}
+
+\renewcommand\labelenumi{\textbf{\theenumi.}}
+\renewcommand\labelenumii{\textbf{(\theenumii)}}
+\renewcommand\labelenumiii{\textbf{\theenumiii.}}
+\renewcommand\labelenumiv{\textbf{\theenumiv.}}
+
+} % END OPTION
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\OPTmath{0}
+\DeclareOption{math}{
+  \def\OPTmath{1}
+} % END OPTION
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\OPTthm{0}
+\DeclareOption{thm}{
+  \def\OPTthm{1}
+} % END OPTION
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\OPTpstricks{0}
+\DeclareOption{pstricks}{
+  \def\OPTpstricks{1}
+} % END OPTION
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MATH ABBREVIATIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareOption{mathAbbrev} {
+\ExecuteOptions{math}
+
+%%%% MISCELLANEOUS
+
+% build xud stacks u and d up and down x.
+\newcommand\build[3]{\ensuremath{\mathrel{\mathop{#1}\limits_{#2}^{#3}}}}
+
+% restriction of a term or function
+\newcommand{\restr}[2]{\left.#1\right|_{#2}}
+
+% ghost : adjusts the delimiters (useful for nested formulaes)
+\newcommand{\g}{\vphantom}
+\newcommand{\gi}{\g{\bigl( \bigr.}}
+\newcommand{\gii}{\g{\Bigl( \bigr.}}
+\newcommand{\giii}{\g{\biggl( \biggr.}}
+\newcommand{\giv}{\g{\Biggl( \Biggr.}}
+%\newcommand{\gv}{\g{\M{1\\1\\1}}}
+%\newcommand{\gvi}{\g{\M{1\\1\\1\\1}}}
+%\newcommand{\gvii}{\g{\M{1\\1\\1\\1\\1}}}
+%\newcommand{\gviii}{\g{\M{1\\1\\1\\1\\1\\1}}}
+%\newcommand{\gix}{\g{\M{1\\1\\1\\1\\1\\1\\1}}}
+%\newcommand{\gx}{\g{\M{1\\1\\1\\1\\1\\1\\1\\1}}}
+
+%%%% COMMON SETS
+\newcommand{\R}{\ensuremath{\mathbb{R}}} 
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}} 
+\newcommand{\C}{\ensuremath{\mathbb{C}}} 
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}} 
+\newcommand{\K}{\ensuremath{\mathbb{K}}}
+
+%%%% TYPOGRAPHY
+\newcommand{\mc}{\mathcal}
+\newcommand\x\text
+
+%%%% SYMBOLS
+\newcommand{\eps}{\ensuremath{\varepsilon}}
+\newcommand{\st}{\mid} % such that...
+\renewcommand{\t}{\cdot} % times...
+
+%Greek letters
+\newcommand{\ga}{\ensuremath{\alpha}}
+\newcommand{\gb}{\ensuremath{\beta}}
+\newcommand{\gc}{\ensuremath{\gamma}}
+\newcommand{\gd}{\ensuremath{\delta}}
+%\newcommand{\ge}{\ensuremath{\epsilon}}
+\newcommand{\gz}{\ensuremath{\zeta}}
+\newcommand{\gth}{\ensuremath{\theta}}
+\newcommand{\gt}{\ensuremath{\tau}}
+\newcommand{\go}{\ensuremath{\omega}}
+\newcommand{\gs}{\ensuremath{\sigma}}
+\newcommand{\gu}{\ensuremath{\upsilon}}
+\newcommand{\gr}{\ensuremath{\rho}}
+\newcommand{\gvr}{\ensuremath{\varrho}}
+\newcommand{\gl}{\ensuremath{\lambda}}
+\newcommand{\gp}{\ensuremath{\varphi}}
+\newcommand{\gps}{\ensuremath{\psi}}
+% capitals....
+\newcommand{\gD}{\ensuremath{\Delta}}
+\newcommand{\gO}{\ensuremath{\Omega}}
+\newcommand{\gS}{\ensuremath{\Sigma}}
+\newcommand{\gT}{\ensuremath{\Theta}}
+
+
+%%%% DELIMITERS
+\newcommand{\parentheses}[1]{\left( #1 \right)}
+\newcommand \p \parentheses
+
+\newcommand{\brackets}[1]{\left[ #1 \right]}
+\newcommand \pb \brackets
+
+\newcommand{\curlyBraces}[1]{\left\{ #1 \right\}}
+\newcommand\pc\curlyBraces
+\newcommand\set[1]{\curlyBraces{\,#1\,}}
+
+\newcommand{\doubleBrackets}[1]{\left\llbracket #1 \right\rrbracket}
+\newcommand\intInterval[2]{\doubleBrackets{#1,#2}}
+
+%%%% OPERATORS
+
+\newcommand\tand{\text{\ and\ }}
+\newcommand\ttand{\text{\quad and\quad}}
+\newcommand\tor{\text{\ or\ }}
+
+\newcommand\eqdef{\;\smash[b]{\build{=}{}{\x{def}}}\;}
+
+\newcommand\nmodels{\models\!\!\!\!\!/\;\,}
+
+% inclusions and supersets (No/Strict)
+\newcommand\sinc\subset
+\newcommand\ssup\supset
+\newcommand\incl\subseteq
+\newcommand\sups\supseteq
+\newcommand\ninc\nsubseteq
+\newcommand\nsup\nsupseteq
+%\newcommand\nsinc
+%\newcommand\nssup
+
+% union & intersection & such
+\newcommand\union\cup
+\newcommand\inter\cap
+
+%%%% BIG OPERATORS
+% auto index
+\newcommand\Sum[3]{sum_{#1=#2}^{#3}}
+\newcommand{\Und}[3]{\bigwedge_{#1=#2}^{#3}}
+\newcommand{\Oder}[3]{\bigvee_{#1=#2}^{#3}}
+
+% raw
+\newcommand\lAnd\bigwedge
+\newcommand\lOr\bigvee
+\newcommand\Union\bigcup
+\newcommand\Inter\bigcap
+
+} % END MATH ABBREVIATIONS
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COMMON OPTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ExecuteOptions{common,mathAbbrev}
+
+\ProcessOptions\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifnum \OPTcommon=1
+  \usepackage[dvips]{graphicx}
+  \usepackage[utf8]{inputenc}
+  \usepackage{verbatim}
+  % Use Bera Mono as typewriter font
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+  \usepackage[scaled=0.8]{beramono}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifnum \OPTmath=1
+  \usepackage{amsmath,amssymb}
+  \usepackage{stmaryrd} %extra logic symbols
+\fi
+
+\ifnum \OPTthm=1
+  \usepackage{amsthm}
+  \theoremstyle{plain}
+  \newtheorem{thm}{Theorem}[subsection]
+  \newtheorem{lem}{Lemma}[subsection]
+  \newtheorem{cor}{Corollary}[subsection]
+  \theoremstyle{definition}
+  \newtheorem{defn}{Definition}[subsection]
+\fi
+
+\ifnum \OPTpstricks=1
+  \usepackage{pst-3d,pst-coil,pst-eps,pst-fill,pst-grad,pst-node,pst-plot,pst-text,pst-tree}
+  \psset{treesep=0.7cm,levelsep=2cm,treemode=B,nodesep=4pt,radius=2pt,treefit=tight,linewidth=.8pt,xunit=1cm,yunit=1cm}
+  \newcommand\armedge{\ncdiag[armA=0,angleB=180,armB=1cm]}
+\fi
