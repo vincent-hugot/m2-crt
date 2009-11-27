@@ -39,7 +39,9 @@ public class AC6 {
 	 * Run the algorithm
 	 */
 	public void run() {
+
 		init();
+	
 		propagation();
 	}
 
@@ -57,6 +59,7 @@ public class AC6 {
 	 * @return Whether or not a relevant value can be found for b.
 	 */
 	private boolean nextSupport(Constraint cons, Integer a, Integer b) {
+	
 		boolean emptySupport;
 		int tmpa, tmpb;
 
@@ -79,18 +82,22 @@ public class AC6 {
 
 			// Search of the smallest support for the couple (left, a) in right's domain
 			while (!cons.areValidValues(left, right, tmpa, tmpb) && !emptySupport) {
-				if (tmpb < right.getDomain().last()) {
-					tmpb = right.getDomain().next(tmpb);
+				if (tmpb < right.getDomain().last().intValue()) {
+					
+					tmpb = right.getDomain().next(tmpb);//System.out.println("machin");
 				}
 				else {
+					
 					emptySupport = true;
 				}
 			}
+			
 		}
 		else {
 			emptySupport = true;
 		}
 		b = new Integer(tmpb);
+
 		return !emptySupport;
 	}
 
@@ -153,6 +160,7 @@ public class AC6 {
 
 		ValuedVariable tmp, tmp2;
 		Integer b;
+		ArrayList<Integer> toRemove = new ArrayList<Integer>();
 
 		// We build and retrieve in values all the possible couples (Variable, value) in the model
 		values = model.getValues();
@@ -161,7 +169,10 @@ public class AC6 {
 		for (Constraint cons : model.getConstraints()) {
 
 			// For each possible value of the left's variable
+			
 			for (Integer a : cons.getLeft().getDomain()) {
+				
+				
 				b = new Integer(1);
 
 				// We retrieve from the set the ValuedVariable corresponding to the current Variable and value
@@ -171,13 +182,16 @@ public class AC6 {
 				if (!nextSupport(cons, a, b)) {
 
 					// We remove the current unnecessary value from the model
-					cons.getLeft().getDomain().remove(a.intValue());
-
+					//cons.getLeft().getDomain().remove(a.intValue());
+					toRemove.add(a);
+					
 					// And then add the modified ValuedVariable to the waiting list
 					if (tmp != null) {
 						waitingList.add(tmp);
 					}
 				}
+				
+				
 				else {
 					// If this is the case we simply add the current couple (tmp) to the corresponding's one (tmp2)
 					// support set
@@ -186,7 +200,9 @@ public class AC6 {
 						tmp2.add(tmp);
 					}
 				}
+				toRemove = new ArrayList<Integer>();
 			}
+			cons.getLeft().getDomain().removeAll(toRemove);
 		}
 	}
 

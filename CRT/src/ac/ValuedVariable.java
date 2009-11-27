@@ -128,4 +128,7 @@ public class ValuedVariable {
 		this.val = val;
 	}
 
+	public String toString(){
+		return var + " \n value : " + val;
+	}
 }

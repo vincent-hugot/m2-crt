@@ -52,7 +52,7 @@ public class Domain extends TreeSet<Integer> {
 	 * @param n
 	 */
 	public int next(int n) {
-		return ceiling(n);
+		return ceiling(n+1);
 	}
 	
 	/**
