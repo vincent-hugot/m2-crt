@@ -1,39 +1,49 @@
+/**
+ * 
+ */
 package fitnesse;
+
 import java.util.ArrayList;
-import translator.*;
-import model.*;
-import java.util.*;
+import java.util.Iterator;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import ac.*;
+
+import model.Model;
+import model.Variable;
+import translator.Translator;
+import ac.AC6;
 
 /**
  * 
  *
- *l'objectif de la classe AC6Fitnesse est de tester l'algorithme AC6 
+ *l'objectif de la classe AC3Fitnesse est de tester l'algorithme AC3 
  *à partir d'une seule classe.
  *
  */
 
-public class AC3Fitnesse {
+public class AC6Fitnesse {
 	
 	private Translator translator; //contient le parseur
-	private Model model;//contient le modele, on pourra l'afficher si besoin
-	private ArrayList<Variable> X;//contient toutes les variables (avec leur domaine) apres application de l'algo ac3 
+	public Model model;//contient le modele initial, on pourra l'afficher si besoin
+	private ArrayList<Variable> listeVariables;//contient toutes les variables (avec leur domaine) apres application de l'algo ac3 
+	
 	
 	/**
 	 * @param fileContent
 	 * Constructeur qui prend en argument le contenu d'un fichier
 	 * puis applique AC3, il définit également les variables model et X
 	 */
-	public AC3Fitnesse(String fileContent){
+	public AC6Fitnesse(String fileContent){
 		translator = new Translator("Test Fitnesse", fileContent);
 		model = translator.translate();
+		AC6 ac6=new AC6(model);
+		ac6.run();
+		listeVariables = model.getVariables();
+		/*en fait le model qu'on a fournit au constructeur d'AC6Fitnesse est modifie 
+		 * mais on garde le pointeur sur ce modele
+		 * meme s'il devient un attribut private
+		 */
 		
-		AC3 ac3=new AC3(model);
-		ac3.run();
-		//X = ac3.getX();
-		X = model.getVariables();
 	}
 	/**
 	 * @param val
@@ -44,7 +54,7 @@ public class AC3Fitnesse {
 	 * retourne faux dans tous les autres cas
 	 */
 	public boolean ValeurAppartientAuDomaineDe(int val, String variableName){
-		Iterator<Variable> i = X.iterator();
+		Iterator<Variable> i = listeVariables.iterator();
 		Variable variable = null;
 		boolean variableTrouvee = false;
 		
@@ -77,7 +87,7 @@ public class AC3Fitnesse {
 	 * sert à tester une assert true 
 	 */
 	public boolean ListeValeurAppartientAuDomaineDe(Integer[] val, String variableName){
-		Iterator<Variable> i = X.iterator();
+		Iterator<Variable> i = listeVariables.iterator();
 		Variable variable = null;
 		boolean variableTrouvee = false;
 		
@@ -116,7 +126,7 @@ public class AC3Fitnesse {
 	 * sert à tester une assert true
 	 */
 	public boolean ListeValeurHorsDuDomaineDe(Integer[] val, String variableName){
-		Iterator<Variable> i = X.iterator();
+		Iterator<Variable> i = listeVariables.iterator();
 		Variable variable = null;
 		boolean variableTrouvee = false;
 		boolean toutesVariablesHorsDomaine = true;
@@ -143,11 +153,13 @@ public class AC3Fitnesse {
 	}
 	
 	public String toString(){// en fait pas de modif visuelle du model
-		return X.toString();
+		return listeVariables.toString();
 	}
 
 	public static void main (String [] args){
-		
+		String content="DOMAINS: X : [0,...,10], Y : [0,...,6], Z : [5,...,10]; CONSTRAINTS: X = Y, X<>3, X<>Z;";
+		AC6Fitnesse fitnesseTestAc6 = new AC6Fitnesse(content);
+		System.out.println(fitnesseTestAc6.model);
 	}
 	
 	
