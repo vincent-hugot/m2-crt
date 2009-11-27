@@ -16,7 +16,7 @@ import ac.AC6;
 /**
  * 
  *
- *l'objectif de la classe AC3Fitnesse est de tester l'algorithme AC3 
+ *l'objectif de la classe AC6Fitnesse est de tester l'algorithme AC3 
  *à partir d'une seule classe.
  *
  */
@@ -25,13 +25,13 @@ public class AC6Fitnesse {
 	
 	private Translator translator; //contient le parseur
 	public Model model;//contient le modele initial, on pourra l'afficher si besoin
-	private ArrayList<Variable> listeVariables;//contient toutes les variables (avec leur domaine) apres application de l'algo ac3 
+	private ArrayList<Variable> listeVariables;//contient toutes les variables (avec leur domaine) apres application de l'algo ac6 
 	
 	
 	/**
 	 * @param fileContent
 	 * Constructeur qui prend en argument le contenu d'un fichier
-	 * puis applique AC3, il définit également les variables model et X
+	 * puis applique AC6, il définit également les variables model et X
 	 */
 	public AC6Fitnesse(String fileContent){
 		translator = new Translator("Test Fitnesse", fileContent);
