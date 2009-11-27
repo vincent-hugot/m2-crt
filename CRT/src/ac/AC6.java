@@ -293,8 +293,12 @@ public class AC6 {
 	 * General substitutions update, every step is done for every substitution
 	 * (see AC3 class description)
 	 * 
-	 * Note: manual REDUCE calls are done on (Xi,Xi) couple
-	 * (we wanna make propagation, but don't have any Xj exclude)
+	 * Note: manual REDUCE calls are done on (Xi,Xi) couple (we wanna make
+	 * propagation, but don't have any Xj exclude)
+	 * 
+	 * Note 2: For dependencies problem, we HAVE to make 2 loops:
+	 * - from @1 to @n to propagate substitutions changes (due to sub. dependencies)
+	 * - from @n to @1 to re-propagates substitutions changes (due to variable change)
 	 * 
 	 * Comments are done from example: Z = A + B
 	 */
@@ -302,7 +306,59 @@ public class AC6 {
 		Domain toRemove = new Domain();
 		
 		
-		//for (Substitution sub : model.getSubstitutions()) {
+		
+		for (int i=0; i<model.getSubstitutions().size(); i++) {
+			
+			Substitution sub = model.getSubstitutions().get(i);
+			
+			
+			// Step 1: D(Z) reduction from D(A+B)
+			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
+					sub.getSubstitutionOperator(),
+					sub.getRight().getDomain()
+			);
+			
+			// Restriction + reduce on every (xk,Z)
+			if (sub.getSubstitutionVariable().getDomain().restrict(newDomain)) {
+				
+				for (Integer val : sub.getSubstitutionVariable().getDomain()) {
+					waitingList.add(new ValuedVariable(sub.getSubstitutionVariable(), val));
+				}
+				
+			}
+			
+			
+			// Step 2: restraining A
+			toRemove.clear();
+			for (Integer aa : sub.getLeft().getDomain()) {
+				
+				if (!findSubstitutionVals(sub, aa, sub.getLeft())) { // reduce on every (xk,A)
+					toRemove.add(aa);
+					
+					for (Integer val : sub.getSubstitutionVariable().getDomain()) {
+						waitingList.add(new ValuedVariable(sub.getSubstitutionVariable(), val));
+					}
+				}
+			}
+			sub.getLeft().getDomain().removeAll(toRemove);
+			
+			
+			// Step 3: restraining B
+			toRemove.clear();
+			for (Integer ab : sub.getRight().getDomain()) {
+				
+				if (!findSubstitutionVals(sub, ab, sub.getRight())) { // reduce on every (xk,B)
+					toRemove.add(ab);
+					for (Integer val : sub.getSubstitutionVariable().getDomain()) {
+						waitingList.add(new ValuedVariable(sub.getSubstitutionVariable(), val));
+					}
+				}
+			}
+			sub.getRight().getDomain().removeAll(toRemove);
+		}
+		
+		
+		
 		for (int i=model.getSubstitutions().size()-1; i>=0; i--) {
 			
 			Substitution sub = model.getSubstitutions().get(i);

@@ -11,66 +11,84 @@ import model.Variable;
 
 
 /**
- * AC3 algorithm.
- * First idea is to follow the algorithm we were given, thus every variable and method
- * is named as close to its algorithm equivalent as possible, needing less explanation.
+ * AC3 algorithm. First idea is to follow the algorithm we were given, thus
+ * every variable and method is named as close to its algorithm equivalent as
+ * possible, needing less explanation.
  * 
  * The composition of methods is as follow:
  * 
- * <br>- The 2 main functions: ac3() and revise() (main algorithm and REVISE)
  * <br>
- * <br>- AC3 uses initQueue(): the part that initialize QUEUE with every (xi,xj) in R
- * <br>- AC3 uses reduce(): the part that adds new (xk,xi) couples after a positive
- * return value from REVISE(xi,xj)
+ * - The 2 main functions: ac3() and revise() (main algorithm and REVISE) <br>
  * <br>
- * <br>- REVISE looks through every Ai from D(Xi), then uses findAj(): the part that
- * looks for any Aj from D(Xj) that make (Ai,Aj) compatible with every Cij
+ * - AC3 uses initQueue(): the part that initialize QUEUE with every (xi,xj) in
+ * R <br>
+ * - AC3 uses reduce(): the part that adds new (xk,xi) couples after a positive
+ * return value from REVISE(xi,xj) <br>
  * <br>
- * <br>To sum up, we have:
- * AC3 uses initQueue(). Then while(queue != {}), it takes a Couple, call REVISE on it,
- * if reduce is true, it uses reduce(Xi,Xj) to update the queue, this until queue is
- * empty.
- * <br>REVISE, goes through every Ai value from Xi, and asks findAj() if Ai is compatible
- * with Xj values and every Cij (every constraints between Xi and Xj).
+ * - REVISE looks through every Ai from D(Xi), then uses findAj(): the part that
+ * looks for any Aj from D(Xj) that make (Ai,Aj) compatible with every Cij <br>
+ * <br>
+ * To sum up, we have: AC3 uses initQueue(). Then while(queue != {}), it takes a
+ * Couple, call REVISE on it, if reduce is true, it uses reduce(Xi,Xj) to update
+ * the queue, this until queue is empty. <br>
+ * REVISE, goes through every Ai value from Xi, and asks findAj() if Ai is
+ * compatible with Xj values and every Cij (every constraints between Xi and
+ * Xj).
  * 
  * 
- * <br><br>A Couple class is used to have an (Xi,Xj) couple/arc in this very order.
+ * <br>
+ * <br>
+ * A Couple class is used to have an (Xi,Xj) couple/arc in this very order.
  * 
  * 
- * <br><br><br>There were 2 changes from the original AC3 algorithm.
+ * <br>
+ * <br>
+ * <br>
+ * There were 2 changes from the original AC3 algorithm.
  * 
- * <br><br>First, constants/numbers handling is done by declaring them as
- * special variables, only defined in [value..value].
- * <br>AC3 does not handle it, and remove this sole value if necessary.
- * It's up to the labelling part to check for illogic issues.
+ * <br>
+ * <br>
+ * First, constants/numbers handling is done by declaring them as special
+ * variables, only defined in [value..value]. <br>
+ * AC3 does not handle it, and remove this sole value if necessary. It's up to
+ * the labelling part to check for illogic issues.
  * 
- * <br><br>Then, AC3 can only handle binary constraints.
- * Thus, constraints with more than 2 members (constants including) are transformed into
- * a set of substitution, in the form of:
- * A < B + C  =>  A < S1, S1 = B + C.
- * (this example will be used next)
+ * <br>
+ * <br>
+ * Then, AC3 can only handle binary constraints. Thus, constraints with more
+ * than 2 members (constants including) are transformed into a set of
+ * substitution, in the form of: A < B + C => A < S1, S1 = B + C. (this example
+ * will be used next)
  * 
- * <br><br>Substitutions cannot be treated as constraints (still not binary), so
- * special handling is necessary. Here is the adopted strategy:
+ * <br>
+ * <br>
+ * Substitutions cannot be treated as constraints (still not binary), so special
+ * handling is necessary. Here is the adopted strategy:
  * 
- * <br>When/IF D(Xi) is restricted by REVISE, and Xi is part of a substitution,
- * a general "substitutions update" is runned. It's done on every substitution, and
- * done in 3 steps (example of S1=B+C):
- * <br>- D(B+C) is recalculated (in the case of previous B or C reduction), then
- * D(S1) is restricted according to new D(B+C)
- * <br>- Observing from B, for each Ab value of D(B), if there is no As1 in D(S1)
- * and Ab in D(B) combination so that As1 = Ab + Ac (or any operator), Ab is remove from
- * D(B).
- * <br>- Same thing from C to restrain D(C).
+ * <br>
+ * When/IF D(Xi) is restricted by REVISE, and Xi is part of a substitution, a
+ * general "substitutions update" is runned. It's done on every substitution,
+ * and done in 3 steps (example of S1=B+C): <br>
+ * - D(B+C) is recalculated (in the case of previous B or C reduction), then
+ * D(S1) is restricted according to new D(B+C) <br>
+ * - Observing from B, for each Ab value of D(B), if there is no As1 in D(S1)
+ * and Ab in D(B) combination so that As1 = Ab + Ac (or any operator), Ab is
+ * remove from D(B). <br>
+ * - Same thing from C to restrain D(C).
  * 
- * <br><br>When any of S1, B or C has changed, reduce() is applied on it.
- * <br>Step 1 updates S1 according to B+C (removes values that can no more be obtained)
- * <br>Step 2 and 3 update B and C (remove values of B or C that will NEVER
- * fit in the substitution anymore)
+ * <br>
+ * <br>
+ * When any of S1, B or C has changed, reduce() is applied on it. <br>
+ * Step 1 updates S1 according to B+C (removes values that can no more be
+ * obtained) <br>
+ * Step 2 and 3 update B and C (remove values of B or C that will NEVER fit in
+ * the substitution anymore)
  * 
- * <br><br>This update is done through updateSubstitutions() method, and in the
- * substitutions creation order (every dependency is respected.)
- * <br>It uses the findSubstitutionVals method, a Substitution version of findAj
+ * <br>
+ * <br>
+ * This update is done through updateSubstitutions() method, and in the
+ * substitutions creation order (every dependency is respected.) <br>
+ * It uses the findSubstitutionVals method, a Substitution version of findAj
  */
 public class AC3 {
 	
@@ -103,7 +121,8 @@ public class AC3 {
 			// Applying REVISE, then checking reduce
 			if (revise(c.getXi(), c.getXj())) {
 				
-				// There was a reduction, propagation to any (xk,xi) with k!=i && k!=j
+				// There was a reduction, propagation to any (xk,xi) with k!=i
+				// && k!=j
 				reduce(c.getXi(), c.getXj());
 			}
 		}
@@ -112,6 +131,7 @@ public class AC3 {
 	
 	/**
 	 * Queue initialisation (every couple)
+	 * 
 	 * @return
 	 */
 	public LinkedList<Couple> initQueue() {
@@ -119,9 +139,9 @@ public class AC3 {
 		
 		for (Variable xi : X) {
 			for (Variable xj : X) {
-				//if (!xi.equals(xj)) { // For the first time, we allow them
-				if (!model.getConstraintConcerningVariables(xi,xj).isEmpty()) {
-					Couple C = new Couple(xi,xj);
+				// if (!xi.equals(xj)) { // For the first time, we allow them
+				if (!model.getConstraintConcerningVariables(xi, xj).isEmpty()) {
+					Couple C = new Couple(xi, xj);
 					queue.push(C);
 				}
 			}
@@ -130,9 +150,10 @@ public class AC3 {
 	}
 	
 	
-	
+
 	/**
 	 * Revise part of the algorithm
+	 * 
 	 * @param xi
 	 * @param xj
 	 * @return
@@ -142,16 +163,16 @@ public class AC3 {
 		Domain toRemove = new Domain();
 		
 		// No constraints, no reduce.
-		if (model.getConstraintConcerningVariables(xi,xj).isEmpty()) return false;
+		if (model.getConstraintConcerningVariables(xi, xj).isEmpty()) return false;
 		
-		
-		/* Special case: Xi [op] Xi.
-		 * If every [op] is =, <= or >=, domain is left.
-		 * If any [op] is !=, < or >, domain is emptied.
-		 * No other constraint study is done
+
+		/*
+		 * Special case: Xi [op] Xi. If every [op] is =, <= or >=, domain is
+		 * left. If any [op] is !=, < or >, domain is emptied. No other
+		 * constraint study is done
 		 */
 		if (xi == xj) {
-			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
+			for (Constraint crt : model.getConstraintConcerningVariables(xi, xj)) {
 				
 				// If one Cij is not an equal-type, emptying and reduction
 				if (crt.getOp() == Operator.Constraint.NOT_EQUAL
@@ -161,23 +182,24 @@ public class AC3 {
 					xi.getDomain().clear();
 					
 					// Xi is reduced and belongs to a substitution
-					if (!xi.getAssociatedSubstitutions().isEmpty())
-						updateSubstitutions();
+					if (!xi.getAssociatedSubstitutions().isEmpty()) updateSubstitutions();
 					
 					return true; // There was a reduction
 				}
 			}
 		}
 		
-		
-		// Note: not removing directly, since iteration AND removal is prohibited
+
+		// Note: not removing directly, since iteration AND removal is
+		// prohibited
 		for (Integer ai : xi.getDomain()) {
 			
 			// Trying to find Aj | (Ai,Aj) respects every Cij constraint
 			if (!findAj(xi, xj, ai)) {
 				
-				// No Aj valid: Ai makes like a tree, and leaves. (HURR DURR sorry.)
-				//xi.getDomain().remove(ai);
+				// No Aj valid: Ai makes like a tree, and leaves. (HURR DURR
+				// sorry.)
+				// xi.getDomain().remove(ai);
 				toRemove.add(ai);
 				
 				reduce = true; // There was a reduction
@@ -189,15 +211,16 @@ public class AC3 {
 		xi.getDomain().removeAll(toRemove);
 		
 		// if Xi is reduced and belongs to a substitution
-		if (reduce && !xi.getAssociatedSubstitutions().isEmpty())
-			updateSubstitutions();
+		if (reduce && !xi.getAssociatedSubstitutions().isEmpty()) updateSubstitutions();
 		
 		return reduce;
 	}
 	
 	
 	/**
-	 * Given Ai in D(Xi), trying to find Aj | (Ai,Aj) respects every Cij constraint
+	 * Given Ai in D(Xi), trying to find Aj | (Ai,Aj) respects every Cij
+	 * constraint
+	 * 
 	 * @param xj
 	 * @param xi
 	 * @param ai
@@ -212,11 +235,10 @@ public class AC3 {
 			valid = true;
 			
 			// For each Cij
-			for (Constraint crt : model.getConstraintConcerningVariables(xi,xj)) {
+			for (Constraint crt : model.getConstraintConcerningVariables(xi, xj)) {
 				
 				// Only 1 non-respected constraint => Aj gets away.
-				if (!crt.areValidValues(xi,xj,ai,aj))
-					valid = false;
+				if (!crt.areValidValues(xi, xj, ai, aj)) valid = false;
 			}
 			
 			// Every Cij passed for (Ai,Aj), an Aj was found.
@@ -228,15 +250,15 @@ public class AC3 {
 	}
 	
 	
-	
+
 	/**
-	 * Method used when reacting to a positive "reduce" value in AC3's REVISE call:
-	 * Add any (xk,xi) couple to "queue", so that xk != xi && xk != xj,
-	 * and there is a relation/constraint betweend Xk and Xi
+	 * Method used when reacting to a positive "reduce" value in AC3's REVISE
+	 * call: Add any (xk,xi) couple to "queue", so that xk != xi && xk != xj,
+	 * and there is a relation/constraint between Xk and Xi
 	 * 
-	 * xk != xj is in the algorithm.
-	 * xk != xi is because we do not need to treat (Xi,Xi) case anymore
-	 * (it is a one-time reduce-or-not by adding them in the initial queue)
+	 * xk != xj is in the algorithm. xk != xi is because we do not need to treat
+	 * (Xi,Xi) case anymore (it is a one-time reduce-or-not by adding them in
+	 * the initial queue)
 	 * 
 	 * @param xi
 	 * @param xj
@@ -244,62 +266,108 @@ public class AC3 {
 	public void reduce(Variable xi, Variable xj) {
 		
 		for (Variable xk : X) {
-			if (xk != xi && xk != xj && !model.getConstraintConcerningVariables(xk,xi).isEmpty())
+			if (xk != xi && xk != xj && !model.getConstraintConcerningVariables(xk, xi).isEmpty())
 				queue.offer(new Couple(xk, xi));
 		}
 	}
 	
 	
-	
+
 	/**
 	 * General substitutions update, every step is done for every substitution
 	 * (see AC3 class description)
 	 * 
-	 * Note: manual REDUCE calls are done on (Xi,Xi) couple
-	 * (we wanna make propagation, but don't have any Xj exclude)
+	 * Note: manual REDUCE calls are done on (Xi,Xi) couple (we wanna make
+	 * propagation, but don't have any Xj exclude)
+	 * 
+	 * Note 2: For dependencies problem, we HAVE to make 2 loops:
+	 * - from @1 to @n to propagate substitutions changes (due to sub. dependencies)
+	 * - from @n to @1 to re-propagates substitutions changes (due to variable change)
 	 * 
 	 * Comments are done from example: Z = A + B
 	 */
 	public void updateSubstitutions() {
 		Domain toRemove = new Domain();
 		
-		
-		//for (Substitution sub : model.getSubstitutions()) {
-		for (int i=model.getSubstitutions().size()-1; i>=0; i--) {
+
+		for (int i=0; i<model.getSubstitutions().size(); i++) {
 			
 			Substitution sub = model.getSubstitutions().get(i);
 			
-			
+
 			// Step 1: D(Z) reduction from D(A+B)
 			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
-					sub.getSubstitutionOperator(),
-					sub.getRight().getDomain()
-			);
+					sub.getSubstitutionOperator(), sub.getRight().getDomain());
 			
 			// Restriction + reduce on every (xk,Z)
 			if (sub.getSubstitutionVariable().getDomain().restrict(newDomain))
-				reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+			reduce(sub.getSubstitutionVariable(), sub.getSubstitutionVariable());
 			
-			
+
 			// Step 2: restraining A
 			toRemove.clear();
 			for (Integer aa : sub.getLeft().getDomain()) {
 				
 				if (!findSubstitutionVals(sub, aa, sub.getLeft())) { // reduce on every (xk,A)
 					toRemove.add(aa);
-					reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+					// reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+					reduce(sub.getLeft(), sub.getLeft());
 				}
 			}
 			sub.getLeft().getDomain().removeAll(toRemove);
 			
-			
+
 			// Step 3: restraining B
 			toRemove.clear();
 			for (Integer ab : sub.getRight().getDomain()) {
 				
 				if (!findSubstitutionVals(sub, ab, sub.getRight())) { // reduce on every (xk,B)
 					toRemove.add(ab);
-					reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+					// reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+					reduce(sub.getRight(), sub.getRight());
+				}
+			}
+			sub.getRight().getDomain().removeAll(toRemove);
+		}
+		
+		
+
+		// for (Substitution sub : model.getSubstitutions()) {
+		for (int i = model.getSubstitutions().size() - 1; i >= 0; i--) {
+			
+			Substitution sub = model.getSubstitutions().get(i);
+			
+
+			// Step 1: D(Z) reduction from D(A+B)
+			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
+					sub.getSubstitutionOperator(), sub.getRight().getDomain());
+			
+			// Restriction + reduce on every (xk,Z)
+			if (sub.getSubstitutionVariable().getDomain().restrict(newDomain))
+				reduce(sub.getSubstitutionVariable(), sub.getSubstitutionVariable());
+			
+
+			// Step 2: restraining A
+			toRemove.clear();
+			for (Integer aa : sub.getLeft().getDomain()) {
+				
+				if (!findSubstitutionVals(sub, aa, sub.getLeft())) { // reduce on every (xk,A)
+					toRemove.add(aa);
+					// reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+					reduce(sub.getLeft(), sub.getLeft());
+				}
+			}
+			sub.getLeft().getDomain().removeAll(toRemove);
+			
+
+			// Step 3: restraining B
+			toRemove.clear();
+			for (Integer ab : sub.getRight().getDomain()) {
+				
+				if (!findSubstitutionVals(sub, ab, sub.getRight())) { // reduce on every (xk,B)
+					toRemove.add(ab);
+					// reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
+					reduce(sub.getRight(), sub.getRight());
 				}
 			}
 			sub.getRight().getDomain().removeAll(toRemove);
@@ -310,23 +378,23 @@ public class AC3 {
 	/**
 	 * (Assuming a Z=A+B substitution example)
 	 * 
-	 * Special findAj version, for substitution.
-	 * Checks if a value of A or B doesn't break the substitution
-	 * (it breaks if Z was reduced, and val in A or B can no longer give a single value in Z)
+	 * Special findAj version, for substitution. Checks if a value of A or B
+	 * doesn't break the substitution (it breaks if Z was reduced, and val in A
+	 * or B can no longer give a single value in Z)
 	 * 
-	 * We are given:
-	 * - The substitution
-	 * - Value of A or B to be tested
-	 * - Were (out of A and B) does this value belong
+	 * We are given: - The substitution - Value of A or B to be tested - Were
+	 * (out of A and B) does this value belong
 	 * 
 	 * If val in A, we tests Z&B values, else we test Z&A ones.
 	 * 
-	 * Idea is that we must have a triplet of values so that
-	 * Az = Aa [operator] Ab
+	 * Idea is that we must have a triplet of values so that Az = Aa [operator]
+	 * Ab
 	 * 
 	 * @param sub the Substitution to test
-	 * @param val the A or B value to check if it doesn't outright the substitution
-	 * @param reference the Variable that contains val (A or B, aka left or right)
+	 * @param val the A or B value to check if it doesn't outright the
+	 *            substitution
+	 * @param reference the Variable that contains val (A or B, aka left or
+	 *            right)
 	 * @return true if there was a compatible aj, false otherwise
 	 */
 	public boolean findSubstitutionVals(Substitution sub, int val, Variable reference) {
@@ -341,12 +409,11 @@ public class AC3 {
 				for (Integer ab : sub.getRight().getDomain()) {
 					
 					// YATTA! Az = val + Ab
-					if (sub.areValidValues(az, val, ab))
-						return true;
+					if (sub.areValidValues(az, val, ab)) return true;
 				}
 			}
 		}
-
+		
 		/* reference/val is Right (B) */
 		if (reference == sub.getRight()) {
 			
@@ -357,17 +424,17 @@ public class AC3 {
 				for (Integer aa : sub.getLeft().getDomain()) {
 					
 					// YATTA! Az = Aa + val
-					if (sub.areValidValues(az, aa, val))
-						return true;
+					if (sub.areValidValues(az, aa, val)) return true;
 				}
 			}
 		}
 		
-		// If no valid value, or reference/val is not left nor right, no value found
+		// If no valid value, or reference/val is not left nor right, no value
+		// found
 		return false;
 	}
-
-
+	
+	
 	/**
 	 * @return the x
 	 */
