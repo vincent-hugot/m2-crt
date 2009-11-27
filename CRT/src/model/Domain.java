@@ -167,23 +167,22 @@ public class Domain extends TreeSet<Integer> {
 	 */
 	public Domain arithmeticOperation(Operator.Arithmetic op, Domain d) {
 		
-		System.err.println("Call from D=" + d);
 		
 		Domain resultingDomain = new Domain();
 		for (Integer a : this) {
 			for (Integer b : d) {
 				Integer c = null;
 				switch (op) {
-				case ADD: System.err.println("ADD");
+				case ADD:
 					c = a+b;
 					break;
-				case SUB: System.err.println("SUB");
+				case SUB:
 					c = a-b;
 					break;
-				case DIV: System.err.println("DIV");
+				case DIV:
 					if (b != 0) c = a/b;
 					break;
-				case MUL: System.err.println("MUL");
+				case MUL:
 					c = a*b;
 					break;
 				}

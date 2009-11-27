@@ -37,27 +37,20 @@ public class Backtracking {
 	public String run() {
 		String res = "lol what";
 		
-		//Variable var = vars.get(0);
 		
-		/*System.out.println("[[" + var + "]] " + excludedDomains);
-		instanciate(var, 2);
-		System.out.println("[[" + var + "]] " + excludedDomains);
-		restore(var);
-		System.out.println("[[" + var + "]] " + excludedDomains);
-		System.out.println(getValue(var));*/
+		/*System.out.println(excludedDomains);
 		
+		System.out.println(excludedDomains);*/
 		
-		System.out.println(excludedDomains);
 		boolean win = instanciateR(0);
-		System.out.println(excludedDomains);
 		
 		if (!win) return "No solution";
 		
+		// Fetching solutions
 		ArrayList<String> solutions = new ArrayList<String>();
 		for (Variable var : vars) {
 			solutions.add(var.getName() + "=" + values.get(var));
 		}
-		
 		res = Tools.implode(solutions, ", ");
 		
 		return res;
@@ -73,11 +66,9 @@ public class Backtracking {
 		ArrayList<Variable> vars = new ArrayList<Variable>();
 		for (Variable var : model.getVariables()) {
 			
-			//System.out.println(var.getName() + " : " + (var instanceof Constant)
-			//		+ " / " + var.getName().startsWith(TranslationVisitor.SUBSTITUTE));
 			
-			
-			if (!((var instanceof Constant) || var.getName().startsWith(TranslationVisitor.SUBSTITUTE)))
+			if (!((var instanceof Constant)
+					|| var.getName().startsWith(TranslationVisitor.SUBSTITUTE)))
 				vars.add(var);
 			
 		}
@@ -114,21 +105,10 @@ public class Backtracking {
 		ArrayList<Integer> domList = new ArrayList<Integer>(dom);
 		
 		for (Integer val : domList) {
-		//for (int i=0; i<dom.size(); i++) {	
-			
-			//Integer val = dom.
 			
 			instanciate(var, val);
 			updateSubstitutions(); // Updating substitutions
 			
-			//if (!validModel()) {
-				//System.err.println("!validModel() at " + var.getName() + ":" + val);
-			//	return false;
-			//}
-			//else {
-				//System.err.println("validModel() at " + var.getName() + ":" + val);
-				//System.out.println(model);
-			//}
 			
 			// Instanciation is valid (for Model AND till the end)
 			if (validModel() && instanciateR(varIndice+1)) {
@@ -211,12 +191,12 @@ public class Backtracking {
 	 */
 	public boolean validModel() {
 		
-		System.err.println("---");
+		//System.err.println("---");
 		
 		// Looking for empty domains
 		for (Variable var : model.getVariables()) {
 			if (var.getDomain().isEmpty()) {
-				System.err.println("FAIL OF THE FAIL");
+				//System.err.println("FAIL OF THE FAIL");
 				return false;
 			}
 				
@@ -226,7 +206,7 @@ public class Backtracking {
 		// Looking through constraints
 		for (Constraint crt : model.getConstraints()) {
 			
-			System.err.println("Constraint : " + crt + " (Vars : " + model.getVariables() + ")");
+			//System.err.println("Constraint : " + crt + " (Vars : " + model.getVariables() + ")");
 			
 			Variable xi = crt.getLeft();
 			Variable xj = crt.getRight();
@@ -240,17 +220,17 @@ public class Backtracking {
 				boolean found = false;
 				for (Integer aj : xj.getDomain()) {
 					
-					System.err.println("      (Xi) " + xi.getName() + ":" + ai + "   (Xj) " + xj.getName() + ":" + aj);
+					//System.err.println("      (Xi) " + xi.getName() + ":" + ai + "   (Xj) " + xj.getName() + ":" + aj);
 					
 					if (crt.areValidValues(xi, xj, ai, aj)) {
 						found = true;
-						System.err.println("        FOUND!");
+						//System.err.println("        FOUND!");
 					}
 				}
 				
 				
 				if (!found) {
-					System.err.println("(crt) FAAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIL.");
+					//System.err.println("(crt) FAAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIL.");
 					return false;
 				}
 			}
@@ -260,7 +240,7 @@ public class Backtracking {
 		// Looking through substitutions
 		for (Substitution sub : model.getSubstitutions()) {
 			
-			System.err.println("Substitution : " + sub + " (Vars : " + model.getVariables() + ")");
+			//System.err.println("Substitution : " + sub + " (Vars : " + model.getVariables() + ")");
 			
 			
 			Variable xs = sub.getEqual();
@@ -271,23 +251,23 @@ public class Backtracking {
 			// \forall As in Xs, \exists Ai in Xi & \exists Aj in Xj | (As,Ai,Aj) compatible
 			for (Integer as : xs.getDomain()) {
 				
-				System.err.println("   (Xs) " + xs.getName() + ":" + as);
+				//System.err.println("   (Xs) " + xs.getName() + ":" + as);
 				
 				boolean found = false;
 				
 				for (Integer ai : xi.getDomain()) {
 					for (Integer aj : xj.getDomain()) {
-						System.err.println("      (Xi) " + xi.getName() + ":" + ai + "   (Xj) " + xj.getName() + ":" + aj);
+						//System.err.println("      (Xi) " + xi.getName() + ":" + ai + "   (Xj) " + xj.getName() + ":" + aj);
 						
 						if (sub.areValidValues(as, ai, aj)) {
 							found = true;
-							System.err.println("        FOUND!");
+							//System.err.println("        FOUND!");
 						}
 					}
 				}
 				
 				if (!found) {
-					System.err.println("(sub) FAAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIL.");
+					//System.err.println("(sub) FAAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIL.");
 					return false;
 				}
 			}
@@ -314,18 +294,18 @@ public class Backtracking {
 	 */
 	public void updateSubstitutions() {
 		
-		System.err.println("---\nUpdating... (Vars : " + model.getVariables() + ")");
+		//System.err.println("---\nUpdating... (Vars : " + model.getVariables() + ")");
 		
 		for (int i=0; i<model.getSubstitutions().size(); i++) {
 			
 			Substitution sub = model.getSubstitutions().get(i);
-			System.err.println("DomainRight : " + sub.getRight());
+			//System.err.println("DomainRight : " + sub.getRight());
 			
 			// Step 1: D(Z) reduction from D(A+B)
 			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
 					sub.getSubstitutionOperator(), sub.getRight().getDomain());
 			
-			System.err.println("{{{{"+newDomain+"}}}} " + sub);
+			//System.err.println("{{{{"+newDomain+"}}}} " + sub);
 			
 			ArrayList<Integer> toExclude = new ArrayList<Integer>();
 			for (Integer val : sub.getSubstitutionVariable().getDomain()) {
@@ -351,7 +331,7 @@ public class Backtracking {
 			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
 					sub.getSubstitutionOperator(), sub.getRight().getDomain());
 			
-			System.err.println("(((("+newDomain+")))) " + sub);
+			//System.err.println("(((("+newDomain+")))) " + sub);
 			
 			ArrayList<Integer> toExclude = new ArrayList<Integer>();
 			for (Integer val : sub.getSubstitutionVariable().getDomain()) {
@@ -370,7 +350,7 @@ public class Backtracking {
 	public void restoreSubstitutions() {
 		
 
-		System.err.println("---\nRestoring... (Vars : " + model.getVariables() + ")");
+		//System.err.println("---\nRestoring... (Vars : " + model.getVariables() + ")");
 		
 		for (Substitution sub : model.getSubstitutions()) {
 			
