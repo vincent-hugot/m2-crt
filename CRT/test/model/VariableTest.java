@@ -81,19 +81,4 @@ public class VariableTest {
 		
 		// Node : Constraints and Substitutions lists are tested elsewhere
 	}
-	
-		
-	
-	
-	/**
-	 * Checking an invariant on domains:
-	 * baseDomain = domain \/ excludedDomain
-	 * & domain /\ excludedDomain = {}
-	 * 
-	 * TODO : this will go in future Domain class.
-	 */
-	/*@Test
-	public void testInvariantDomain() {
-		
-	}*/
 }

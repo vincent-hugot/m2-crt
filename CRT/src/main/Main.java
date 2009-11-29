@@ -108,7 +108,7 @@ public class Main {
 			{
 				if (verbose) 
 					System.out.println("% LaTeX graph of the current model:");
-				// default warp values are +0.01 to avoid X.XXX E-30 or something
+				// default warp values are +0.01 to avoid X.XX E-30 or something
 				// which LaTeX doesn't like (loss of float precision with sinus)
 				System.out.println(currentModel.toLaTeX(2, 3.5, 0.51, 0.01));
 				
