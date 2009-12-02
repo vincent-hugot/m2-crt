@@ -102,7 +102,7 @@ public class AC6 {
 	}
 
 	/**
-	 * Used to find in all the constraints beetween the variables stored in valA and valB and see if they support the
+	 * Used to find in all the constraints between the variables stored in valA and valB and see if they support the
 	 * given values for each variable (or at least not smaller than the one of valB)
 	 * 
 	 * @param valA
@@ -114,7 +114,7 @@ public class AC6 {
 	private boolean nextSupport(ValuedVariable valA, ValuedVariable valB) {
 
 		/*
-		 * The principle here is basicaly the same as previously except that rather than searching in a unique
+		 * The principle here is basically the same as previously except that rather than searching in a unique
 		 * constraint we look at all the constraints concerning the two given variables.
 		 * 
 		 * The function will return true if and only if there exist support for each constraint. The new value contained
@@ -154,7 +154,7 @@ public class AC6 {
 	}
 
 	/**
-	 * The initialisation of the algorithm
+	 * The initialization of the algorithm
 	 */
 	private void init() {
 
@@ -167,9 +167,9 @@ public class AC6 {
 
 		// For each constraint
 		for (Constraint cons : model.getConstraints()) {
-
-			// For each possible value of the left's variable
+			
 			toRemove = new ArrayList<Integer>();
+			// For each possible value of the left's variable
 			for (Integer a : cons.getLeft().getDomain()) {
 				
 				
@@ -203,6 +203,7 @@ public class AC6 {
 			}
 			cons.getLeft().getDomain().removeAll(toRemove);
 			
+			//updating substitutions if needed
 			if(!toRemove.isEmpty() && !cons.getLeft().getAssociatedSubstitutions().isEmpty())
 				updateSubstitutions();
 		}
@@ -235,6 +236,7 @@ public class AC6 {
 						// list
 						vala.getVar().getDomain().remove(vala.getVal().intValue());
 						
+						//updating substitutions if needed
 						if(!vala.getVar().getAssociatedSubstitutions().isEmpty())
 							updateSubstitutions();
 						
@@ -252,7 +254,7 @@ public class AC6 {
 	}
 
 	/**
-	 * Find the ValuedVariable correponding the given Variable and Value
+	 * Find the ValuedVariable corresponding the given Variable and Value
 	 * 
 	 * @param var
 	 *            The variable in question
