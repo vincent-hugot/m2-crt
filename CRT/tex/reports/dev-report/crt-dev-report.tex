@@ -22,7 +22,7 @@
 \def\moli{\groupmember{Olivier}{Finot}}
 \def\mvin{\groupmember{Vincent}{Hugot}}
 \def\mmed{\groupmember{Mehdi}{Iraqi Houssaini}}
-\def\mbed{\groupmember{Bedr}{MOUAJAB}}
+\def\mbed{\groupmember{Bedr}{Mouajab}}
 \def\mdon{\groupmember{Donald}{Srey}}
 
 \def\grpd{Groupe Développement}
@@ -208,8 +208,13 @@ effectué pendant les premiers jours de "vacances".
 \subsection{Bilan de l'itération passée}
 
 \begin{itemize}
- \item \mmat\ a remanié AC3 de manière à répercuter les restrictions de domaines aux
- substitutions. 
+ \item \mmat\ a entièrement revu AC3 pour l'adapter au modèle développé, et l'a amélioré de manière à répercuter les restrictions de domaines aux substitutions.
+ La gestion des substitutions a demandé un travail de reflexion supplémentaire, car elle
+ n'était pas prise en compte par l'algorithme original.
+ Le choix retenu a été d'effectuer une propagation générale des valeurs dans les substitutions :
+ A l'instar de AC3 qui vérifie la compatibilité des variables entre elles par leurs contraintes,
+ cette amélioration vérifie la compatibilité des 3 variables d'une substitution, et met à jour les domaines.
+ Plus de détails sont donnés dans les commentaires du code source en AC3.
 \item \moli\ a implanté AC6 (sans support des substitutions)
 \item \mvin\ a implanté une méthode \texttt{main} permettant de piloter le programme
   en ligne de commande; ajouté une classe \tech{Domain} permettant
@@ -316,10 +321,11 @@ un algorithme de backtracking; le besoin de rédiger un rapport
 La répartition des tâches sur cette dernière séance de 
 travail était donc comme suit: 
 \begin{itemize}
- \item \mmat\ s'est chargé de l'algorithme de backtracking
+ \item \mmat\ s'est chargé de l'algorithme de backtracking.
 \item \mvin\ s'est chargé d'exhumer les rapports de réunion pour
 rédiger le présent rapport.
 \item \moli\ s'est chargé de continuer le travail sur AC6.
+La gestion des substitution s'est faite en reprenant directement le travail fait là-dessus sur AC3.
 \end{itemize}
 
 \section{Remarque générale}
