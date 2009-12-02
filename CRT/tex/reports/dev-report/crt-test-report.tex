@@ -1,0 +1,208 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[pstricks]{sk2}
+
+\author{Groupe CRT 1\\Test}
+
+\title{Rapport de projet}
+
+\def\tech{\texttt}
+
+% name formatting
+\def\familyname{\textsc}
+\def\firstname#1{#1}
+\def\groupmember#1#2{\firstname{#1} \familyname{#2}}
+
+% group members
+\def\mwyd{\groupmember{Wydade}{Ben Hamdia}}
+\def\mmat{\groupmember{Mathias}{Coqblin}}
+\def\mlou{\groupmember{Loubna}{Darkate}}
+\def\mmor{\groupmember{Mor Salla}{Fall}}
+\def\moli{\groupmember{Olivier}{Finot}}
+\def\mvin{\groupmember{Vincent}{Hugot}}
+\def\mmed{\groupmember{Mehdi}{Iraqi Houssaini}}
+\def\mbed{\groupmember{Bedr}{MOUAJAB}}
+\def\mdon{\groupmember{Donald}{Srey}}
+
+\def\grpd{Groupe Développement}
+\def\grpt{Groupe Test}
+
+\begin{document}
+ 
+\maketitle
+
+\tableofcontents
+
+\section{Réunion initiale (zéro): 2009-09-30}
+
+Durant cette première réunion durant le TP de CRT, nous 
+nous sommes répartis en deux sous-groupes, l'un dédié au développement
+de l'application, et l'autre au test.\mk\\
+%
+La répartition nominative de ces groupes est la suivante:
+\begin{itemize}
+\item \mvin : Chef de projet, chef \grpd
+\item \mmat
+\item \moli
+\item \mbed
+\item \mmed
+\end{itemize}
+
+
+\begin{itemize}
+\item \mwyd : Chef \grpt
+\item \mdon
+\item \mlou
+\item \mmor
+\end{itemize}
+
+
+\noi Les tâches définies pour l'itération étaient:
+
+\begin{itemize}
+ \item \moli\ et \mmat: Création (sur papier pour l'instant) d'un modèle objet cohérent sur lequel fonder le développement.
+\item  \mvin : Définition du langage d'entrée et écriture d'un parseur complet pour ce langage.
+\item Le \grpt, et d'une manière générale tout personne n'ayant pas de tâche précise,
+était chargé de se documenter sur les outils de test
+unitaire, plugins \texttt{Eclipse} dédiés aux tests etc
+\end{itemize}
+La raison pour laquelle tout le monde n'avait pas de tâche précise est que la 
+quasi-totalité des tâches de développement dépendent du modèle, lequel n'était 
+pas encore défini.\mk\\
+%
+Ce document étant le rapport du \grpd, les tâches du \grpt\ seront
+omises dans les sections suivantes.
+
+\section{Première réunion: 2009-10-6}
+
+\subsection{Bilan de l'itération passée}
+
+\subsection{Tâches pour la prochaine itération}
+
+\begin{itemize}
+ \item \mwyd\ et \mlou\ se sont occupé d'obtenir des informations sur un éventuel plugin Cobertura pour Eclipse.
+ \item \mdon\ et \mmor\ se sont occupé d'obtenir des informations sur un éventuel plugin Emma pour Eclipse
+\end{itemize}
+
+
+
+\section{Seconde réunion: 2009-10-14}
+
+\subsection{Bilan de l'itération passée}
+\begin{itemize}
+ \item Plugin Eclipse pour Cobertura :
+ Il n'existe apparemment pas de plugin Eclipse pour Cobertura. Les rapports HTML générés ne donnent aucun résultat(comme en TP).Il doit nous manquer quelque chose...
+
+\item Plugin Eclipse pour EMMA :
+ Il existe le plugin Eclemma. Il a été installé et testé sans problème.
+\end{itemize}
+
+\subsection{Tâches pour la prochaine itération}
+
+\begin{itemize}
+ \item \mlou\ et \mmor\ ont été chargé de mettre en place le serveur de Build continu Hudson.
+ \item \mdon\ et \mwyd\ ont été chargé de choisir le plugin à utiliser pour les tests JUnit (Cobertura ou Emma), puis d'aider à mettre en place le serveur Hudson, enfin de se documenter sur Fitnesse.
+ \item Pour l'équipe test: Faire passer les tests U: batterie des tests du parsing du fichier.
+
+\end{itemize}
+
+\section{Troisième réunion: 2009-10-21}
+
+\subsection{Bilan de l'itération passée}
+
+\begin{itemize}
+
+\item Aprés une réunion, \mdon\ , \mwyd\ et \mmor\ ont conseillé aux développeurs d'utiliser le plugin Emma après avoir vu qu'il était plus simple d'utilisation.
+
+ \item La majeure partie du travail effectuée par l'équipe test a consisté à essayer de mettre
+en place le serveur Hudson malheureusement sans succès. A ce sujet Emilie OUDOT, a
+mentionné que le fait que nous n'ayons pas de droits administrateurs sur Hudson puisse
+poser des problèmes, elle viendra en TP pour nous aider à résoudre ce soucis.
+D'autre part aucun travail n'a été fait sur Fitnesse, en outre il a été décidé d'utiliser
+Emma plutôt que Cobertura car certains tests ne passaient pas sous Cobertura et de plus
+Hudson intègre un plugin Emma.
+Ont été clairement redéfini les rôles des équipes quant aux divers tests à effectuer :
+
+L'équipe de developpement s'occupe des tests structurels, c'est à dire s'assurer que
+chaque méthode fait ce qui lui est demandé (tests unitaires avec JUnit).
+
+L'équipe de test s'occupe des tests structurels plus globaux (Fitnesse).
+Pour ce qui est de Fitnesse, a été décidé le fonctionnement suivant :
+Dans un premier temps, l'équipe de test doit définir ce qui doit être testé, quelles sont les
+caractéristiques attendues.
+
+\end{itemize}
+
+
+\subsection{Tâches pour la prochaine itération}
+
+\begin{itemize}
+
+\item La première chose à faire est la mise en place du serveur Hudson, ce qui devrait être
+fait durant la séance de TP.
+Ensuite il faudra s'occuper de Fitnesse.\dots
+
+\item Le travail à faire(proposé par l'équipe de dev) est de construire un langage régulier pour effectuer des tests sur Fitnesse.
+On s'apercevra par la suite que ce n'était pas nécessaire car Fitnesse ne nécessite pas de langage régulier.
+Ensuite, on devait tester si des valeurs appartenaient ou non au domaine d'une variable.
+
+\item On devait aussi s'occuper des tests de parsing du fichier qui étaient à faire pour cette itération.
+
+\end{itemize}
+
+\section{Quatrième réunion: 2009-10-30}
+
+Réunion pendant les vacances, faisant le bilan du travail
+effectué pendant les premiers jours de "vacances".
+
+\subsection{Bilan de l'itération passée}
+
+\begin{itemize}
+ \item On a suivi des tutorials sur Fitnesse. On a effectué quelques tests de parsing du fichier sur un serveur Fitnesse en local:
+ on a vérifié que le modèle renvoyé était nul (erreur synthaxique) ou non nul (pas d'erreur synthaxique).
+ \item Le serveur Hudson ne marche toujours pas malgré l'intervention d'Emilie OUDOT(problème de droits administrateurs).
+\end{itemize}
+
+
+\subsection{Tâches pour la prochaine itération}
+
+\`A ce stade, le développement était presque terminé, puisqu'il
+ ne restait plus qu'à ajouter le support des substitutions à AC6.\mk\\
+%
+Les réunions qui ont suivi ont été principalement consacrées à
+la discussion avec l'équipe de test sur Fitnesse.
+
+\begin{itemize}
+ \item Mettre en place le serveur Fitnesse avec des tests sur AC3, AC6 et le parseur.
+\end{itemize}
+
+
+\section{Dernière réunion/séance de développement: 2009-11-27}
+
+\begin{itemize}
+
+\item Durant cette longue période, nous avons eu un serveur Hudson avec les droits admin, mais en même temps l'équipe réseau a coupé l'accès en SSH à svnlmdinfo.univ-fcomte.fr.
+L'équipe de dev a donc migré notre SVN sur Google Code. Toutefois Hudson bloquait les commandes SVN par HTTP, on a donc abandonné Hudson.
+
+ \item Nous avons entre temps mis en place un serveur Fitnesse en local sur le port 1342 accessible via localhost:1342. Il est lancé par la commande ant fitnesse.
+ Il y a un lien pour stopper ce serveur depuis la page d'accueil, mais on peut aussi l'arrêter en stoppant le programme fitnesse\.jar.
+ Nous avons implémenter les tests du parseurs et des tests sur AC3.
+
+ \item Durant cette réunion, nous avons implémenté les mêmes tests qu'AC3 pour AC6, et l'équipe de dev nous a aidés à simplifier notre code.
+
+\item Nous avons commencé à rédiger un rapport de nos itérations.
+
+\end{itemize}
+
+\section{Remarque générale}
+
+Nos principaux problèmes ont été la mise en place du serveur Hudson qui a été entravé par les nécessités de sécurité de l'Université, et 
+aussi la compréhension globale du projet concernant les algorithmes AC3, AC6 et les différentes parties du programme.
+Donc finalement, nous nous sommes passés du serveur de build continu. Nous avons également oublié d'effectuer des tests avec l'opérateur de division.
+
+\section{Tests remarquables}
+
+Voici un test remarquable: lors de l'opération y*y, le 2eme y est considéré comme une variable différente du 1er y.
+Cette action est normale car les algo AC3 et AC6 ne font qu'effectuer un filtrage, il n'y a pas de valuation.
+Nos tests sur AC6 ont fait apparaître que l'algo AC6 éliminait moins de valeurs qu'AC3.
+
+\end{document}
