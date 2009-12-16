@@ -271,4 +271,10 @@ public class Model {
 		}
 		return res;
 	}
+	
+	public Variable backup(Variable v){
+		return null;
+	}
+	
+	public void restore(Variable v){}
 }
