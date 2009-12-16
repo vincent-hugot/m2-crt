@@ -274,7 +274,13 @@ public class Model {
 	}
 	
 	public Variable backup(Variable v){
-		return null;
+		
+	    Variable vc = new Variable(v.getName(),(Domain) v.getDomain().clone(),v.isArtificial());  
+		vc.associatedConstraints=v.getAssociatedConstraints(); 
+		vc.associatedSubstitutions=v.getAssociatedSubstitutions();
+	
+
+		return vc;
 	}
 	
 	/**
