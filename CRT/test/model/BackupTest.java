@@ -14,7 +14,6 @@ public class BackupTest {
 	private Variable x, y, z;
 	
 	public BackupTest(){
-		Variable x, y, z;
 		model.Constraint c1;
 		model.Constraint c2;
 		m = new Model();
