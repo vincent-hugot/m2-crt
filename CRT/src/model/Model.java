@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import ac.ValuedVariable;
 
@@ -276,5 +277,27 @@ public class Model {
 		return null;
 	}
 	
-	public void restore(Variable v){}
+	/**
+	 * @param v de type Variable, on remplace la variable dans l'ArrayList variables par v si elles ont le meme nom de variable
+	 * en fait il n'y a que la reference sur la variable qui change
+	 * et la reference sur le domaine de la variable
+	 */
+	public void restore(Variable v){
+		Iterator<Variable> iVar = variables.iterator();
+		Variable variable = null;//variable temporaire qui sert pour iterer
+		boolean variableTrouvee = false;//a t-on trouve la variable qui a le meme nom que v dans l'ArrayList variables
+		int i=0;//indice dans array list
+		
+		while (iVar.hasNext() && !variableTrouvee){
+			variable = ((Variable)iVar.next());
+			if (variable.getName().equals(v.getName())){
+				variableTrouvee = true;
+			}
+			i++;
+		}
+		
+		if (variableTrouvee){
+			variables.set(i-1, v);//i-1
+		}
+	}
 }
