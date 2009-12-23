@@ -1,0 +1,80 @@
+\documentclass[12pt,a4paper]{article} 
+
+\usepackage[defhf,deflayout]{sknife}
+\input{../common/common.tex}
+
+\pagetitle{CR - Projet CRT \dateformat23/12/2009}
+\title{Compte Rendu\\de la Réunion\\du Projet de CRT\vspace{-0.5em}}
+\author{$\diamond$\vspace{-0.2em}}
+
+\begin{document}
+ \maketitle
+
+\section{Personnes Présentes}
+%
+\noi Étaient présents à la réunion :\mk
+\begin{itemize}
+\item \mwyd \absent
+\item \mmat 
+\item \mlou \absent
+\item \mmor
+\item \moli 
+\item \mvin 
+\item \mmed 
+\item \mbed 
+\item \mdon \scribe
+\end{itemize}
+
+\section{Bilan général}
+
+\section{Bilan équipe développement}
+
+\subsection{Algorithme Full Look-Ahead}
+L'implémentation de l'algorithme Full Look-Ahead ne gérant pas les substitutions n'est pas au point mais le squelette global du programme a été écrit.
+
+\subsection{IHM}
+Aucune des 2 personnes responsables de cette itération n'était présente.
+
+\section{Bilan équipe test}
+
+\subsection{Plan de test}
+\mmat\ et \mmed\ ont travaillé sur le plan de test. Ils vont élaborer un plan pour les tests aux limites etc...
+
+\subsection{Fitnesse}
+\moli\ a écrit les tests unitaires concernant la fonction de backup d'une variable. L'équipe a montré la synthaxe qu'elle comptait utiliser pour décrire les solutions de l'algorithme Full Look-Ahead: [[(A,0),(B,1)]].
+Ce qui donnerait l'expression régulière suivante \texttt{[}(\texttt{[}(\texttt{(}Id, Nombre\texttt{)})+\texttt{]})*\texttt{]} 
+
+\section{Discussions}
+
+\begin{itemize}
+\item On a conclu qu'il ne fallait pas réutiliser l'algorithme AC3 tel quel pour tester la consistance dans la fonction select-value-rfla. Si on a 3 variables X, Y et Z. Il ne faut réviser que les arcs qui ont une extrémité dans X,Y ou Z.
+\item On a rappelé qu'il fallait écrire les rapports de réunion en LateX afin de pouvoir les réutiliser pour le rapport final.
+\item On a évoqué le fait qu'il faudrait concevoir des tests unitaires pour l'IHM si on a le temps.
+\item Quant à l'exemple des reines qui ne passe pas, le problème viendrait des substitutions.
+\item Nous n'avons pas fait tourner les équipes pour la prochaine itération afin d'éviter de perdre du temps.
+
+\end{itemize}
+
+\newpage
+\section{Travail à effectuer durant la prochaine itération}
+
+\subsection{Developpement}
+
+L'équipe se divise sur deux tâches :
+\begin{itemize}
+\item \mdon\, \mmor\ continueront l'implémentation de l'algorithme Full Look-Ahead avec l'aide de la 1ère moitié de \mvin.
+\item \mlou\, \mwyd\ continueront de développer l'IHM.
+\end{itemize}
+
+\subsection{Tests}
+
+L'équipe se divise sur deux tâches :
+\begin{itemize}
+\item \mbed\ et \moli\ s'occuperont de terminer d'écrire la fixture qui testera l'algorithme Full Look-Ahead(sans gérer les substitutions). Ils implémenteront notamment la fonction OneOf qui testera si la solution trouvée par l'algorithme de Full Look-Ahead appartient à une liste donnée de solutions. 
+De plus \mbed\ et \moli\ s'occuperont respectivement de réécrire les rapports de réunion de \mwyd\ et de \mlou\ en LateX.
+\item \mmat\, \mmed\ et la seconde moitié de \mvin\ continueront de travailler sur les plans de test.
+\end{itemize}
+
+
+\end{document}
+
