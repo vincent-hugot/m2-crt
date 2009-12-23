@@ -41,7 +41,7 @@ public class FullLookAhead {
 		file = new LinkedList [X.size()];
 		for (int i=0; i<X.size();i++){
 			file[i] = new LinkedList<Variable>();
-		}
+		                             }
 	}
 
 	/**
@@ -60,7 +60,7 @@ if ( i=0 )
 else
 	return instantiated values of {x1, . . . , xn}
 	 */
-	public void run() { 
+	public ArrayList<Variable>  run() { 
 		/*
 		sauvegarde des domaines de chaque variable
 		en fait on va sauvegarder les variables 
@@ -85,7 +85,6 @@ else
 
 //			xi = selectValueFla(model.getVariables().get(i), i);
 			xi = selectValueFla(i);
-
 			if (xi == null){
 				i--;
 				for (indice=i+1; indice<X.size(); indice++){
@@ -97,33 +96,15 @@ else
 					 */
 				}
 			}
-			else{
-				/*
-				for (indice=i+1; indice<X.size(); indice++){
-					model.restore(file[indice].getFirst());//pop 
-				}
-				 */
+			else
+				
 				i++;
+				
+			     
+		    }
 
-				if (i == X.size()){
-					//TODO afficher tte sol
-					//i--; //no
-					System.out.println("-la sol en bas-");
-					System.out.println(model);
-					System.out.println("-ci dessus-");
-					System.out.println(model.getVariables());
-					System.out.println("-la sol en haut-");
-				}
-			}
-		}
-
-		if (i<0){
-			System.out.println("non");
-		}
-		else
-		{
-			System.out.println("peut etre");
-		}
+		return X;
+		
 	}
 
 	/**
@@ -148,26 +129,28 @@ else
 		//i+1 sera restauré dans la methode run
 		Domain domIterationA = model.getVariables().get(i).getDomain();
 		int indice;
-		
+		int indices;
+		indices=0;
 		Iterator<Integer> iteratorDomI = domIterationA.iterator();
-		Integer a;
 		
-		//on svg tout
-		Variable [] vBackups = new Variable [X.size()];
+		Integer a;
+		//on sauvegarde tout
+		
+		
+	/*	Variable [] vBackups = new Variable [X.size()];
 		for (indice=0; indice<X.size();indice++){
-			vBackups[indice] = model.backup(model.getVariables().get(indice));
-		}
-
+		vBackups[indice] = model.backup(model.getVariables().get(indice));
+		                                       }*/ 
+		
+		Variable [] varRestors = new Variable [X.size()]; // tableau des variables à restaurer
+		
+		
 		//while (!model.getVariables().get(i).getDomain().isEmpty())
 		while (iteratorDomI.hasNext())//retour pour quitter la boucle
 		{
 			a = iteratorDomI.next();
-			model.getVariables().get(i).getDomain().clear();
-			model.getVariables().get(i).getDomain().add(a);
-
-			
-
-			//removedValue = false;
+			model.getVariables().get(i).getDomain().remove(a); //on supprime a du domaine 
+       
 			for (int j=i+1; j<model.getVariables().size();j++){
 				for (int k=i+1; k<model.getVariables().size();k++){
 					if (k!=j){
@@ -181,17 +164,23 @@ else
 
 							boolean consistent = false;
 
-							while(iteratorb.hasNext()){//test pour chaque b si on a c qui a une val possible
+							while(iteratorb.hasNext()){ //test pour chaque b si on a c qui a une val possible
 								Integer b = iteratorb.next();
 								
-								consistent = consistent(i,a,j,b,k);//i);
-
+								consistent = consistent(i,a,j,b,k);
+                            
 								if (!consistent){
 									vjToRemove.add(b);
 								}
 							}
+							
 							model.getVariables().get(j).getDomain().removeAll(vjToRemove);
+							varRestors [indices]=model.getVariables().get(j);//on stocke lensemble des variablesmodifiées
+							varRestors [indices]=model.backup(model.getVariables().get(j));//on stocke lensemble des variablesmodifiées
+							
+							indices++;
 						}
+		
 					}
 				}
 			}
@@ -203,17 +192,14 @@ else
 			}
 
 			if (futurDomainEmpty){
-				
-				vBackups[i].getDomain().remove(a);//on enleve a
-				for (indice=0; indice<X.size();indice++){
-					model.restore(vBackups[indice]);
+					
+				for (int j=0; j<indices;j++){
+					model.restore(varRestors [j]);
 				}		//on rend un modele restaure
 			}
 			else{
 				return a;
 			}
-
-
 		}
 		/*
 		if any future domain is empty
