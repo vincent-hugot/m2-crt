@@ -303,7 +303,16 @@ public class Model {
 		}
 		
 		if (variableTrouvee){
-			variables.set(i-1, v);//i-1
+			//variables.set(i-1, v);//i-1
+			//non car il faut 1 point de restauration a usage multiple
+			
+			//variables.set(i-1, backup(v));
+			//non car sinon si on fait un model.getConstraintsConcerningVariables, les 2 pointeurs sont differents
+			//et en plus les substitutions surement
+			
+			//trop complique on va juste changer le domaine...
+			variable.setDomain((Domain) v.getDomain().clone());
+			
 		}
 	}
 }

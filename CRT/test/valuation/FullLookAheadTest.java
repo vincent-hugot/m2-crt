@@ -25,45 +25,7 @@ public class FullLookAheadTest {
 	
 	public FullLookAheadTest(){
 		
-		Variable A = m.newVariable("A",0,1);
-		Variable B = m.newVariable("B",1,2);
-		Variable C = m.newVariable("C",1,2);
-		Variable S1 = m.newVariable("S1",2,4);
-		Variable S2 = m.newVariable("S2",2,5);
-		m.newConstraint(A,B,Operator.Constraint.EQUAL);
-		m.newConstraint(A,S2,Operator.Constraint.LOWER);
-		m.newSubstitution(B,C,Operator.Arithmetic.ADD,S1);
-		m.newSubstitution(A,S1,Operator.Arithmetic.ADD,S2);
-		
-		A.getDomain().remove(0);
-		B.getDomain().remove(2);
-		System.out.println(S1);System.out.println(S2);
-		AC3 ac3 = new AC3(m);
-		
-		// Should be obvious, just for visual comparison
-		assertEquals(S1.getDomain(), new Domain(2,4));
-		assertEquals(S2.getDomain(), new Domain(2,5));
-		
-		ac3.updateSubstitutions();
-		
-		// See javadoc comment for new domain calculus
-		// - Step 1: S1 and S2 are restricted
-		// - Dependencies: S2 treated becore S1 would have given {3,4,5}
-		assertEquals(S1.getDomain(), new Domain(2,3));
-		assertEquals(S2.getDomain(), new Domain(3,4));
 	}
-	
-
-	/**
-	 * Test method for {@link valuation.FullLookAhead#FullLookAhead(model.Model)}.
-	 */
-	@Test
-	public void testFullLookAhead() {
-		FullLookAhead fla=new FullLookAhead(m);
-		//System.out.println(m);
-		//fla.run();
-	}
-
 	/**
 	 * Test method for {@link valuation.FullLookAhead#run()}.
 	 */
@@ -78,14 +40,17 @@ public class FullLookAheadTest {
 			"A = B,\n" +
 			"A + B < A * 42 + C;";
 		
+		/*
 		content =
 			"DOMAINS:\n" +
 			"A : [-77,...,500],\n" +
 			"B : [1,...,200],\n" +
 			"C : [5,...,10];\n" +
 			"CONSTRAINTS:\n" +
-			"A = B;" ;
+			"A < B;" ;
+		*/
 		
+		/*
 		content =
 			"DOMAINS:\n" +
 			"A : [-77,...,500],\n" +
@@ -94,14 +59,171 @@ public class FullLookAheadTest {
 			"D : [0,...,1];\n" +
 			"CONSTRAINTS:\n" +
 			"A = B, B = C;" ;
+		*/
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [-77,...,500],\n" +
+			"B : [0,...,200],\n" +
+			"C : [5,...,10],\n" +
+			"D : [0,...,1];\n" +
+			"CONSTRAINTS:\n" +
+			"A = 2, B=3, C=5, D = D+1; " ;
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [-77,...,500],\n" +
+			"B : [0,...,200],\n" +
+			"C : [5,...,10],\n" +
+			"D : [0,...,1];\n" +
+			"CONSTRAINTS:\n" +
+			"A = 2, B=3, C=5, D = 1; " ;
+		
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [-77,...,500],\n" +
+			"B : [0,...,200],\n" +
+			"C : [5,...,10],\n" +
+			"D : [0,...,1];\n" +
+			"CONSTRAINTS:\n" +
+//			"A = 2, B=3, C=5;" 
+			"A < B, B < C;";
+			;
+		
+		
+			
+			content =
+				"DOMAINS:\n" +
+				"A : [1,...,3],\n" +
+				"B : [1,...,3],\n" +
+				"C : [1,...,3];\n" +
+				"CONSTRAINTS:\n" +
+				"A < B, B < C;";
+				;
+				
+				
+				
+				content =
+					"DOMAINS:\n" +
+					"A : [1,...,3],\n" +
+					"B : [1,...,3],\n" +
+					"C : [1,...,3];\n" +
+					"CONSTRAINTS:\n" +
+					"A > C, B < C;";
+					;
+					
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [1,...,30],\n" +
+			"B : [30,...,40],\n" +
+			"C : [19,...,88];\n" +
+			"CONSTRAINTS:\n" +
+			"A >= B, B  = C;" ;
+		
+		content =
+			"DOMAINS:\n" +
+			/*
+			"A : [28,...,30],\n" +
+			"B : [28,...,32],\n" +
+			"C : [29,...,32],\n" +
+			"D : [29,...,32],\n" +
+			"E : [29,...,32],\n" +
+			"F : [29,...,32],\n" +
+			"G : [29,...,32],\n" +
+			"H : [29,...,32],\n" +
+			"I : [29,...,32],\n" +
+			"J : [29,...,32];\n" +
+			*/
+			
+			"A : [1,...,10],\n" +
+			"B : [1,...,10],\n" +
+			"C : [1,...,10],\n" +
+			"D : [1,...,10],\n" +
+			"E : [1,...,10],\n" +
+			"F : [1,...,10],\n" +
+			"G : [1,...,10],\n" +
+			"H : [1,...,10],\n" +
+			"I : [1,...,10],\n" +
+			"J : [1,...,10];\n" +
+			
+			"CONSTRAINTS:\n" +
+			"A > B, B  > C, C > D, D > E, E > F, F > G, G > H, I > J;" ;
+			
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [28,...,30],\n"+
+			"B : [28,...,30],\n"+
+			"C : [28,...,30],\n"+
+			"D : [28,...,30];\n"+
+			"CONSTRAINTS:\n" +
+			"A <> A;" ;//ok
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [28,...,30];\n"+
+			"CONSTRAINTS:\n" +
+			"A <> A;" ;//pas ok
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [28,...,30],\n"+
+			"B : [28,...,30],\n"+
+			"C : [28,...,30];\n"+
+			"CONSTRAINTS:\n" +
+			"B <> C;" ;//pas ok
+		
+		content =
+			"DOMAINS:\n" +
+			"A : [2,...,2],\n"+
+			"B : [1,...,2],\n"+
+			"C : [1,...,2],\n"+
+			"D : [1,...,2];\n"+
+			"CONSTRAINTS:\n" +
+			"A <> B, A <> C, A <> D, B<>C, B<> D, C<> D;" ;//pas ok
 		
 		Translator translator = new Translator("testfile",content);
 		Model m = translator.translate();
 		
 		//AC3 ac3 = new AC3(m);
 		//ac3.run();
+		System.out.println("m: "+m);
 		FullLookAhead f = new FullLookAhead(m);
-		f.run();
+		System.out.println(f.run());
+	}
+	
+	/**
+	 * Test method for {@link valuation.FullLookAhead#run()}.
+	 */
+	@Test
+	public void testCours() {
+		/*
+		String content =
+			"DOMAINS:\n" +
+			"X : [1,...,5],\n" +
+			"W : [1,...,5],\n" +
+			"Z : [1,...,5],\n" +
+			"Y : [1,...,5];\n" +
+			"CONSTRAINTS:\n" +
+			"X > W, X > Y, W > Z, Y <> Z ;" ;
+		
+		Translator translator = new Translator("testfile",content);
+		Model m = translator.translate();
+		
+		AC3 ac3 = new AC3(m);
+		ac3.run();
+		
+		//System.out.println(m.getConstraintConcerningVariables(m.getVariables().get(0), m.getVariables().get(1)));
+		
+		//System.out.println(m);
+		FullLookAhead f = new FullLookAhead(m);
+		//f.run();
+		//assertTrue(f.consistent(0, 3, 1, 2, 2));
+		//assertTrue(f.consistent(0, 3, 1, 3, 2));
+		 * 
+		 */
 	}
 
 }

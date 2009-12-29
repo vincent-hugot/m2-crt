@@ -100,4 +100,11 @@ public class Variable {
 		
 		return res;
 	}
+
+	/**
+	 * @param domain the domain to set
+	 */
+	public void setDomain(Domain domain) {
+		this.domain = domain;
+	}
 }

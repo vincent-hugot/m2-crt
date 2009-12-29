@@ -1,8 +1,10 @@
 package valuation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+
 import model.Constraint;
 import model.Domain;
 import model.Model;
@@ -25,6 +27,13 @@ Méthode qui élimine le plus de valeurs inconsistantes
 
 Full-look-ahead : ne fait qu’une seule passe sur le graphe pour
 propager une réduction
+TODO ce n'est pas vraiment ce qu'on a fait...?
+
+ressources: 
+http://www-isl.ece.arizona.edu/ece566/projects/Constraints/AlgorithmAC.pdf
+www.cs.kuleuven.ac.be/~dannyd/AI_Chap91_Constr2.ppt
+CoursIAGL-Complet.pdf
+http://www.ics.uci.edu/~dechter/courses/ics-275a/spring-2009/slides/chapter5-09.ppt
  *
  */
 public class FullLookAhead {
@@ -33,15 +42,16 @@ public class FullLookAhead {
 	private ArrayList<Variable> X;
 	private LinkedList<Couple> queue;
 	LinkedList<Variable>[] file; // Liste de Liste de variable
+	//une file d'attente de "supermarché" 
 
 	public FullLookAhead(Model model) {
 		this.model = model;
-		this.X = model.getVariables();
+		this.X = model.getVariables();//normalement on a pas à redefinir X mais X.variables
 		this.queue = new LinkedList<Couple>();
 		file = new LinkedList [X.size()];
 		for (int i=0; i<X.size();i++){
 			file[i] = new LinkedList<Variable>();
-		                             }
+		}
 	}
 
 	/**
@@ -60,51 +70,79 @@ if ( i=0 )
 else
 	return instantiated values of {x1, . . . , xn}
 	 */
-	public ArrayList<Variable>  run() { 
-		/*
-		sauvegarde des domaines de chaque variable
-		en fait on va sauvegarder les variables 
-		(un niveau plus haut pour + de commodités)
-		 */
+	public HashSet<Variable>  run() { 
 
 		int i,indice;
+		HashSet<Variable> resVars = null;
+		int [] valuation = new int[X.size()];
 
 		i=0;
 		Integer xi;
-		/*
-		if (X.size()>=1)
-			file[0].addFirst(model.backup(model.getVariables().get(0)));
-		 */
+
+		for (indice=0; indice<X.size(); indice++){
+			file[indice].addFirst(model.backup(model.getVariables().get(indice)));
+			/*
+			 * sauvegarde des domaines de chaque variable
+			 * en fait on va sauvegarder les variables 
+			 * (un niveau plus haut pour + de commodités)
+			 * tout sauvegarder puis tout restaurer
+			 * la valuation modifie pas le modele
+			 */
+		}
+
 		while (i>=0 && i<X.size()){
 
-			//for (indice=i+1; indice<X.size(); indice++){
 			for (indice=i; indice<X.size(); indice++){
 				file[indice].addFirst(model.backup(model.getVariables().get(indice)));
 				//sauvegarde variable indice
 			}
 
-//			xi = selectValueFla(model.getVariables().get(i), i);
 			xi = selectValueFla(i);
+
+			//System.out.println("i("+i+")= "+xi);
+			System.out.println(model);
+
 			if (xi == null){
+				System.out.println("backtrack");
 				i--;
 				for (indice=i+1; indice<X.size(); indice++){
 					model.restore(file[indice].pollFirst());//pop
 					/*
-					 * càd i du while-1
 					i <-  i-1 (backtrack)
 					reset each D'k , k>i, to its value before xi was last instanciated
 					 */
 				}
 			}
-			else
-				
+			else{
+				valuation[i]=xi;
+				System.out.println("advance("+i+")= "+xi);
 				i++;
-				
-			     
-		    }
+			}
+		}
 
-		return X;
-		
+		if (i == X.size() ){
+			System.out.println("sol trouvee");
+			resVars = new HashSet<Variable>();
+			//On cree un HashSet avec singleton pour donner une solution
+			for (i = 0;i<X.size();i++){
+				System.out.println(valuation[i]);
+				Variable variableValuee = model.backup(X.get(i));
+				variableValuee.getDomain().clear();
+				variableValuee.getDomain().add(valuation[i]);
+				resVars.add(variableValuee);
+			}
+		}
+		else{
+			System.out.println("sol pas trouvee"+i);
+		}
+
+		for (indice=0; indice<X.size(); indice++){
+			model.restore(file[indice].pollFirst());//pop
+			//On rend le modele qu'on avait avant de lancer l'algo
+		}
+
+		return resVars;
+
 	}
 
 	/**
@@ -122,39 +160,43 @@ else
 	if there is no value c : D'k such that consistent(a1, ... ai-1; xi = a; xj = b; xk = c)
 		remove b from D'j
 		removed-value <- true
-	 * 
+	 * TODO Ca ne passe pas si on a A<>A avec strictement moins de 3 variables
 	 */
 
 	public Integer selectValueFla(int i){
-		//i+1 sera restauré dans la methode run
-		Domain domIterationA = model.getVariables().get(i).getDomain();
+
+		Domain domIterationA = (Domain) X.get(i).getDomain().clone();
+		// clone sinon acces concurent quand on retire a de Dom(i)
 		int indice;
-		int indices;
-		indices=0;
 		Iterator<Integer> iteratorDomI = domIterationA.iterator();
-		
 		Integer a;
-		//on sauvegarde tout
-		
-		
-	/*	Variable [] vBackups = new Variable [X.size()];
-		for (indice=0; indice<X.size();indice++){
-		vBackups[indice] = model.backup(model.getVariables().get(indice));
-		                                       }*/ 
-		
-		Variable [] varRestors = new Variable [X.size()]; // tableau des variables à restaurer
-		
-		
-		//while (!model.getVariables().get(i).getDomain().isEmpty())
+		boolean consistent;
+
+		Variable [] varRestors = new Variable [X.size()-i-1]; // tableau des variables à restaurer
+
+
+		/* 
+		 * (iteratorDomI.hasNext()) <=>
+		 * while (!X.get(i).getDomain().isEmpty())
+		 */
 		while (iteratorDomI.hasNext())//retour pour quitter la boucle
 		{
 			a = iteratorDomI.next();
-			model.getVariables().get(i).getDomain().remove(a); //on supprime a du domaine 
-       
+
+			model.getVariables().get(i).getDomain().remove(a); //on supprime a du domaine i 
+
+			//svg à partir de i+1 ici avant de faire des modifs
+			//on stocke lensemble des variables modifiées
+			int indiceTab = 0;
+			for (indice=i+1; indice<X.size();indice++){
+				varRestors[indiceTab] = model.backup(X.get(indice));
+				indiceTab++;
+			}
+
 			for (int j=i+1; j<model.getVariables().size();j++){
 				for (int k=i+1; k<model.getVariables().size();k++){
 					if (k!=j){
-						if (!model.getVariables().get(j).getDomain().isEmpty())//sait on jamais...
+						if (!X.get(j).getDomain().isEmpty())//sait on jamais...
 						{
 							Domain domIterationJ = (Domain)model.getVariables().get(j).getDomain().clone();
 
@@ -162,38 +204,39 @@ else
 
 							Domain vjToRemove = new Domain();
 
-							boolean consistent = false;
-
 							while(iteratorb.hasNext()){ //test pour chaque b si on a c qui a une val possible
 								Integer b = iteratorb.next();
-								
+
 								consistent = consistent(i,a,j,b,k);
-                            
+
 								if (!consistent){
 									vjToRemove.add(b);
 								}
+								System.out.println("a("+i+")= "+a+ " b("+j+")= " + b+" k= "+k+" res= "+consistent);
 							}
-							
-							model.getVariables().get(j).getDomain().removeAll(vjToRemove);
-							varRestors [indices]=model.getVariables().get(j);//on stocke lensemble des variablesmodifiées
-							varRestors [indices]=model.backup(model.getVariables().get(j));//on stocke lensemble des variablesmodifiées
-							
-							indices++;
+							//System.out.println("to remove: "+vjToRemove);
+
+							X.get(j).getDomain().removeAll(vjToRemove);
 						}
-		
 					}
 				}
 			}
 			boolean futurDomainEmpty=false;
-			indice=0;//i+1;
+			indice=i+1;//i+1; en fait now car si la variable est singleton et qu'on le vire
+			/*
+				if any future domain is empty
+				reset each D'j , i < j <= n, to value before a was selected
+				else
+				return a
+			 */
 			while (indice<X.size() && !futurDomainEmpty ){
 				futurDomainEmpty = model.getVariables().get(indice).getDomain().isEmpty();
 				indice++;
 			}
 
 			if (futurDomainEmpty){
-					
-				for (int j=0; j<indices;j++){
+
+				for (int j=0; j<X.size()-i-1;j++){
 					model.restore(varRestors [j]);
 				}		//on rend un modele restaure
 			}
@@ -201,117 +244,248 @@ else
 				return a;
 			}
 		}
-		/*
-		if any future domain is empty
-		reset each D'j , i < j <= n, to value before a was selected
-		else
-		return a
-		 */
+
+
+
 		return null;
 	}
 
-	public boolean consistent(int i, int a, int j, int b, int k){//int i){
-		System.out.println("consistance appel: i="+i+ " a="+ a+ " j=" +j+ " b="+ b+ "k=" + k);
-		int indice;
-		boolean continu = true;
-		boolean futurDomainEmpty = true;
 
-		//on svg tout
-		Variable [] vBackups = new Variable [X.size()];
-		for (indice=0; indice<X.size();indice++){
-			vBackups[indice] = model.backup(model.getVariables().get(indice));
+	public Integer selectValueFlaLess3Vars(int i){
+		Variable [] varRestors = new Variable [X.size()-i-1];
+		Integer a;
+		Domain domIterationA = (Domain) X.get(i).getDomain().clone();
+		// clone sinon acces concurent quand on retire a de Dom(i)
+		Iterator<Integer> iteratorDomI = domIterationA.iterator();
+
+		if (X.size() >= 3)
+		{// si nombre de var < 3 donc on passe pas dans le double for
+			return null;//ou exception
 		}
 
-		Domain domIterationC = (Domain) X.get(k).getDomain().clone();
-		Iterator<Integer> iteratorDomC = domIterationC.iterator();
-		Integer integerC;
+		//Si le nombre de variable est < 3
 
-		while( iteratorDomC.hasNext() && continu ){
+		while (iteratorDomI.hasNext())//retour pour quitter la boucle
+		{
+			a = iteratorDomI.next();
+			//X.get(i).getDomain().remove(a); //on supprime a du domaine i
 
-			X = model.getVariables();//necessaire pour AC3
-			//on lui redonne l'addresse de l'array sait on jamais
+			boolean valid = true;
+			Variable xi=X.get(i);
+			//Variable xj=X.get(i+1);
 
-			initQueueAfterInstanciation(X.get(i), X.get(j), X.get(k));
-			System.out.println(" consistence:"+X.get(i)+ X.get(j)+ X.get(k));
-			//on initialise la queue
+			//si c'est la seconde var, ou si elle est unique
+			if (X.size() == 1 || i == 1){
+				for (Constraint crt : model.getConstraintConcerningVariables(xi, xi)) {
 
-			X.get(i).getDomain().clear();
-			X.get(i).getDomain().add(a);
-			X.get(j).getDomain().clear();
-			X.get(j).getDomain().add(b);
-			
-			integerC = iteratorDomC.next();
-			X.get(k).getDomain().clear();
-			X.get(k).getDomain().add(integerC);
+					// Only 1 non-respected constraint => Aj gets away.
+					if (!crt.areValidValues(xi, xi, a, a)) valid = false;
 
-			while (!queue.isEmpty()) {
-
-				Couple c = queue.poll();
-
-				// Applying REVISE, then checking reduce
-				if (revise(c.getXi(), c.getXj())) {
-
-					// There was a reduction, propagation to any (xk,xi) with k!=i
-					// && k!=j
-					reduce(c.getXi(), c.getXj());
 				}
-			}
 
-			futurDomainEmpty=false;
-			indice=0;
-			while (indice<X.size() && !futurDomainEmpty ){
-				futurDomainEmpty = model.getVariables().get(indice).getDomain().isEmpty();
-				indice++;
-				if (futurDomainEmpty){
-					continu = false;
+				// Every Cij passed for (Ai,Aj), an Aj was found.
+
+				X.get(i).getDomain().remove(a); //on supprime a du domaine i
+
+				if (valid == true) {
+					return a;
 				}
-			}
 
-			for (indice=0; indice<X.size();indice++){
-				model.restore(vBackups[indice]);
-			}		//on rend un modele restaure
+			}
+			else{// X.size()==2
+				// et i==0
+				varRestors[1] = model.backup(X.get(1));
+
+				// For each value of D(Xj)
+				for (Constraint crt : model.getConstraintConcerningVariables(xi, xi)) {
+
+					// Only 1 non-respected constraint => Aj gets away.
+					if (!crt.areValidValues(xi, xi, a, a)) valid = false;
+
+				}
+
+				if (valid)
+				{
+
+					for (Integer aj : X.get(1).getDomain()) {
+
+						valid = true;
+
+						// For each Cij
+						for (Constraint crt : model.getConstraintConcerningVariables(X.get(0), X.get(1))) {
+
+							// Only 1 non-respected constraint => Aj gets away.
+							if (!crt.areValidValues(xi, X.get(1), a, aj)) valid = false;
+						}
+
+						// Every Cij passed for (Ai,Aj), an Aj was found.
+						if (valid == false)
+							X.get(1).getDomain().remove(aj);
+					}
+
+					// No valid Aj was found, good bye Ai.
+				}
+
+				if (X.get(1).getDomain().isEmpty()){
+					model.restore(varRestors[1]);
+				}
+
+			}
 
 		}
-
-		return !futurDomainEmpty;
-
+		return null;
 
 	}
 
 	/**
-	 * Queue initialisation (every couple)
-	 * 
+	 * consistent(a1, ... ai-1; xi = a; xj = b; xk = c)
+	 * @param i
+	 * @param a
+	 * @param j
+	 * @param b
+	 * @param k
 	 * @return
+	 * On teste l'arc Di -> Dj -> Dk -> Di soit 3 arcs
+	 * dans ce sens là car dans la boucle
+	 * il faut utiliser AC3 car on verifie la consistance
+	 * 
+	 *  l'algo select value enleve 
+	 *  la valeur a du domaine i
+	 *  donc pour utiliser 
+	 *  la fction
+	 *  il faut la remettre soit ici 
+	 *  soit dans select value
+	 *  
+	 *  
 	 */
-	public LinkedList<Couple> initQueue() {
-		LinkedList<Couple> queue = new LinkedList<Couple>();
+	public boolean consistent(int i, int a, int j, int b, int k){
+		int indice;
 
-		for (Variable xi : X) {
-			for (Variable xj : X) {
-				// if (!xi.equals(xj)) { // For the first time, we allow them
-				if (!model.getConstraintConcerningVariables(xi, xj).isEmpty()) {
-					Couple C = new Couple(xi, xj);
-					queue.push(C);
+		Variable [] varRestors = new Variable [3]; // tableau des variables à restaurer
+		varRestors[0] = model.backup(X.get(i));
+		varRestors[1] = model.backup(X.get(j));
+		varRestors[2] = model.backup(X.get(k));
+
+		X.get(i).getDomain().clear();
+		X.get(i).getDomain().add(a);
+		X.get(j).getDomain().clear();
+		X.get(j).getDomain().add(b);
+
+		//System.out.println(model);
+
+		queue = initQueue(X.get(i), X.get(j), X.get(k));
+
+		//System.out.println(queue + ""+queue.size());
+
+		while (!queue.isEmpty()) {
+
+			Couple c = queue.poll();
+
+			// Applying REVISE, then checking reduce
+			if (revise(c.getXi(), c.getXj())) {
+
+				// There was a reduction, propagation to any (xk,xi) with k!=i
+				// && k!=j
+				//reduce(c.getXi(), c.getXj());
+				for (Variable xk : X) {
+					if ( (xk.equals(X.get(k))||xk.equals(X.get(i))||xk.equals(X.get(j)) )
+							//(xk==(X.get(k))||xk==(X.get(i))||xk==(X.get(j)) )
+							&& xk != c.getXi() && xk != c.getXj()
+							&& !model.getConstraintConcerningVariables(xk, c.getXi()).isEmpty()){
+						//System.out.println(model.getConstraintConcerningVariables(xk, c.getXi()));
+						Couple cc = new Couple(xk, c.getXi());
+						queue.offer(cc);
+						//System.out.println(cc);
+					}
 				}
 			}
 		}
-		return queue;
+
+		boolean futurDomainEmpty=false;
+		//indice=0;//i+1; i+1 en fait now car si la variable est singleton et qu'on le vire
+		indice=i;// car le ac3 custom peut virer le singleton de dom(i)
+		while (indice<X.size() && !futurDomainEmpty ){
+			futurDomainEmpty = model.getVariables().get(indice).getDomain().isEmpty();
+			if (futurDomainEmpty){
+				System.out.println(model.getVariables().get(indice).getName());
+			}
+			indice++;
+		}
+
+		//System.out.println(model);
+
+		model.restore(varRestors [0]);
+		model.restore(varRestors [1]);
+		model.restore(varRestors [2]);
+
+		//System.out.println(model);
+
+		//System.out.println("a("+i+")= "+a+ " b("+j+")= " + b+" k= "+k+" res= "+!futurDomainEmpty);
+
+		//System.out.println(!futurDomainEmpty);
+		return !futurDomainEmpty;
 	}
 
-	public LinkedList<Couple> initQueueAfterInstanciation(Variable va, Variable vb, Variable vc) {
+	/**
+	 * Given Ai in D(Xi), trying to find Aj | (Ai,Aj) respects every Cij
+	 * constraint
+	 * 
+	 * @param xj
+	 * @param xi
+	 * @param ai
+	 * @return true if there was a compatible aj, false otherwise
+	 */
+	public boolean findAj(Variable xi, Variable xj, Integer ai) {
+		boolean valid = true;
+
+		// For each value of D(Xj)
+		for (Integer aj : xj.getDomain()) {
+
+			valid = true;
+
+			// For each Cij
+			for (Constraint crt : model.getConstraintConcerningVariables(xi, xj)) {
+
+				// Only 1 non-respected constraint => Aj gets away.
+				if (!crt.areValidValues(xi, xj, ai, aj)) valid = false;
+			}
+
+			// Every Cij passed for (Ai,Aj), an Aj was found.
+			if (valid == true) return true;
+		}
+
+		// No valid Aj was found, good bye Ai.
+		return false;
+	}
+
+	/**
+	 * Queue initialisation (every couple)
+	 * modified / AC3 for only the 3 variables involved in the function consistent
+	 * @return
+	 */
+	public LinkedList<Couple> initQueue(Variable vi, Variable vj, Variable vk) {
 		LinkedList<Couple> queue = new LinkedList<Couple>();
+
+		//System.out.println(X.size());
 
 		for (Variable xi : X) {
 			for (Variable xj : X) {
 				// if (!xi.equals(xj)) { // For the first time, we allow them
-
-				if (xi == va || xj == vb || xi == vb || xj == va || xi == vc || xj == vc){//On choisit les arcs a reviser
-
+				if ( (xi.equals(vi) || xi.equals(vj) || xi.equals(vk)) &&
+						(xj.equals(vi) || xj.equals(vj) || xj.equals(vk))
+				)
+				{
 					if (!model.getConstraintConcerningVariables(xi, xj).isEmpty()) {
 						Couple C = new Couple(xi, xj);
 						queue.push(C);
-						System.out.println("salllllllllllllllllut");
+						//System.out.println(C);
 					}
+					else {
+						//System.out.println(xi+" "+xj);
+					}
+				}
+				else {
+					//System.out.println(xi+" "+xj);
 				}
 			}
 		}
@@ -387,40 +561,6 @@ else
 
 
 	/**
-	 * Given Ai in D(Xi), trying to find Aj | (Ai,Aj) respects every Cij
-	 * constraint
-	 * 
-	 * @param xj
-	 * @param xi
-	 * @param ai
-	 * @return true if there was a compatible aj, false otherwise
-	 */
-	public boolean findAj(Variable xi, Variable xj, Integer ai) {
-		boolean valid = true;
-
-		// For each value of D(Xj)
-		for (Integer aj : xj.getDomain()) {
-
-			valid = true;
-
-			// For each Cij
-			for (Constraint crt : model.getConstraintConcerningVariables(xi, xj)) {
-
-				// Only 1 non-respected constraint => Aj gets away.
-				if (!crt.areValidValues(xi, xj, ai, aj)) valid = false;
-			}
-
-			// Every Cij passed for (Ai,Aj), an Aj was found.
-			if (valid == true) return true;
-		}
-
-		// No valid Aj was found, good bye Ai.
-		return false;
-	}
-
-
-
-	/**
 	 * Method used when reacting to a positive "reduce" value in AC3's REVISE
 	 * call: Add any (xk,xi) couple to "queue", so that xk != xi && xk != xj,
 	 * and there is a relation/constraint between Xk and Xi
@@ -439,8 +579,6 @@ else
 				queue.offer(new Couple(xk, xi));
 		}
 	}
-
-
 
 	/**
 	 * General substitutions update, every step is done for every substitution
@@ -603,12 +741,5 @@ else
 		return false;
 	}
 
-
-	/**
-	 * @return the x
-	 */
-	public ArrayList<Variable> getX() {
-		return X;
-	}
 }
 
