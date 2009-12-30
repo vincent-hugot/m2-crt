@@ -97,10 +97,15 @@ else
 				//sauvegarde variable indice
 			}
 
-			xi = selectValueFla(i);
+			if (X.size()-i > 2){
+				xi = selectValueFla(i);
+			}else{
+				xi = selectValueFlaLess3Vars(i);
+			}
+			
 
 			//System.out.println("i("+i+")= "+xi);
-			System.out.println(model);
+			//System.out.println(model);
 
 			if (xi == null){
 				System.out.println("backtrack");
@@ -164,6 +169,7 @@ else
 	 */
 
 	public Integer selectValueFla(int i){
+		System.out.println("normal i");
 
 		Domain domIterationA = (Domain) X.get(i).getDomain().clone();
 		// clone sinon acces concurent quand on retire a de Dom(i)
@@ -212,7 +218,7 @@ else
 								if (!consistent){
 									vjToRemove.add(b);
 								}
-								System.out.println("a("+i+")= "+a+ " b("+j+")= " + b+" k= "+k+" res= "+consistent);
+								//System.out.println("a("+i+")= "+a+ " b("+j+")= " + b+" k= "+k+" res= "+consistent);
 							}
 							//System.out.println("to remove: "+vjToRemove);
 
@@ -252,24 +258,119 @@ else
 
 
 	public Integer selectValueFlaLess3Vars(int i){
+		
+		System.out.println("i2varou1");
+		
 		Variable [] varRestors = new Variable [X.size()-i-1];
 		Integer a;
 		Domain domIterationA = (Domain) X.get(i).getDomain().clone();
 		// clone sinon acces concurent quand on retire a de Dom(i)
 		Iterator<Integer> iteratorDomI = domIterationA.iterator();
+		int indice;
+		int indiceTab=0;
+		boolean consistent;
 
-		if (X.size() >= 3)
-		{// si nombre de var < 3 donc on passe pas dans le double for
+		if (X.size()-i-1 > 2)
+		{// si nombre de var ...< 3 donc on passe pas dans le double for
 			return null;//ou exception
+		}
+		
+		Variable xi = X.get(i);
+		while ( X.size()-i-1 == 0 && iteratorDomI.hasNext())
+		{// si nombre de var ...< 3 donc on passe pas dans le double for
+			
+			boolean valid = true;
+			
+			a = iteratorDomI.next();
+			//X.get(i).getDomain().remove(a); //on supprime a du domaine i
+			
+			for (Constraint crt : model.getConstraintConcerningVariables(xi, xi)) {
+
+				// Only 1 non-respected constraint => Aj gets away.
+				if (!crt.areValidValues(xi, xi, a, a)) valid = false;
+
+			}
+
+			// Every Cij passed for (Ai,Aj), an Aj was found.
+
+			X.get(i).getDomain().remove(a); //on supprime a du domaine i
+
+			if (valid == true) {
+				return a;
+			}
 		}
 
 		//Si le nombre de variable est < 3
 
-		while (iteratorDomI.hasNext())//retour pour quitter la boucle
+		while (X.size()-i-1 == 1 && iteratorDomI.hasNext())//retour pour quitter la boucle
 		{
 			a = iteratorDomI.next();
-			//X.get(i).getDomain().remove(a); //on supprime a du domaine i
+			X.get(i).getDomain().remove(a); //on supprime a du domaine i
 
+			for (indice=i+1; indice<X.size();indice++){
+				varRestors[indiceTab] = model.backup(X.get(indice));
+				indiceTab++;
+			}
+
+			for (int j=i+1; j<X.size();j++){
+				if (!X.get(j).getDomain().isEmpty())//sait on jamais...
+				{
+					Domain domIterationJ = (Domain)model.getVariables().get(j).getDomain().clone();
+
+					Iterator<Integer> iteratorb = domIterationJ.iterator();
+
+					Domain vjToRemove = new Domain();
+
+					while(iteratorb.hasNext()){ //test pour chaque b si on a c qui a une val possible
+						Integer b = iteratorb.next();
+
+						consistent = consistent(i,a,j,b, j);//TODO bof bof
+
+						if (!consistent){
+							vjToRemove.add(b);
+						}
+						//System.out.println("a("+i+")= "+a+ " b("+j+")= " + b+" k= "+"k"+" res= "+consistent);
+					}
+					//System.out.println("to remove: "+vjToRemove);
+
+					X.get(j).getDomain().removeAll(vjToRemove);
+				}
+
+			}
+
+			boolean futurDomainEmpty=false;
+			indice=i+1;//i+1; en fait now car si la variable est singleton et qu'on le vire
+			/*
+				if any future domain is empty
+				reset each D'j , i < j <= n, to value before a was selected
+				else
+				return a
+			 */
+			while (indice<X.size() && !futurDomainEmpty ){
+				futurDomainEmpty = model.getVariables().get(indice).getDomain().isEmpty();
+				indice++;
+			}
+
+			if (futurDomainEmpty){
+
+				for (int j=0; j<X.size()-i-1;j++){
+					model.restore(varRestors [j]);
+				}		//on rend un modele restaure
+			}
+			else{
+				return a;
+			}
+
+
+
+
+
+
+
+
+
+
+			/*
 			boolean valid = true;
 			Variable xi=X.get(i);
 			//Variable xj=X.get(i+1);
@@ -331,6 +432,7 @@ else
 				}
 
 			}
+			 */
 
 		}
 		return null;
@@ -407,7 +509,7 @@ else
 		while (indice<X.size() && !futurDomainEmpty ){
 			futurDomainEmpty = model.getVariables().get(indice).getDomain().isEmpty();
 			if (futurDomainEmpty){
-				System.out.println(model.getVariables().get(indice).getName());
+				//System.out.println(model.getVariables().get(indice).getName());
 			}
 			indice++;
 		}
