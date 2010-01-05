@@ -1,8 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import ac.ValuedVariable;
 
@@ -42,7 +44,7 @@ public class Model {
 		Substitution e = new Substitution(operand1, operator, operand2, equal);
 		operand1.addSubstitution(e);
 		if (operand1 != operand2) operand2.addSubstitution(e);
-		
+
 		equal.addSubstitution(e);
 		substitutions.add(e);
 		return e;
@@ -84,17 +86,17 @@ public class Model {
 	 */
 	public ArrayList<Constraint> getConstraintConcerningVariables(Variable xi, Variable xj) {
 		ArrayList<Constraint> res = new ArrayList<Constraint>();
-				/*
+		/*
 				// Getting every Xi constraint (Cik)
 				res.addAll(xi.getAssociatedConstraints());
 
 				// Retaining only those into Xj (Cij)
 				res.retainAll(xj.getAssociatedConstraints());
-				*/
-				
-				for (Constraint constraint : constraints) {
-					if (constraint.isCij(xi, xj)) res.add(constraint);
-				}
+		 */
+
+		for (Constraint constraint : constraints) {
+			if (constraint.isCij(xi, xj)) res.add(constraint);
+		}
 
 		return res;
 	}
@@ -151,7 +153,7 @@ public class Model {
 	public String toLaTeX(double distanceVars, double distanceDoms, double warpVars, double warpDoms)
 	{
 		StringBuilder sb = new StringBuilder();
-		
+
 		/* Some trigonometry... */
 		int counter = 0;
 		double alpha = 2 * Math.PI / variables.size();
@@ -160,16 +162,16 @@ public class Model {
 		double totalRadius = Math.max(radiusVars, radiusDoms) + 0.6;
 		double betaV = warpVars * alpha;
 		double betaD = warpDoms * alpha;
-		
+
 		/* preamble */
 		sb.append("\\pspicture(-"+totalRadius+",-"+totalRadius+")("
 				+totalRadius+","+totalRadius+")\n");
-		
+
 		sb.append("%%CRT to LaTeX: " + "; " + distanceVars + "; " +  distanceDoms + "; " 
 				+  warpVars + "; " +  warpDoms + "\n");
-		
+
 		for (Variable var : variables) {
-			
+
 			String displayedName = var.getName();
 			if (var.isArtificial())
 			{
@@ -193,26 +195,26 @@ public class Model {
 					}
 				}
 			}
-			
+
 			double varX = radiusVars * Math.cos(counter * alpha + betaV);
 			double varY = radiusVars * Math.sin(counter * alpha + betaV);
 			sb.append("%%VAR: " + var + "\n");
 			sb.append("\\rput("+varX+","+varY+"){\\rnode{" + var.getName() + 
 					"}{\\psshadowbox{\\bf " + displayedName + "}}}\n");
-			
+
 			double domX = radiusDoms * Math.cos(counter * alpha + betaD);
 			double domY = radiusDoms * Math.sin(counter * alpha + betaD);
 			sb.append("\\rput("+domX+","+domY+"){\\rnode{@@DOM" + var.getName() + 
 					"}{\\psframebox[framearc=.4]{\\scriptsize " + var.getDomain().toLaTeX() + "}}}\n");
-			
+
 			sb.append("\\ncline[linestyle=solid]{*-*}{"+
 					var.getName() +
 					"}{@@DOM"+ var.getName() + "}\n");
 			counter++;
 		}
-		
+
 		sb.append("\\psset{arrowscale=2}\n");
-		
+
 		for (Constraint con : constraints) {
 			sb.append("%%CON: " + con + "\n");
 			String linestyle = "";
@@ -247,7 +249,7 @@ public class Model {
 			sb.append("\\ncarc[" + linestyle + "]{" + type + "}{" + con.left.getName() + "}{" +
 					con.right.getName() + "}\n");
 		}
-		
+
 		for (Substitution sub : substitutions) {
 			sb.append("%%SUB: " + sub + "\n");
 			sb.append("\\ncline[linestyle=dotted,arrowscale=1.35]{*-}{"+
@@ -257,43 +259,53 @@ public class Model {
 					sub.substitutionVariable.getName() +
 					"}{"+ sub.right.getName() + "}\n");
 		}
-		
+
 		/* postamble */
 		sb.append("\\endpspicture");
-		
+
 		return sb.toString();
 	}
 
 	public HashSet<ValuedVariable> getValues() {
 		HashSet<ValuedVariable> res = new HashSet<ValuedVariable>();
-		
+
 		for (Variable var : this.variables) {
 			res.addAll(var.getValues());
 		}
 		return res;
 	}
-	
-	public Variable backup(Variable v){
-		
-	    Variable vc = new Variable(v.getName(),(Domain) v.getDomain().clone(),v.isArtificial());  
-		vc.associatedConstraints=v.getAssociatedConstraints(); 
-		vc.associatedSubstitutions=v.getAssociatedSubstitutions();
-	
 
-		return vc;
+	public Variable backup(Variable v){
+		if (v instanceof Constant){
+			Constant c = (Constant) v;
+			//ET SI ON VEUT SVG VIDE
+			Constant cres = new Constant(c.getValue());
+			cres.setDomain((Domain) v.getDomain().clone());
+			return cres;
+			
+		}
+		else{
+			Variable vc = new Variable(v.getName(),(Domain) v.getDomain().clone(),v.isArtificial());  
+			vc.associatedConstraints=v.getAssociatedConstraints(); 
+			vc.associatedSubstitutions=v.getAssociatedSubstitutions();
+
+
+			return vc;
+		}
+
 	}
-	
+
 	/**
 	 * @param v de type Variable, on remplace la variable dans l'ArrayList variables par v si elles ont le meme nom de variable
-	 * en fait il n'y a que la reference sur la variable qui change
-	 * et la reference sur le domaine de la variable
+	 * En fait seule la reference sur le domaine de la variable
+	 * le probleme c'est qu'il restaure toutes les constantes de la meme valeur alors que l'on ne le veut pas
 	 */
 	public void restore(Variable v){
 		Iterator<Variable> iVar = variables.iterator();
 		Variable variable = null;//variable temporaire qui sert pour iterer
 		boolean variableTrouvee = false;//a t-on trouve la variable qui a le meme nom que v dans l'ArrayList variables
 		int i=0;//indice dans array list
-		
+
 		while (iVar.hasNext() && !variableTrouvee){
 			variable = ((Variable)iVar.next());
 			if (variable.getName().equals(v.getName())){
@@ -301,18 +313,151 @@ public class Model {
 			}
 			i++;
 		}
-		
+
 		if (variableTrouvee){
 			//variables.set(i-1, v);//i-1
 			//non car il faut 1 point de restauration a usage multiple
-			
+
 			//variables.set(i-1, backup(v));
 			//non car sinon si on fait un model.getConstraintsConcerningVariables, les 2 pointeurs sont differents
 			//et en plus les substitutions surement
-			
+
 			//trop complique on va juste changer le domaine...
-			variable.setDomain((Domain) v.getDomain().clone());
-			
+			if (v instanceof Constant){
+				Constant c = (Constant) v;
+				Domain d = new Domain();
+				d.add(c.getValue());
+				//System.out.println(c.getValue());
+				variable.setDomain(d);
+
+				//prob si on a plusieurs 10 et +sieurs 1000
+				while (iVar.hasNext()){
+					variable = ((Variable)iVar.next());
+					if (variable.getName().equals(v.getName())){
+						variable.setDomain((Domain) d.clone());
+					}
+					i++;
+				}
+
+			}
+			else{
+				variable.setDomain((Domain) v.getDomain().clone());
+			}
+
+
 		}
+	}
+
+	/**
+	 * 
+	 * @param v
+	 * @param iinitialBecauseConstantDoublon
+	 * restaure les variables a partir d'un certain indice,
+	 * le probleme c'est qu'il restaure toutes les constantes de la meme valeur alors que l'on ne le veut pas
+	 */
+	public void restore(Variable v, int iinitialBecauseConstantDoublon){
+		Iterator<Variable> iVar = variables.iterator();
+		Variable variable = null;//variable temporaire qui sert pour iterer
+		boolean variableTrouvee = false;//a t-on trouve la variable qui a le meme nom que v dans l'ArrayList variables
+		int i=0;//indice dans array list
+
+		while (iVar.hasNext() && !variableTrouvee){
+			variable = ((Variable)iVar.next());
+			if (variable.getName().equals(v.getName())){
+				if (v instanceof Constant){
+					Constant c = (Constant) v;
+					Domain d = new Domain();
+					d.add(c.getValue());
+					//System.out.println(c.getValue());
+					if (i>=iinitialBecauseConstantDoublon){
+						variable.setDomain((Domain) d.clone());
+					}
+				}
+				else{
+					variableTrouvee = true;
+				}
+			}
+			i++;
+		}
+		if (variableTrouvee){
+			//variables.set(i-1, v);//i-1
+			//non car il faut 1 point de restauration a usage multiple
+
+			//variables.set(i-1, backup(v));
+			//non car sinon si on fait un model.getConstraintsConcerningVariables, les 2 pointeurs sont differents
+			//et en plus les substitutions surement
+
+			//trop complique on va juste changer le domaine...
+			if (v instanceof Constant){
+			}
+			else{
+				variable.setDomain((Domain) v.getDomain().clone());
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param intToVar
+	 * Restaure des variables à partir d'une hashmap de Integer vers Variable,
+	 * comme cela on sait précisément ce que l'on veut restaurer
+	 */
+	public void restoreHashMap(HashMap<Integer, Variable> intToVar){
+		Set<Integer> theKeys = intToVar. keySet ( ) ;
+		Iterator<Integer> it =  theKeys.iterator() ;
+		while ( it . hasNext ( ) ) {
+			// la clé de l'élement courant est it . next ( )
+			Integer key = it.next();
+			Variable varToRestore = variables.get(key);//la var à restaurer
+			Variable varModelToCopy = intToVar.get(key);//le modele
+			if (varToRestore instanceof Constant){
+				/*
+				Constant cToRestore = (Constant) varToRestore;
+				cToRestore.getDomain().clear();
+				cToRestore.getDomain().add(cToRestore.getValue());
+				non si on veut restaurer vide
+				 */
+				Constant cToRestore = (Constant) varToRestore;
+				cToRestore.setDomain((Domain) varModelToCopy.getDomain().clone());
+			}
+			else{
+
+				varToRestore.setDomain((Domain) varModelToCopy.getDomain().clone());
+			}
+
+		}
+	}
+
+	/**from a original variable of X, return the key, only for duplicated constant.
+	 * but used also for variables because indexof seems to bug( for substitued var)
+	 * @param v
+	 * @return
+	 */
+	public Integer getKey(Variable v){
+		//if (v instanceof Constant){
+		for (int i=0; i<variables.size();i++){
+			if (variables.get(i) == v){
+				return i;
+			}
+		}
+		//}
+		//else{
+		//	variables.indexOf(v);
+		//}
+		return null;
+	}
+
+	/**
+	 * index = 0 to n-1, backup the variables of the model in a hashmap since a certain index
+	 * @param beginIndex
+	 * @return
+	 */
+	public HashMap<Integer, Variable> backupVariables(int beginIndex){
+		HashMap<Integer, Variable> res = new HashMap<Integer, Variable>();
+		for (int i= beginIndex; i<variables.size();i++){
+			res.put(i, backup(variables.get(i)));
+		}
+		//System.out.println(res);
+		return res;
 	}
 }
