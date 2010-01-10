@@ -1,0 +1,74 @@
+\documentclass[12pt,a4paper]{article} 
+
+\usepackage[defhf,deflayout]{sknife}
+\input{../common/common.tex}
+
+\pagetitle{CR - Projet CRT \dateformat17/12/2009}
+\title{Compte Rendu\\de Réunion de Projet\\de CRT du \dateformat17/12/2009\vspace{-0.5em}}
+\author{$\diamond$\vspace{-0.2em}}
+
+\begin{document}
+ \maketitle
+
+\section{Personnes Présentes}
+%
+\noi Étaient présents à la réunion :\mk
+\begin{itemize}
+\item \mwyd 
+\item \mmat
+\item \mlou
+\item \mmor
+\item \moli \scribe
+\item \mvin
+\item \mmed
+\item \mbed \absent
+\item \mdon 
+\end{itemize}
+
+\section{Bilan équipe développement}
+
+\subsection{IHM}
+Le travail de \mlou et \mwyd sur l'IHM n'a pas progressé.
+\mk
+
+\subsection{AC3 \& AC6}
+\mmor et \mdon ont étudié le fonctionnement des algorithmes AC3 et AC6 afin de pouvoir s'en inspirer au besoin pour le \fla.
+\newpage{}
+
+\section{Bilan équipe test}
+\subsection{Plan de test sauvegarde du modèle}
+Un des éléments importants nous faisant à ce jour défaut pour l'implantation du \fla\ est la possibilité de pouvoir sauvegarder une variable du domaine ainsi que celle de pouvoir "`remonter"' une sauvegarde existante. Pour ce faire, le projet étant réalisé en \tdd, des test \junit\ ont été écrits pour les deux méthodes nécessaire, donnant ainsi aux dévellopeurs des prototypes pour ce qu'ils ont à réaliser.\mk\\
+
+\subsection{\fitnesse}
+\mmed\ et \mbed\ ont travaillé avec \mvin\ sur la compréhension de \fitnesse\ afin d'être en mesure d'écrire des plans de tests.
+
+\subsection{Discution}
+L'écriture d'un plan de test pour le \fla\ pose un problème dans le sens où un système quelconque ne possède pas forcément une unique solution hors il est impossible sous \fitnesse\ dans l'état actuel des choses de dire que la solution obtenue doit être soit celle-ci, soit celle là, ou encore une autre.\mk\\
+
+Deux possibilités s'offrent à nous :\sk
+\begin{itemize}
+	\item N'utiliser que des jeux de tests n'offrant qu'une seule solution.
+	\item Ajouter la fonctionalité manquante.\mk
+\end{itemize}
+
+La deuxième solution est celle qui a été retenue car le première "`affaiblirait"' les tests qui ne seraient donc pas des plus représentatifs.
+
+\newpage
+\section{Travail à effectuer durant la prochaine itération}
+
+\subsection{Developpement}
+L'équipe se divise sur deux tâches :\sk
+\begin{itemize}
+\item \mmor\ et \mdon\ vont réaliser les méthodes de backup et restore en fonctions des tests existants avec l'aide de \mvin\ .
+\item \mlou\ et \mwyd\ vont continuer le travail sur l'IHM.
+\end{itemize}
+
+\subsection{Tests}
+L'équipe test elle aussi se voit confier deux tâches :\sk
+\begin{itemize}
+	\item \moli\ et \mbed\ sont chargés de définir la fonctionalité manquante et d'en réaliser les fixtures afin qu'elle soit utilisable par \fitnesse.
+	\item \mmat\ et \mmed\ sont chargés de définir un plan de test pour le \fla\ ne prennant pas en compte les substitutions.
+\end{itemize}
+\end{document}
+
+
