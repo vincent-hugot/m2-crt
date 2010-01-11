@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 import model.Constraint;
 import model.Domain;
@@ -49,6 +50,7 @@ public class FullLookAhead {
 		this.X = model.getVariables();//normalement on a pas à redefinir X mais X.variables
 		this.queue = new LinkedList<Couple>();
 		valuation = new int[X.size()];
+		System.out.println(model);
 	}
 
 	/**
@@ -100,18 +102,20 @@ else
 			 */
 			varRestorsMap[i].clear();
 			varRestorsMap[i] =  model.backupVariables(i+1);//c'est i+1
-
-			//System.out.println(" choice "+i+" "+X.get(i)+ " "+X.get(13)+" "+X.get(12));
-			//System.out.println("save "+i+X.get(i).getName()+" "+varRestorsMap[i]);
-
+			/*
+			System.out.println(" choice "+i+" "+X.get(i)+ " "+X.get(13)+" "+X.get(12));
+			System.out.println("save "+i+X.get(i).getName()+" "+varRestorsMap[i]);
+			 */
 			//Il y a 2 cas, si on a plus de 3 variables restantes, et s'il y en a qu'une
+			//System.out.println("i("+i+")= "+X.get(0));
 			if (X.size()-i > 2){
 				xi = selectValueFla(i);
+
 			}else{
 				xi = selectValueFlaLess3Vars(i);
 			}
 
-			//System.out.println("i("+i+")= "+xi);
+			System.out.println("i("+i+")= "+xi+ " "+X.get(0));
 			//System.out.println(model);
 
 			if (xi == null){
@@ -124,7 +128,7 @@ else
 				for (indice=0;indice<i;indice++){
 					back+=" "+valuation[indice];
 				}
-				System.out.println(back);
+				System.out.println(back + " "+X.get(0));
 				i--;
 
 				if (i!=-1){
@@ -139,13 +143,13 @@ else
 				//System.out.println(model);
 
 				if (!X.get(i).getAssociatedSubstitutions().isEmpty()){
-					//System.out.println("model apres subs et xi"+X);
+					System.out.println("model avant subs et xi"+X.get(0)+" "+ X);
 					//On rajoute a avant de lancer l'update des substitutions
 					X.get(i).getDomain().add(xi);
-					updateSubstitutionsWithoutModifLessEquals(i);
+					updateSubstitutionsWithoutModifLessEquals(i);//sinon on a des trucs faux
 					X.get(i).getDomain().remove(xi);
 					//System.out.println(model);
-					//System.out.println("model apres subs et xi"+X);
+					System.out.println("model apres subs et xi"+X.get(0)+" "+ X);
 				}
 				i++;
 			}
@@ -215,7 +219,7 @@ else
 		{
 			a = iteratorDomI.next();
 
-			model.getVariables().get(i).getDomain().remove(a); //on supprime a du domaine i
+			X.get(i).getDomain().remove(a); //on supprime a du domaine i
 			/*if (i == 12){
 				System.out.println(100+" "+X);
 			}
@@ -225,7 +229,7 @@ else
 
 			//svg à partir de i+1 ici avant de faire des modifs
 			//on stocke lensemble des variables qui seront certainement modifiées 
-			intToVar = model.backupVariables(i+1);//ok
+			intToVar = model.backupVariables(i+1);//ok avant ou apres remove de a peu importe
 
 			boolean futurEmpty = false;
 
@@ -248,7 +252,24 @@ else
 									System.out.println(X.get(12));
 								}
 								 */
+								/*
+								HashMap<Integer, Variable > g=model.backupVariables(0);
+								System.out.println("AVANT subs"+X);
+								 */
 								consistent = consistent(i,a,j,b,k);
+								/*
+								System.out.println(X.get(i).getName()+"= "+a+ " "+X.get(j).getName()+" = " + b+" "+X.get(k).getName()+" res= "+consistent);
+								System.out.println("apres subs"+X);
+								HashMap<Integer, Variable > g1=model.backupVariables(0);
+								if (!g.equals(g1)){
+									while (true)//marche pas egalite constante
+									System.out.println("prob x"+X);
+
+
+								}
+								*/
+								 
+
 								/*
 								if (i==12){
 									//System.out.println(X);
@@ -258,7 +279,7 @@ else
 
 								if (!consistent){
 									vjToRemove.add(b);
-									//System.out.println(X.get(i).getName()+"= "+a+ " "+X.get(j).getName()+" = " + b+" "+X.get(k).getName()+" res= "+consistent);
+									System.out.println(X.get(i).getName()+"= "+a+ " "+X.get(j).getName()+" = " + b+" "+X.get(k).getName()+" res= "+consistent+ " X "+X);
 								}
 								//System.out.println(X.get(i).getName()+"= "+a+ " "+X.get(j).getName()+" = " + b+" "+X.get(k).getName()+" res= "+consistent);
 								//System.out.println("a("+i+")= "+a+ " b("+j+")= " + b+" k= "+k+" res= "+consistent +" "+ X);
@@ -273,15 +294,22 @@ else
 								X.get(j).getDomain().removeAll(vjToRemove);
 
 								if (!X.get(j).getAssociatedSubstitutions().isEmpty()){
+
 									X.get(i).getDomain().add(a);
+									System.out.println("before subst with a because removed value"+X);
 									updateSubstitutionsWithoutModifLessEquals(j);
 									X.get(i).getDomain().remove(a);
 									//System.out.println(model);
-									//System.out.println("apres subs"+X);
+									System.out.println("after subst because removed value"+X);
+
 								}
 
 								futurEmpty = futureEmpty();
 							}
+						}
+						else{
+
+							//System.out.println("prob");
 						}
 					}
 				}
@@ -297,7 +325,7 @@ else
 			while (indice<X.size() && !futurDomainEmpty ){
 				futurDomainEmpty = model.getVariables().get(indice).getDomain().isEmpty();
 				if (futurDomainEmpty){
-					//System.out.println(X.get(indice).getName()+ " empty");
+					System.out.println(X.get(indice).getName()+ " empty");
 				}
 				indice++;
 			}
@@ -307,11 +335,9 @@ else
 				intToVar.clear();
 			}
 			else{
-				/*
-				if (i == 12){
-					System.out.println(100+" "+X);
-				}
-				 */
+
+
+
 				return a;
 			}
 		}
@@ -463,7 +489,7 @@ else
 		int indice;
 
 		HashMap<Integer, Variable> intToVar = new HashMap<Integer, Variable>();
-		intToVar.put(i, model.backup(X.get(i)));
+		intToVar.put(i, model.backup(X.get(i)));//TODO dja?
 		intToVar.put(j, model.backup(X.get(j)));
 		intToVar.put(k, model.backup(X.get(k)));
 		//On svgarde Var(i),Var(j) et Var(k)
@@ -473,10 +499,81 @@ else
 		AddbackupSubstitutionsToHash(intToVar, X.get(j));
 		AddbackupSubstitutionsToHash(intToVar, X.get(k));
 
+		//HashSet<Variable> vs =new HashSet<Variable>();
+		if (!X.get(i).getAssociatedSubstitutions().isEmpty()){
+			for (Substitution s : X.get(i).getAssociatedSubstitutions()){
+				if (model.getKey(s.getLeft())<iindex){
+					s.getLeft().getDomain().clear();
+					s.getLeft().getDomain().add(valuation[model.getKey(s.getLeft())]);
+				}
+				if (model.getKey(s.getRight())<iindex){
+					s.getRight().getDomain().clear();
+					s.getRight().getDomain().add(valuation[model.getKey(s.getRight())]);
+				}
+				if (model.getKey(s.getSubstitutionVariable())<iindex){
+					s.getSubstitutionVariable().getDomain().clear();
+					s.getSubstitutionVariable().getDomain().add(valuation[model.getKey(s.getSubstitutionVariable())]);
+				}
+			}
+		}
+		if (!X.get(j).getAssociatedSubstitutions().isEmpty()){
+			for (Substitution s : X.get(j).getAssociatedSubstitutions()){
+				if (model.getKey(s.getLeft())<iindex){
+					s.getLeft().getDomain().clear();
+					s.getLeft().getDomain().add(valuation[model.getKey(s.getLeft())]);
+				}
+				if (model.getKey(s.getRight())<iindex){
+					s.getRight().getDomain().clear();
+					s.getRight().getDomain().add(valuation[model.getKey(s.getRight())]);
+				}
+				if (model.getKey(s.getSubstitutionVariable())<iindex){
+					s.getSubstitutionVariable().getDomain().clear();
+					s.getSubstitutionVariable().getDomain().add(valuation[model.getKey(s.getSubstitutionVariable())]);
+				}
+			}
+		}
+		if (!X.get(k).getAssociatedSubstitutions().isEmpty()){
+			for (Substitution s : X.get(k).getAssociatedSubstitutions()){
+				if (model.getKey(s.getLeft())<iindex){
+					s.getLeft().getDomain().clear();
+					s.getLeft().getDomain().add(valuation[model.getKey(s.getLeft())]);
+				}
+				if (model.getKey(s.getRight())<iindex){
+					s.getRight().getDomain().clear();
+					s.getRight().getDomain().add(valuation[model.getKey(s.getRight())]);
+				}
+				if (model.getKey(s.getSubstitutionVariable())<iindex){
+					s.getSubstitutionVariable().getDomain().clear();
+					s.getSubstitutionVariable().getDomain().add(valuation[model.getKey(s.getSubstitutionVariable())]);
+				}
+			}
+		}
+		if ((j==X.size()-1 || k==X.size()-1) && a==0)
+		System.out.println(intToVar);
+
+
 		X.get(i).getDomain().clear();
 		X.get(i).getDomain().add(a);
 		X.get(j).getDomain().clear();
 		X.get(j).getDomain().add(b);
+
+		/*		TODO faire ca la
+		if (model.getKey(sub.getLeft()) < iindex){
+			X.get(isubleft).getDomain().clear();
+			X.get(isubleft).getDomain().add(valuation[iindex]);
+
+		}
+		if (model.getKey(sub.getRight()) < iindex){
+			X.get(isubright).getDomain().clear();
+			X.get(isubright).getDomain().add(valuation[iindex]);
+
+		}
+		if (model.getKey(sub.getSubstitutionVariable()) < iindex){
+			X.get(isubvar).getDomain().clear();
+			X.get(isubvar).getDomain().add(valuation[iindex]);
+
+		}*/
+
 		/*
 		if (X.get(3)==X.get(k))
 			System.out.println(model+"sans update");
@@ -543,8 +640,13 @@ else
 		}
 		 */
 		//System.out.println(model);
-		//System.out.println(intToVar);
+		
+		
 		model.restoreHashMap(intToVar);
+		
+		if ((j==X.size()-1 || k==X.size()-1 )&& a==0)
+			System.out.println(" rest "+X);
+		
 		/*
 		 * restaurer les substitution effet de bord
 		 */
@@ -585,10 +687,16 @@ else
 
 			for (Substitution sub : v.getAssociatedSubstitutions()) {
 
+				int isubleft = model.getKey(sub.getLeft());
+				int isubright = model.getKey(sub.getRight());
+				int isubvar = model.getKey(sub.getSubstitutionVariable());
+
 				hashmapOfBackupVar.put(model.getKey(sub.getLeft()), model.backup(sub.getLeft()));
 				hashmapOfBackupVar.put(model.getKey(sub.getRight()), model.backup(sub.getRight()));
 				hashmapOfBackupVar.put(model.getKey(sub.getSubstitutionVariable()), model.backup(sub.getSubstitutionVariable()));
 				//System.out.println(" X"+X);
+
+
 			}
 		}
 
@@ -819,34 +927,23 @@ else
 
 
 		for ( Substitution sub: listeSub){
-
+			/*
 			int isubleft = model.getKey(sub.getLeft());
 			int isubright = model.getKey(sub.getRight());
 			int isubvar = model.getKey(sub.getSubstitutionVariable());
-
-			if (isubleft < iindex){
-				sub.getLeft().getDomain().clear();
-				sub.getLeft().getDomain().add(valuation[isubleft]);
-				//	System.out.println("l "+valuation[X.indexOf(sub.getLeft())]+X.indexOf(sub.getLeft()));
-			}
-
-			if (isubright < iindex){
-				sub.getRight().getDomain().clear();
-				sub.getRight().getDomain().add(valuation[isubright]);
-				//System.out.println("r "+valuation[X.indexOf(sub.getRight())]+X.indexOf(sub.getRight()));
-			}
+			 */
 
 			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
 					sub.getSubstitutionOperator(), sub.getRight().getDomain());
 			//			if (newDomain == X.get(iinitial).getDomain()){
 
 
-			if (isubvar>=iindex){
-				//System.out.println(sub.getLeft().getName()+sub.getLeft().getDomain()+sub.getRight().getName()+sub.getRight().getDomain()+ " subs var"+sub.getSubstitutionVariable());
-				if (sub.getSubstitutionVariable().getDomain().restrict(newDomain)){
-					//	System.out.println("new dom" + newDomain +sub.getSubstitutionVariable().getName());
-				}
+			//if (isubvar>=iindex){
+			//System.out.println(sub.getLeft().getName()+sub.getLeft().getDomain()+sub.getRight().getName()+sub.getRight().getDomain()+ " subs var"+sub.getSubstitutionVariable());
+			if (sub.getSubstitutionVariable().getDomain().restrict(newDomain)){
+				//	System.out.println("new dom" + newDomain +sub.getSubstitutionVariable().getName());
 			}
+			//}
 
 			//}
 
@@ -903,9 +1000,10 @@ else
 		ArrayList<Substitution> listeSub = X.get(iinitial).getAssociatedSubstitutions();
 		Domain toRemove = new Domain();
 
-		boolean reduce = false;
+		boolean reduce;
 
 		HashMap<Integer, Variable> intToVar = new HashMap<Integer, Variable>();
+		TreeSet<Integer> indiceVariablesToUpdate = new TreeSet<Integer>();
 
 		for ( Substitution sub: listeSub){
 
@@ -913,19 +1011,26 @@ else
 			int isubright = model.getKey(sub.getRight());
 			int isubvar = model.getKey(sub.getSubstitutionVariable());
 
-			if (isubleft < iindex){
+			if (isubleft < iindex && !intToVar.containsKey(isubleft)){
 				intToVar.put(isubleft, model.backup(sub.getLeft()));
 				sub.getLeft().getDomain().clear();
 				sub.getLeft().getDomain().add(valuation[isubleft]);
-				//	System.out.println("l "+valuation[X.indexOf(sub.getLeft())]+X.indexOf(sub.getLeft()));
+				System.out.println("l "+valuation[X.indexOf(sub.getLeft())]+X.indexOf(sub.getLeft()));
 			}
 			//< car on ajoute a à i deja
 
-			if (isubright < iindex){
+			if (isubright < iindex && !intToVar.containsKey(isubright)){
 				intToVar.put(isubright, model.backup(sub.getRight()));
 				sub.getRight().getDomain().clear();
 				sub.getRight().getDomain().add(valuation[isubright]);
-				//System.out.println("r "+valuation[X.indexOf(sub.getRight())]+X.indexOf(sub.getRight()));
+				System.out.println("r "+valuation[X.indexOf(sub.getRight())]+X.indexOf(sub.getRight()));
+			}
+
+			if (isubvar < iindex && !intToVar.containsKey(isubvar)){
+				intToVar.put(isubvar, model.backup(sub.getSubstitutionVariable()));
+				sub.getSubstitutionVariable().getDomain().clear();
+				sub.getSubstitutionVariable().getDomain().add(valuation[isubvar]);
+				System.out.println("r "+valuation[X.indexOf(sub.getRight())]+X.indexOf(sub.getRight()));
 			}
 
 			Domain newDomain = sub.getLeft().getDomain().arithmeticOperation(
@@ -933,11 +1038,14 @@ else
 			//			if (newDomain == X.get(iinitial).getDomain()){
 
 
+			//reduce = false;
 			if (isubvar>iindex){
 				//System.out.println(sub.getLeft().getName()+sub.getLeft().getDomain()+sub.getRight().getName()+sub.getRight().getDomain()+ " subs var"+sub.getSubstitutionVariable());
 				if (sub.getSubstitutionVariable().getDomain().restrict(newDomain)){
-					reduce = true;
-					//	System.out.println("new dom" + newDomain +sub.getSubstitutionVariable().getName());
+					//reduce = true;
+					System.out.println("new dom" + newDomain +sub.getSubstitutionVariable().getName());
+					if (iinitial != isubvar)
+						indiceVariablesToUpdate.add(isubvar);
 				}
 			}
 			//}
@@ -945,18 +1053,36 @@ else
 				//System.out.println("subst var < iini");
 			}
 
+
 			toRemove.clear();
 			for (Integer aa : sub.getLeft().getDomain()) {
 
 				if (!findSubstitutionVals(sub, aa, sub.getLeft())) { // reduce on every (xk,A)
 					toRemove.add(aa);
-					reduce = true;
-					//	System.out.println(aa + ""+sub.getLeft().getDomain()+sub.getLeft().getName());
+
+					/**
+					 * prob TODO vire D
+					 */
+
+					System.out.println("sub = "+ sub+" aa = "+ aa + " sub left " + sub.getLeft().getName()+ " = "+sub.getLeft().getDomain());
 					// reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
 					//reduce(sub.getLeft(), sub.getLeft());
+					System.out.println(iinitial+" <-iinitial isubleft-> "+isubleft);
 				}
 			}
-			sub.getLeft().getDomain().removeAll(toRemove);
+
+
+			/**
+			 * prob si inf ex: 0 D dans send more
+			 * > parce que si 0
+			 */
+			if (isubleft > iindex)
+				if (sub.getLeft().getDomain().removeAll(toRemove)){
+					System.out.println(iindex+" <-iindex isubleft-> "+isubleft);
+					if (iinitial != isubleft)
+						indiceVariablesToUpdate.add(isubleft);
+				}
+
 			//System.out.println(toRemove);
 
 
@@ -971,13 +1097,29 @@ else
 					//reduce(sub.getRight(), sub.getRight());
 				}
 			}
-			sub.getRight().getDomain().removeAll(toRemove);
+
+			if (isubright > iindex)
+				if (sub.getRight().getDomain().removeAll(toRemove))
+					if (iinitial != isubright)
+						indiceVariablesToUpdate.add(isubright);
+
+
 			//System.out.println(toRemove +" to remove from right"+ toRemove.isEmpty());
 
 			//restoreSubstitutions(variablesUpdated, iindex);
 			//variablesUpdated.clear();
-			model.restoreHashMap(intToVar);
-			intToVar.clear();
+
+		}
+		model.restoreHashMap(intToVar);
+		intToVar.clear();
+		System.out.println(" red "+ indiceVariablesToUpdate );
+		/**
+		 * Si iinitial = centre,gauche ou droite,
+		 * on update sur les indices <> iinitial
+		 */
+		for (Integer indice: indiceVariablesToUpdate){
+			updateSubstitutionsWithoutModifLessEquals(indice);
+			System.out.println("reupdate "+X.get(indice).getName());
 		}
 		//if (reduce)
 		//System.out.println(reduce +" "+ X);

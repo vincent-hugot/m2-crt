@@ -838,6 +838,45 @@ public class FullLookAheadTest {
 	assertEquals(assertRes, f.run());
 	}
 	
+	@Test
+	public void ichio() {
+	
+	content = "DOMAINS:"+
+	//O = 0, M = 1, Y = 2, E = 5, N = 6, D = 7, R = 8, and S = 9.
+	/*
+	 * "X1 : [-10,...,10],"+
+	"X2 : [-10,...,10],"+
+	"X3 : [-10...10],"+
+	"X4 : [-10,...,10];"+
+	*/
+	"X1 : [0,...,1],"+
+	"X2 : [0,...,1],"+
+	"X3 : [0...1],"+
+	"X4 : [0,...,1];"+
+
+	"CONSTRAINTS: "+
+	"6 * X1 + 3 * X2 + 5 * X3 + 2 * X4 <= 10,"+
+	"X3 + X4 <= 1,"+
+	"X3 - X1 <= 0,"+
+	"X4 - X2 <= 0;"
+	;
+	translator = new Translator("testfile",content);
+	m = translator.translate();
+	f = new FullLookAhead(m);
+	HashSet<Variable> assertRes = new HashSet<Variable>();
+
+	assertRes.add(new Variable("D",7,7));
+	assertRes.add(new Variable("E",5,5));
+	assertRes.add(new Variable("M",1,1));
+	assertRes.add(new Variable("N",6,6));
+	assertRes.add(new Variable("O",0,0));
+	assertRes.add(new Variable("R",8,8));
+	assertRes.add(new Variable("S",9,9));
+	assertRes.add(new Variable("Y",2,2));
+	assertEquals(assertRes, f.run());
+	
+	}
+	
 
 		/*
 		content = "DOMAINS:"+
