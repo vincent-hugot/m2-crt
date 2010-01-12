@@ -17,7 +17,7 @@ public class FullLookAheadFitnesse {
 
 	private Translator translator;
 	private Model model;
-	private Collection<Variable> result;
+	private Set<Variable> result;
 	
 	public FullLookAheadFitnesse(String fileContent){
 		translator = new Translator("Test Fitnesse", fileContent);
