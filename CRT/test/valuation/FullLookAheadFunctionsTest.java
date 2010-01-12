@@ -153,7 +153,13 @@ public class FullLookAheadFunctionsTest {
 		translator = new Translator("testfile",content);
 		m = translator.translate();
 		f = new FullLookAhead(m);
-		f.consistent(0, 0, 0, 0, 0);
+		
+		//System.out.println(f.consistent(0, 0, 20, 0, 21));
+		HashMap<Integer, Variable> ivar = new HashMap<Integer, Variable>();
+		f.AddbackupSubstitutionsToHash(ivar, m.getVariables().get(21));
+		System.out.println(ivar);
+		f.AddbackupSubstitutionsToHash(ivar, m.getVariables().get(4));
+		System.out.println(ivar);//doublon constante 0
 	}
 
 	/**

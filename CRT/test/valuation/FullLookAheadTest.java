@@ -2,6 +2,7 @@ package valuation;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import model.Domain;
@@ -865,20 +866,64 @@ public class FullLookAheadTest {
 	f = new FullLookAhead(m);
 	HashSet<Variable> assertRes = new HashSet<Variable>();
 
-	assertRes.add(new Variable("D",7,7));
-	assertRes.add(new Variable("E",5,5));
-	assertRes.add(new Variable("M",1,1));
-	assertRes.add(new Variable("N",6,6));
-	assertRes.add(new Variable("O",0,0));
-	assertRes.add(new Variable("R",8,8));
-	assertRes.add(new Variable("S",9,9));
-	assertRes.add(new Variable("Y",2,2));
+	assertRes.add(new Variable("X1",0,0));
+	assertRes.add(new Variable("X2",0,0));
+	assertRes.add(new Variable("X3",0,0));
+	assertRes.add(new Variable("X4",0,0));
 	assertEquals(assertRes, f.run());
+	
+	//X1= 0 @10 = 1 0 r
+	//HashMap<Integer, Variable> ivar = new HashMap<Integer, Variable>();
+	//f.AddbackupSubstitutionsToHash(ivar, m.getVariables().get(0));
+	//System.out.println(ivar);
 	
 	}
 	
+	@Test
+	public void ichio2() {
+	
+	content = "DOMAINS:"+
+	//O = 0, M = 1, Y = 2, E = 5, N = 6, D = 7, R = 8, and S = 9.
+	/*
+	 * "X1 : [-10,...,10],"+
+	"X2 : [-10,...,10],"+
+	"X3 : [-10...10],"+
+	"X4 : [-10,...,10];"+
+	*/
+	"X1 : [0,...,1],"+
+	"X2 : [1,...,1],"+
+	"X3 : [0...1],"+
+	"X4 : [0,...,1];"+
 
-		/*
+	"CONSTRAINTS: "+
+	"6 * X1 + 3 * X2 + 5 * X3 + 2 * X4 <= 10,"+
+	"X3 + X4 <= 1,"+
+	"X3 - X1 <= 0,"+
+	"X4 - X2 <= 0;"
+	;
+	translator = new Translator("testfile",content);
+	m = translator.translate();
+	f = new FullLookAhead(m);
+	HashSet<Variable> assertRes = new HashSet<Variable>();
+
+	assertRes.add(new Variable("X1",0,0));
+	assertRes.add(new Variable("X2",1,1));
+	assertRes.add(new Variable("X3",0,0));
+	assertRes.add(new Variable("X4",0,0));
+	assertEquals(assertRes, f.run());
+	
+	//X1= 0 @10 = 1 0 r
+	//HashMap<Integer, Variable> ivar = new HashMap<Integer, Variable>();
+	//f.AddbackupSubstitutionsToHash(ivar, m.getVariables().get(0));
+	//System.out.println(ivar);
+	
+	}
+	
+	/*
+	@Test
+	public void sendMoreComplete() {
+
+		
 		content = "DOMAINS:"+
 		//O = 0, M = 1, Y = 2, E = 5, N = 6, D = 7, R = 8, and S = 9.
 		"D : [0,...,9],"+
@@ -893,46 +938,20 @@ public class FullLookAheadTest {
 		"D <> E,"+
 		"D<>M, D<>N, D<>O, D<>R, D<>S, D<>Y,E<>M, E<>N, E<>O, E<>R, E<>S, E<>Y,M<>N, M<>O, M<>R, M<>S, M<>Y,N<>O, N<>R, N<>S, N<>Y,O<>R, O<>S, O<>Y,R<>S, R<>Y,S<>Y, "+
 		"(S+M)*1000 + (E+O)*100 + (N+R)*10 + D+E =M*10000 + O*1000+ N*100 +  E*10 + Y; ";
-		 */
 	
-		/*
-	@Test
-	public void testRun2() {
-	String
-	content="DOMAINS:"+
-	"X1 : [2,..., 2],"+
-	"X2 : [4,..., 4],"+
-"	X3 : [1,..., 1],"+
-"	X4 : [3,..., 3];"+
-"	CONSTRAINTS:"+
-"	X1 /= X2 + 1,"+
-"	X1 /= X3 + 2,"+
-"	X1 /= X4 + 3,"+
-"	X2 /= X3 + 1,"+
-"	X2 /= X4 + 2,"+
-"	X3 /= X4 + 1,"+
-"	X2 /= X1 + 1,"+
-"	X3 /= X1 + 2,"+
-	"X4 /= X1 + 3,"+
-	"X2 /= X3 - 1,"+
-	"X2 /= X4 - 2,"+
-	"X3 /= X4 - 1,"+
-	"X1 /= X2,"+
-	"X1 /= X3,"+
-	"X1 /= X4,"+
-	"X2 /= X3,"+
-	"X2 /= X4,"+
-	"X3 /= X4;";
+		translator = new Translator("testfile",content);
+		m = translator.translate();
+		f = new FullLookAhead(m);
+		HashSet<Variable> assertRes = new HashSet<Variable>();
 
-	Translator translator = new Translator("testfile",content);
-	Model m = translator.translate();
-	
-	AC3 ac3 = new AC3(m);
-	ac3.run();
-	System.out.println(m);
-
+		assertRes.add(new Variable("X1",0,0));
+		assertRes.add(new Variable("X2",1,1));
+		assertRes.add(new Variable("X3",0,0));
+		assertRes.add(new Variable("X4",0,0));
+		assertEquals(assertRes, f.run());
 	
 	}
 	*/
+	
 }
 

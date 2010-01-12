@@ -280,6 +280,9 @@ public class Model {
 			Constant c = (Constant) v;
 			//ET SI ON VEUT SVG VIDE
 			Constant cres = new Constant(c.getValue());
+			/**
+			 * prob le backup d'une constante n'a pas dee liste de contraintes et de liste de substitution
+			 */
 			cres.setDomain((Domain) v.getDomain().clone());
 			return cres;
 			
@@ -293,107 +296,6 @@ public class Model {
 			return vc;
 		}
 
-	}
-
-	/**
-	 * @param v de type Variable, on remplace la variable dans l'ArrayList variables par v si elles ont le meme nom de variable
-	 * En fait seule la reference sur le domaine de la variable
-	 * le probleme c'est qu'il restaure toutes les constantes de la meme valeur alors que l'on ne le veut pas
-	 */
-	public void restore(Variable v){
-		Iterator<Variable> iVar = variables.iterator();
-		Variable variable = null;//variable temporaire qui sert pour iterer
-		boolean variableTrouvee = false;//a t-on trouve la variable qui a le meme nom que v dans l'ArrayList variables
-		int i=0;//indice dans array list
-
-		while (iVar.hasNext() && !variableTrouvee){
-			variable = ((Variable)iVar.next());
-			if (variable.getName().equals(v.getName())){
-				variableTrouvee = true;
-			}
-			i++;
-		}
-
-		if (variableTrouvee){
-			//variables.set(i-1, v);//i-1
-			//non car il faut 1 point de restauration a usage multiple
-
-			//variables.set(i-1, backup(v));
-			//non car sinon si on fait un model.getConstraintsConcerningVariables, les 2 pointeurs sont differents
-			//et en plus les substitutions surement
-
-			//trop complique on va juste changer le domaine...
-			if (v instanceof Constant){
-				Constant c = (Constant) v;
-				Domain d = new Domain();
-				d.add(c.getValue());
-				//System.out.println(c.getValue());
-				variable.setDomain(d);
-
-				//prob si on a plusieurs 10 et +sieurs 1000
-				while (iVar.hasNext()){
-					variable = ((Variable)iVar.next());
-					if (variable.getName().equals(v.getName())){
-						variable.setDomain((Domain) d.clone());
-					}
-					i++;
-				}
-
-			}
-			else{
-				variable.setDomain((Domain) v.getDomain().clone());
-			}
-
-
-		}
-	}
-
-	/**
-	 * 
-	 * @param v
-	 * @param iinitialBecauseConstantDoublon
-	 * restaure les variables a partir d'un certain indice,
-	 * le probleme c'est qu'il restaure toutes les constantes de la meme valeur alors que l'on ne le veut pas
-	 */
-	public void restore(Variable v, int iinitialBecauseConstantDoublon){
-		Iterator<Variable> iVar = variables.iterator();
-		Variable variable = null;//variable temporaire qui sert pour iterer
-		boolean variableTrouvee = false;//a t-on trouve la variable qui a le meme nom que v dans l'ArrayList variables
-		int i=0;//indice dans array list
-
-		while (iVar.hasNext() && !variableTrouvee){
-			variable = ((Variable)iVar.next());
-			if (variable.getName().equals(v.getName())){
-				if (v instanceof Constant){
-					Constant c = (Constant) v;
-					Domain d = new Domain();
-					d.add(c.getValue());
-					//System.out.println(c.getValue());
-					if (i>=iinitialBecauseConstantDoublon){
-						variable.setDomain((Domain) d.clone());
-					}
-				}
-				else{
-					variableTrouvee = true;
-				}
-			}
-			i++;
-		}
-		if (variableTrouvee){
-			//variables.set(i-1, v);//i-1
-			//non car il faut 1 point de restauration a usage multiple
-
-			//variables.set(i-1, backup(v));
-			//non car sinon si on fait un model.getConstraintsConcerningVariables, les 2 pointeurs sont differents
-			//et en plus les substitutions surement
-
-			//trop complique on va juste changer le domaine...
-			if (v instanceof Constant){
-			}
-			else{
-				variable.setDomain((Domain) v.getDomain().clone());
-			}
-		}
 	}
 
 	/**
