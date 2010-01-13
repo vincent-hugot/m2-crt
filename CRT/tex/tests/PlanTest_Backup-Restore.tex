@@ -1,0 +1,24 @@
+
+\documentclass[12pt,a4paper]{article} 
+
+\usepackage[defhf,deflayout]{sknife}
+\input{../common/common.tex}
+
+%\pagetitle{CR - Projet CRT \dateformat23/12/2009}
+\title{Plan de test concernant la sauvegarde et restauration du modèle}
+\author{$\diamond$\vspace{-0.2em}}
+
+\begin{document}
+ \maketitle
+
+\section{Présentation du contexte}
+La réalisation du \fla\ requiert de pouvoir avant chaque décision sauvegarder l'état courant du modèle afin de pouvoir à tout moment revenir en arrière lorsque nécessaire. 
+Or dans l'état actuel des choses, le modèle ne dispose pas de cette fonctionalité, de ce fait il est nécessaire de l'implémenter.\mk\\
+
+Lors de l'application de l'algorithme lorsqu'un choix est fait une seule et unique variable est à chaque fois modifiée. C'est pourquoi il a été décidé de créer le deux méthodes suivantes : \sk\\
+\begin{itemize}
+	\item \tech{Variable backup(Variable v)}
+	\item \tech{}
+\end{itemize}
+\section{Plan de test}
+\end{document}
