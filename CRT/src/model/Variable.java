@@ -118,7 +118,6 @@ public class Variable implements Comparable<Variable>{
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 * pour tester egalité d'un treeset de variables
 	 */
-	@Override
 	public int compareTo(Variable o) {
 		if (equals(o))
 			return 0;

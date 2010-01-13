@@ -28,14 +28,14 @@ public class FullLookAheadFitnesse {
 		
 	}
 	
-	public boolean oneOf(String list){
+	public boolean OneOf(String list){
 		boolean found = false;
 		ArrayList<String> valuations = new ArrayList<String>();
 		Set<Variable> vars;
 		ArrayList<Set<Variable>> createdValuations = new ArrayList<Set<Variable>>();
 		
 		//Check that the list has the specified format
-		if(list.matches("(?x)\\[(\\[(\\(\\w+,\\ -?\\d+\\))+\\])*\\]"))
+		if(list.matches("(?x)(\\[(\\[(\\(\\w+,\\ -?\\d+\\))+\\])*\\])"))
 		{
 			//Creation of a list containing all the proposed valuations
 			try {
@@ -112,7 +112,7 @@ public class FullLookAheadFitnesse {
 					end = true;
 				}
 				
-			}			
+			}		
 		}
 		
 		return found;
