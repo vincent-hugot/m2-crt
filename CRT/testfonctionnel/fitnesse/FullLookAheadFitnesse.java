@@ -34,16 +34,23 @@ public class FullLookAheadFitnesse {
 		Set<Variable> vars;
 		ArrayList<Set<Variable>> createdValuations = new ArrayList<Set<Variable>>();
 		
+		//No need to perform everything if list of valuations is empty
+		if(list.equals(new String("[]"))){
+			return (result == null);
+		}
+		
 		//Check that the list has the specified format
 		if(list.matches("(?x)(\\[(\\[(\\(\\w+,\\ -?\\d+\\))+\\])*\\])"))
 		{
 			//Creation of a list containing all the proposed valuations
 			try {
-				Pattern regex = Pattern.compile("\\[(?:\\(\\w+,\\ -?\\d+\\))+\\]", Pattern.COMMENTS);
+				Pattern regex = Pattern.compile("(\\[(\\(\\w+,\\ -?\\d+\\))+\\])", Pattern.COMMENTS);
 				Matcher regexMatcher = regex.matcher(list);
 				while (regexMatcher.find()) {
 					valuations.add(regexMatcher.group());
 				} 
+				
+				
 			} catch (PatternSyntaxException ex) {
 				// Syntax error in the regular expression
 			}
@@ -53,7 +60,7 @@ public class FullLookAheadFitnesse {
 				
 				vars = new TreeSet<Variable>();
 				try {
-					Pattern regex = Pattern.compile("\\(\\w+,\\ -?\\d+\\)", Pattern.COMMENTS);
+					Pattern regex = Pattern.compile("\\(\\w,\\ -?\\d+\\)", Pattern.COMMENTS);
 					Matcher regexMatcher = regex.matcher(val);
 					
 					//For each couple
@@ -62,10 +69,12 @@ public class FullLookAheadFitnesse {
 						//Obtention of the name of the variable
 						String variableName = null;
 						try {
-							Pattern regex2 = Pattern.compile("\\w+", Pattern.COMMENTS);
+							//The opening bracket is included in the regexp so that it would not give us the values
+							//of the variables but only the names, thus the substring to remove it
+							Pattern regex2 = Pattern.compile("\\(\\w+", Pattern.COMMENTS);
 							Matcher regexMatcher2 = regex2.matcher(regexMatcher.group());
 							if (regexMatcher2.find()) {
-								variableName = regexMatcher2.group(1);
+								variableName = regexMatcher2.group(1).substring(1);
 							} 
 						} catch (PatternSyntaxException ex) {
 							// Syntax error in the regular expression
