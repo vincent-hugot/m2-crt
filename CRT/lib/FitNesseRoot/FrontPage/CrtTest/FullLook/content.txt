@@ -2,58 +2,45 @@
 !define TEST_SYSTEM {slim}
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X>Y,Y>Z; |
 |check|OneOf|[[(X, 2)(Y, 1)(Z, 0)]]|true|
-|check|OneOf|[[(X,1),(Y,1),(Z,2)]]|false|
+|check|OneOf|[[(X, 1)(Y, 1)(Z, 0)][(X, 1)(Y, 1)(Z, 2)]]|false|
+
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z; |
-|check|OneOf|[[(X,0),(Y,1),(Z,2)]]|true|
-|check|OneOf|[[(X,1),(Y,2),(Z,2)]]|false|
-|check|OneOf|[[(X,2),(Y,1),(Z,2)]]|false|
+|check|OneOf|[[(X, 0)(Y, 1)(Z, 2)]]|true|
+|check|OneOf|[[(X, 2)(Y, 1)(Z, 2)][(X, 1)(Y, 2)(Z, 2)]]|false|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z,Z<X ; |
-|check|OneOf|[[(X,1),(Y,2),(Z,2)]]|false|
-|check|OneOf|[[(X,2),(Y,1),(Z,0)]]|false|
+|check|OneOf|[[(X, 1)(Y, 2)(Z, 2)][(X, 2)(Y, 1)(Z, 0)][(X, 1)(Y, 1)(Z, 1)]]|false|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,0], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z ; |
-|check|OneOf|[[(X,0),(Y,1),(Z,2)]]|true|
-|check|OneOf|[[(X,0),(Y,0),(Z,2)]]|false|
+|check|OneOf|[[(X, 0)(Y, 1)(Z, 2)]]|true|
+|check|OneOf|[[(X, 1)(Y, 1)(Z, 2)][(X, 0)(Y, 0)(Z, 2)]]|false|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [1,...,0], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z ; |
-|check|OneOf|[[(X,0),(Y,1),(Z,2)]]|false|
+|check|OneOf|[[(X, 0)(Y, 1)(Z, 2)][(X, 1)(Y, 0)(Z, 2)]]|false|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,0], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z ; |
-|check|OneOf|[[(X,0),(Y,1),(Z,2)]]|true|
-|check|OneOf|[[(X,0),(Y,0),(Z,2)]]|false|
+|check|OneOf|[[(X, 0)(Y, 1)(Z, 2)][(X, 0)(Y, 0)(Z, 2)]]|true|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<>Y,Y<>Z,X<>Z ; |
-|check|OneOf|[[(X,0),(Y,1),(Z,2)]]|true|
-|check|OneOf|[[(X,0),(Y,2),(Z,1)]]|true|
-|check|OneOf|[[(X,1),(Y,2),(Z,0)]]|true|
-|check|OneOf|[[(X,1),(Y,0),(Z,2)]]|true|
-|check|OneOf|[[(X,2),(Y,0),(Z,1)]]|true|
-|check|OneOf|[[(X,2),(Y,1),(Z,0)]]|true|
+|check|OneOf|[[(X, 2)(Y, 0)(Z, 1)][(X, 1)(Y, 2)(Z, 0)][(X, 0)(Y, 1)(Z, 2)][(X, 0)(Y, 2)(Z, 1)][(X, 1)(Y, 0)(Z, 2)][(X, 2)(Y, 1)(Z, 0)]]|true|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X=Y,Y=Z,X=Z ; |
-|check|OneOf|[[(X,0),(Y,0),(Z,0)]]|true|
-|check|OneOf|[[(X,1),(Y,1),(Z,1)]]|true|
-|check|OneOf|[[(X,2),(Y,2),(Z,2)]]|true|
+|check|OneOf|[[(X, 1)(Y, 1)(Z, 1)][(X, 0)(Y, 0)(Z, 0)][(X, 2)(Y, 2)(Z, 2)]]|true|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X=Y,Y<>Z,X<>Z ; |
-|check|OneOf|[[(X,0),(Y,0),(Z,2)]]|true|
-|check|OneOf|[[(X,1),(Y,1),(Z,2)]]|true|
-|check|OneOf|[[(X,2),(Y,2),(Z,0)]]|true|
-|check|OneOf|[[(X,0),(Y,0),(Z,1)]]|true|
-|check|OneOf|[[(X,1),(Y,1),(Z,0)]]|true|
-|check|OneOf|[[(X,2),(Y,2),(Z,1)]]|true|
+|check|OneOf|[[(X, 1)(Y, 1)(Z, 0)][(X, 0)(Y, 0)(Z, 1)][(X, 2)(Y, 2)(Z, 0)][(X, 1)(Y, 1)(Z, 2)][(X, 2)(Y, 2)(Z, 1)][(X, 0)(Y, 0)(Z, 2)]]|true|
+
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2] ;CONSTRAINTS: X<>X; |
-|check|OneOf|[[(X,0)]]|true|
+|check|OneOf|[]|true|
 
