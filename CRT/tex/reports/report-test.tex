@@ -17,10 +17,22 @@ Lors de l'application de l'algorithme lorsqu'un choix est fait une seule et uniq
 
 \SB{Propriétés testées par rapport à l'utilisateur}
 
+La fonction backup permet de sauvegarder la valeur d'une variable à un moment donné, afin de pouvoir être en mesure de revenir à cet état ultérieurement au besoin.
+
+Les pricipales choses dont nous devons nous assurer sont :
+\begin{itemize}
+\item Que la variable retournée est bien syntaxiquement égale à celle que l'on souhaite sauvegarder
+\item Que la variable créée est bien une copie de l'originale, c'est à dire que la fonction retourne une référence vers une nouvelle variable et non l'originale. (Sinon toute modification de l'originale sur repercuterait sur la copie qui n'aurait plus aucun intérêt)
+\item Que la variable originale n'est pas modifiée par l'application de la méthode.
+
+\end{itemize}
+
 \SB{Exigences non couvertes par le plan de test}
-
+Il aurait été bon de tester que l'application de la méthode en lui passant en paramètre une variable nulle ou non présente dans le modèle retourne bien une erreur.
 \SB{Stratégies de test}
-
+ 
+Tous les tests se déroulent dans un même ``environnement''. C'est à dire qu'ils sont tous effectués sur un modèle contenant 3 variable et deux contraintes.
+Un test a été écrit pour chacune des exigences citées. Aisin qu'un test aux limites en essayant de sauvegarder une nouvelle varaiable ayant un domaine vide. De plus un dernier test permet de s'assurer que la fonction n'altère aucune des autres variables du modèle.
 \SB{Critères d'acceptation des tests}
 
 \SB{Critères d'arrêt des tests}
