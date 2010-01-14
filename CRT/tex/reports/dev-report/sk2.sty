@@ -13,6 +13,9 @@
 \DeclareOption{common}{
   \def\OPTcommon{1}
 
+%% MISCELLANEOUS
+\newcommand{\todo}[1]{{\sf \textcolor{red}{[TODO] #1}}}
+
 %%%% SHORTCUTS
 \newcommand{\bk}{\bigskip}
 \newcommand{\mk}{\medskip}
@@ -94,6 +97,7 @@
 
 %%%% TYPOGRAPHY
 \newcommand{\mc}{\mathcal}
+\newcommand{\mf}{\mathfrak}
 \newcommand\x\text
 
 %%%% SYMBOLS
@@ -139,13 +143,17 @@
 \newcommand{\doubleBrackets}[1]{\left\llbracket #1 \right\rrbracket}
 \newcommand\intInterval[2]{\doubleBrackets{#1,#2}}
 
+\newcommand{\verticalBars}[1]{\left\lvert #1 \right\rvert}
+\newcommand\pvb\verticalBars
+\newcommand\card\verticalBars
+
 %%%% OPERATORS
 
 \newcommand\tand{\text{\ and\ }}
 \newcommand\ttand{\text{\quad and\quad}}
 \newcommand\tor{\text{\ or\ }}
 
-\newcommand\eqdef{\;\smash[b]{\build{=}{}{\x{def}}}\;}
+\newcommand\eqdef{\;\smash[t]{\build{=}{}{\x{def}}}\;}
 
 \newcommand\nmodels{\models\!\!\!\!\!/\;\,}
 
@@ -187,6 +195,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifnum \OPTcommon=1
+  \usepackage{color}
   \usepackage[dvips]{graphicx}
   \usepackage[utf8]{inputenc}
   \usepackage{verbatim}
@@ -194,6 +203,7 @@
   \usepackage[T1]{fontenc}
   \usepackage{lmodern}
   \usepackage[scaled=0.8]{beramono}
+  \usepackage{ifthen}
 \fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

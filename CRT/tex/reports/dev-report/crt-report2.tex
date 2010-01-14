@@ -28,11 +28,123 @@
 \def\grpd{Groupe Développement}
 \def\grpt{Groupe Test}
 
+\newcommand\SA\subsection
+\newcommand\SB\subsubsection
+\newcommand\SC\subsubsection
+
 \begin{document}
  
 \maketitle
 
-
 \tableofcontents
+
+
+
+\section{Introduction}
+
+Dans cette seconde partie du projet de CRT, notre groupe était
+chargé d'implanter l'algorithme de valuation FLA (\texttt{Full Look Ahead}).
+Nous avons également pourvu notre programme d'une interface graphique,
+en plus du mode \emph{ligne de commande} disponible précédemment.
+
+\section{Organisation}
+
+Comme à l'accoutumée, nous nous sommes astreints à respecter la
+méthode XP autant que faire se peut étant donné les autres contraintes
+auquelles nous étions soumis.\mk\\
+%
+Nous avons, comme prévu, interchangé les groupes de développement et 
+de test par rapport à la première partie du projet. 
+Les responsables respectifs des deux groupes ont également changé.
+La nouvelle répartition suit:\mk\\
+%
+\textbf{\grpt}
+\begin{itemize}
+\item $\frac12$\mvin : Chef de projet
+\item \mmat : Chef \grpt
+\item \moli
+\item \mbed
+\item \mmed \mk\\
+\end{itemize}
+
+\textbf{\grpd}
+\begin{itemize}
+\item \mdon : Chef \grpd
+\item \mmor
+\item \mwyd 
+\item \mlou
+\item $\frac12$\mvin 
+\end{itemize}
+
+\noi Une particularité de la nouvelle répartition est que \mvin\ a
+été assigné ``pour moitié'' à chaque groupe, d'une part
+afin d'aider la transition de l'ancien \grpt\ vers le développement,
+et d'autre part afin d'éviter de répéter les erreurs faites dans la première
+partie du travail. En effet nous avions souffert dans la première partie
+d'un manque de communication entre les deux équipes.
+Avoir le chef de projet consacrer son temps équitablement
+entre les deux équipes nous a semblé une solution raisonnable
+à ce problème.\mk\\
+%
+Nous avons travaillé par itérations d'environ une semaine,
+chacune ponctuée par une réunion (dont une pendant les vacances)
+donnant lieu à un rapport de réunion.
+En dehors des réunions, l'outil d'organisation
+principal restait notre forum, du moins pour ceux
+qui y passent plus d'une fois par an.\mk\\
+%
+Comme pour la première partie du projet, la répartition
+des tâches établie en réunions n'a pas été scrupuleusement
+appliquée en pratique, 
+en particulier car certains binômes ont
+accumulé beaucoup de retard et/ou rendu
+un travail inexploitable, qui a dû être refait par 
+d'autres membres de l'équipe lorqu'il a été clairement
+établi que ce n'était plus la peine d'attendre.
+
+
+\section{Algorithme \texttt{Full Look Ahead}}
+
+
+%input{}
+
+\section{Plan de Test}
+
+%input{}
+
+\section{Bilan technique}
+
+\textbf{Algorithme par algorithme:}
+\begin{itemize}
+\item L'algorithme AC3 fonctionne bien, mais est relativement lent lorsque les problèmes 
+génèrent de très nombreuses substitutions (quelque milliers).
+
+\item L'algorithme AC6 fonctionne, avec les mêmes caveats qu'AC3, mais donne de moins bonnes
+réductions d'AC3.
+
+\item Le backtracking fonctionne essentiellement, mais souffre de quelques bugs étranges pour l'instant. 
+  \todo{to be continued}
+
+\item Le Full Look Ahead fonctionne bien.
+  
+\end{itemize}
+
+\textbf{Exemple par exemple:}
+\begin{itemize}
+ \item \textbf{Dames: } Aucun algorithme de consistance ne réduit les domaines. 
+    Cependant le \texttt{FLA} trouve une solution.
+ \item \textbf{Zebre: } Tous les algorithmes fonctionnent bien, modulo la remarque faite plus haut en ce qui 
+    concerne AC6.
+ \item \textbf{SEND MORE = MONEY: } L'exemple se résoud bien, mais pas dans un temps raisonnable
+  lorsque tous les domaines sont ouverts. Pour l'exécuter, il nous faut réduire le domaine de quatre
+  variables à un singleton (la bonne valeur, évidemment), et l'algorithme trouve les autres rapidement.
+  Cette mauvaise performance est dûe à la gestion des substitutions, fort nombreuses sur l'exemple.
+\end{itemize}
+
+\section{Conclusion}
+
+En dépit des problèmes d'organisation que nous avons rencontrés, 
+le travail rendu respecte essentiellement le cahier des charges,
+même s'il reste de nombreux points perfectibles.
 
 \end{document}
