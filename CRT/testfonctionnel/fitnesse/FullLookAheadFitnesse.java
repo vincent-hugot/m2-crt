@@ -39,6 +39,11 @@ public class FullLookAheadFitnesse {
 			return (result == null);
 		}
 		
+		//If the result of the fla is empty and and the list is not then the result of this function is false
+		if(result == null){
+			return false;
+		}
+		
 		//Check that the list has the specified format
 		if(list.matches("(?x)(\\[(\\[(\\(\\w+,\\ -?\\d+\\))+\\])*\\])"))
 		{
@@ -71,10 +76,10 @@ public class FullLookAheadFitnesse {
 						try {
 							//The opening bracket is included in the regexp so that it would not give us the values
 							//of the variables but only the names, thus the substring to remove it
-							Pattern regex2 = Pattern.compile("\\(\\w+", Pattern.COMMENTS);
+							Pattern regex2 = Pattern.compile("([a-zA-Z]\\w*)", Pattern.COMMENTS);
 							Matcher regexMatcher2 = regex2.matcher(regexMatcher.group());
 							if (regexMatcher2.find()) {
-								variableName = regexMatcher2.group(1).substring(1);
+								variableName = regexMatcher2.group(1);
 							} 
 						} catch (PatternSyntaxException ex) {
 							// Syntax error in the regular expression
