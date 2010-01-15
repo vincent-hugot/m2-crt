@@ -1,0 +1,106 @@
+DOMAINS:
+
+Jap : [1,..., 5],
+Esp :  [1,..., 5],
+Norvegien : [1,..., 1],
+Ukr :  [1,..., 5],
+Anglais :  [1,..., 5],
+
+Vert :  [1,..., 5],
+Blanche :  [1,..., 5],
+
+Jaune :  [1,..., 5],
+Bleu :  [1,..., 5],
+Rouge :  [1,..., 5],
+
+Eau :  [1,..., 5],
+Cafe :  [1,..., 5],
+Vin :  [1,..., 5],
+The :  [1,..., 5],
+Lait : [3,..., 3],
+
+Zebre :  [1,..., 5],
+Chien :  [1,..., 5],
+Renard :  [1,..., 5],
+Cheval :  [1,..., 5],
+Escargot :  [1,..., 5],
+
+
+Kools :  [1,..., 5],
+Chesterfield :  [1,..., 5],
+Oldg :  [1,..., 5],
+Cravens :  [1,..., 5],
+Gitanes :  [1,..., 5];
+
+CONSTRAINTS:
+
+Norvegien /= Ukr ,
+Norvegien /= Anglais , 
+Norvegien /= Jap , 
+Norvegien /= Esp ,
+Ukr /= Anglais ,
+Ukr /= Jap ,
+Ukr /= Esp ,
+Anglais /= Jap ,
+Anglais /= Esp ,
+Jap /= Esp ,
+
+Jaune /= Bleu ,
+Jaune /= Rouge , 
+Jaune /= Vert , 
+Jaune /= Blanche ,
+Bleu /= Rouge ,
+Bleu /= Vert ,
+Bleu /= Blanche ,
+Rouge /= Vert ,
+Rouge /= Blanche ,
+Vert /= Blanche ,
+
+Eau /= The ,
+Eau /= Lait , 
+Eau /= Cafe , 
+Eau /= Vin ,
+The /= Lait ,
+The /= Cafe ,
+The /= Vin ,
+Lait /= Cafe ,
+Lait /= Vin ,
+Cafe /= Vin ,
+
+
+Renard /= Cheval ,
+Renard /= Escargot , 
+Renard /= Zebre , 
+Renard /= Chien ,
+Cheval /= Escargot ,
+Cheval /= Zebre ,
+Cheval /= Chien ,
+Escargot /= Zebre ,
+Escargot /= Chien ,
+Zebre /= Chien ,
+
+Kools /= Chesterfield ,
+Kools /= Oldg , 
+Kools /= Cravens , 
+Kools /= Gitanes ,
+Chesterfield /= Oldg ,
+Chesterfield /= Cravens ,
+Chesterfield /= Gitanes ,
+Oldg /= Cravens ,
+Oldg /= Gitanes ,
+Cravens /= Gitanes ,
+
+Norvegien = Bleu - 1,
+Anglais = Rouge,
+Vert = Cafe,
+Jaune = Kools,
+Blanche = Vert + 1,
+Esp = Chien,
+Ukr = The,
+Jap = Cravens,
+Oldg = Escargot,
+Gitanes = Vin,
+Renard = Chesterfield - 1,
+Cheval = Kools + 1;
+
+
