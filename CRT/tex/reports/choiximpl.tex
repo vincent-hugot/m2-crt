@@ -1,0 +1,58 @@
+\SB{Choix d'implémentation}
+
+\SC{Sauvegarde et restauration de Variable}
+
+L’implémentation  a commencé avec la mise en place  pour la   classe modèle des méthodes  afin de faire  des sauvegardes de variables.
+Méthode backup:
+Syntaxe  public Variable backup (Variable v).
+Cette méthode clone la variable v, son domaine mais garde la référence sur les substitutions et les contraintes.
+Par contre pour  une constante qui est une  variable particulière, les références ne sont pas gardées sur les substitutions et les contraintes.
+Car on a changé la façon de procéder à la restauration.
+En effet, pour sauvegarder et restaurer on a utilisé une HashMap Integer-> Variable, car il y avait un problème: les constantes différentes peuvent avoir le même nom et la même valeur et être "equals".C'est pour cela qu'on a eu besoin de la clé Integer pour déterminer l'emplacement de la constante à restaurer.
+Pour restaurer une variable, on fait juste une copie clonée du domaine de la variable sauvegardée, et on l'affecte à la variable du modèle.
+En premier lieu, on avait  essayé d'affecter un clone de la variable
+sauvegardée dans la liste des variables, mais ça n'a pas marché, car dans la liste de contraintes et de substitutions les références sur les variables
+pointaient sur la variable déférencée.
+On a créé une fonction getKey(Variable) qui regarde les références, au lieu d'utiliser indexOf(qui utilise equals).
+
+\SC{Valuation}
+
+Pour la valuation , on a dû créer un tableau d'entier qui stocke les valeurs des variables instanciées.
+On garde dans la variable iindex, l'indice de la variable qu'on essaye
+d'instancier.
+Pour réaliser la partie suivante de l’algorithme : 
+reset each D'k , k>i, to its value before xi was last instanciated .
+
+On a crée un tableau de HashMap dont la taille est égale  au nombre de variables.
+ Au début de la boucle sur la variable i, on sauvegarde les variables de
+ i+1 à N dans HashMap[i].
+
+\SC{La méthode de Select value}
+ 
+On a du faire 2 versions du select value, une quand il reste au moins 2 autres variables à instancier si on ne compte pas celle d'indice i qu'on doit instancier, et l'autre quand il en reste 0 ou 1, sans compter i qu'on doit instancier.
+     
+\SC{Test de consistance}
+
+ Pour tester la consistance entre trois variables  la fonction Consistent a été mis en place. Elle doit rendre le modèle tel qu'elle l'a reçu.
+ Les deux versions de  select value, utilisent un ac3 custom, où à l'initialisation et dans le reduce, seuls les arcs ayant une extrémité dans Vi,Vj ou Vk sont révisés.
+ Pour le select value avec 2 valeur, on met vj = vk.
+Pour le select value à 1 valeur, on teste crt.areValidValues, sans passer par la fonction consistent.
+Donc quand on teste la consistance, les contraintes unaires de type A=A ou  A<>A sont prises en compte.
+
+\SC{Substitutions}
+
+On n’ a pas réutilisé les fonctions concernant les substitutions telles qu'elles car elles en faisaient trop. Ainsi on utilise 2 fonctions de substitutions.
+Tout d'abord, on a la méthode public void updateSubstitutions(int iinitial).
+Cette méthode met à jour les substitutions de la variable à l'indice iinitial, mais en une seule fois sans faire de révisions reduce. Elle est utilisée par la fonction consistent.
+Mais avant de lancer l'algo ac3 custom de la fonction consistent, on affecte une valeur singleton à toute les variables dont l'indice est inférieur à iindex: l'indice de la variable en cours d'instanciation càd les variables déjà instanciées.
+Car on en aura besoin pour réutiliser les fonctions sur les substitutions déjà codées.
+Ensuite on a utilisé la méthode
+ public void updateSubstitutionsWithoutModifLessEquals(int iinitial) qui pour toutes les valeurs > iindex, met à jour les substitutions pour les variables à partir de iindex+1. Ce qui veut dire que tout ce qui est inférieur ou égal à iindex sera inchangé (restauré ci besoin).
+Si on a un reduce, en mettant à jour une des 3 variables impliquées dans la substitution (A=B+C) alors on lance récursivement un
+updateSubstitutionsWithoutModifLessEquals sur la variable dont on vient de réduire le domaine.
+
+\SC{Conclusion}
+      
+Pour l’instant, on ne sait pas si utiliser AC3 custom au lieu de  AC1 est plus convenable.
+Lorsqu'on choisit la valeur d'une variable i pour le select value, on dit que les variables artificielles sont des variables, peut être que cela aurait été mieux de n'utiliser que les vrai variables. 
+Enfin nous dirons que l’application comporte quelques  bugs qui pourront être améliorées.
