@@ -208,24 +208,18 @@ public class MainWindow extends JFrame implements WindowListener {
 	
 	
 	public void lock() {
-		boolean stateChanged = this.STATE_HASCHANGED;
-		
 		menuBar.deactivate();
 		toolBar.deactivate();
 		codeArea.lock();
 		
-		this.STATE_HASCHANGED = stateChanged;
 		updateChangeState();
 	}
 	
 	public void unlock() {
-		boolean stateChanged = this.STATE_HASCHANGED;
-		
 		menuBar.activate();
 		toolBar.activate();
 		codeArea.unlock();
 		
-		this.STATE_HASCHANGED = stateChanged;
 		updateChangeState();
 	}
 }

@@ -62,7 +62,7 @@ public class ActionFLA extends AbstractAction {
 			
 			
 			// Updating (destroyed) model
-			System.out.println("Full Look-Ahead applied, model may be now unusable.");
+			//System.out.println("Full Look-Ahead applied, model may be now unusable.");
 			win.getModelArea().update(win.model);
 			
 			

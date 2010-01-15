@@ -78,7 +78,7 @@ else
 		for (indice=0; indice<X.size(); indice++){
 			varRestors[indice] = model.backup(X.get(indice));
 		 */
-
+		
 		HashMap<Integer, Variable> initialVars = new HashMap<Integer, Variable>();
 		initialVars = model.backupVariables(0);
 		/*

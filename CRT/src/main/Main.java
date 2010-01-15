@@ -124,7 +124,10 @@ public class Main {
 			else if (cmd.equals("backtrack")) {
 				Backtracking backtrack = new Backtracking(currentModel);
 				String result = backtrack.run();
-				System.out.println("First found solution: " + result);
+				if (result.isEmpty())
+					System.err.println("No solution found.");
+				else
+					System.out.println("First found solution: " + result);
 			}
 			else 
 			{

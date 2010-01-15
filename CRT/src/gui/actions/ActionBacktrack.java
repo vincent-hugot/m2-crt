@@ -62,7 +62,7 @@ public class ActionBacktrack extends AbstractAction {
 			
 			
 			// Updating (destroyed) model
-			System.out.println("Backtracking applied, model may be now unusable.");
+			//System.out.println("Backtracking applied, model may be now unusable.");
 			win.getModelArea().update(win.model);
 			
 			

@@ -64,7 +64,6 @@ public class ActionParse extends AbstractAction {
 			
 			
 			// When finished
-			win.STATE_HASCHANGED = false;
 			win.unlock();
 			win.STATE_PARSED = !tr.fail();
 		}

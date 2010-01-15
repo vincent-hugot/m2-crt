@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JTextPane;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
@@ -50,21 +49,6 @@ public class ModelArea extends JTextPane {
 			this.setForeground(Color.ORANGE);
 		}
 		
-
-		this.setDocument(new DefaultStyledDocument() {
-			
-			public void insertString(int a, String b, AttributeSet c) throws BadLocationException {
-				super.insertString(a, b, c);
-				syntaxHighlighting();
-				hasChanged();
-			}
-			
-			public void remove(int a, int b) throws BadLocationException {
-				super.remove(a, b);
-				syntaxHighlighting();
-				hasChanged();
-			}
-		});
 		
 
 		// Setting the font
@@ -118,13 +102,6 @@ public class ModelArea extends JTextPane {
 				"(\\b|-)([0-9]+)\\b" // "\\b([0-9]+)\\b"
 		};
 		
-	}
-	
-	
-
-	private void hasChanged() {
-		win.STATE_HASCHANGED = true;
-		win.setWindowTitle();
 	}
 	
 	
@@ -208,5 +185,6 @@ public class ModelArea extends JTextPane {
 	
 	public void update(Model model) {
 		this.setText(model.toString());
+		this.syntaxHighlighting();
 	}
 }
