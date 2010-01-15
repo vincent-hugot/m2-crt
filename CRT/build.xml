@@ -129,8 +129,8 @@
 	
 	<target name="package" depends="compile">
 		<mkdir dir="${target.dir}"/>
-		<jar manifest="manifest.mf" destfile="${target.dir}/ConstraintSolver.jar">
-			<!--<fileset dir="${classes.output.dir}" excludes="**/*UnitTest*.class" />-->		            
+		<copy todir="${classes.output.dir}/gui/resources"><fileset dir="${java.src.dir}/gui/resources"/></copy>
+		<jar manifest="manifest.mf" destfile="${target.dir}/ConstraintSolver.jar">	            
 			<fileset dir="${classes.output.dir}" excludes="**/*Test*.class" />
 		</jar>
 	</target>
