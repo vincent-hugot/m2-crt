@@ -1,4 +1,5 @@
 \SB{Compréhension}
+\SC{Propriétés}
 Voici pour rappel, les propriétés de l'algorithme de valuation \fla
 \begin{itemize}
 \item chaque instance est propagée sur les variables restant à instancier
@@ -6,10 +7,54 @@ Voici pour rappel, les propriétés de l'algorithme de valuation \fla
 \item lorsqu’un domaine d’une variable future devient vide, l’instanciation courante est rejetée
 \item mettent en oeuvre des algorithmes de consistance d’arcs
 \end{itemize}
-L'algorithme \fla donné en cours se décompose de la façon suivante
+\SC{Décomposition}
+L'algorithme \fla\ donné en cours se décompose de la façon suivante
 \begin{itemize}
-\item chaque instance est propagée sur les variables restant à instancier
-\item réduction des domaines des variables futures
-\item lorsqu’un domaine d’une variable future devient vide, l’instanciation courante est rejetée
-\item mettent en oeuvre des algorithmes de consistance d’arcs
+\item une méthode principale qui contrôle le backtracking
+\item une méthode select-value qui sélectionne une valeur pour la variable d'indice i à instancier en respectant les propriétés énoncées ci-dessus.
+\item une méthode consistent qui en fonction de la variable Vi d'indice i et de valeur a, la variable Vj d'indice j et de valeur b, et la valeur Vk d'indice k, détermine si ces 3 variables sont consistantes entre elles.
 \end{itemize}
+
+\SC{Petit exemple}
+On considére les trois variables:\\
+\\
+X de domaine D1=\{1, 2, 3\}\\
+Y de domaine D2=\{1, 2, 3\}\\
+Z de domaine D3=\{1, 2, 3\}\\
+\\
+Contraintes :\\
+X<Y (1)\\
+Y<Z (2)\\
+\\
+D1’=D1 , D2’=D2 , D3’=D3\\
+\\
+Déroulement de la fonction select-value pour i=1;\\
+a=1 on supprime 1 du domaine de D1’ ainsi D1’=\{2, 3\}\\
+j=2 k=3\\
+X=1, Y=b, Z=c\\
+b=1 inconsistance d’après (1) on supprime 1 de D2’=\{2, 3\}\\
+b=2 consistance car on peut choisir c=3 par exemple\\
+b=3 inconsistance d’après (2) on supprime 3 de D2’=\{2\}\\
+\\
+j=3 k=2\\
+X=1, Y=c, Z=B\\
+b=1 inconsistance on supprime 1 de D3’ ainsi D3’=\{2, 3\} l'inconsistance est détectée après application d'une consistance d'arc (par exemple AC3 réduit à seulement ces 3 variables)\\
+b=2 inconsistance on supprime 2 de D3’ ainsi D3’=\{3\} \\
+b=3 consistance car on peut choisir c=2 par exemple\\
+return a=1\\
+D1’=\{2, 3\} , D2’=\{2\} , D3’=\{3\}\\
+\\
+Déroulement de la fonction select-value pour i=2;\\
+return a=2\\
+\\
+Déroulement de la fonction select-value pour i=3;\\
+return a=3\\
+D1’=\{2, 3\} , D2’=\{\} , D3’=\{\}\\
+i=4\\
+On retourne \{X1=1, X2=2, X3=3\}.
+
+\SC{Conclusion du petit exemple}
+Quand i=2 et i=3, on ne passe pas par la boucle avec le double for.\\
+On va avoir besoin d'une fonction de consistence du type AC3 mais qui se limite à 3 variables.\\
+On va avoir besoin de sauvegarder l'état d'une variable(son domaine plus précisément).\\
+Il va falloir sauvegarder la valeur des variables instanciées dans un tableau par exemple.
