@@ -21,7 +21,7 @@
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [1,...,0], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z ; |
-|check|OneOf|[[(X, 0)(Y, 1)(Z, 2)][(X, 1)(Y, 0)(Z, 2)]]|false|
+|check|OneOf|[]|true|
 
 
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,0], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X<Y,Y<Z ; |
@@ -44,3 +44,10 @@
 !|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2] ;CONSTRAINTS: X<>X; |
 |check|OneOf|[]|true|
 
+
+!|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X=2,Y=0,Z=1 ; |
+|check|OneOf|[[(X, 2)(Y, 0)(Z, 1)]]|true|
+
+
+!|script|FullLookAheadFitnesse|DOMAINS:  X : [0,...,2], Y : [0,...,2], Z : [0,...,2];CONSTRAINTS: X=2,Y=X,Z=1 ; |
+|check|OneOf|[[(X, 2)(Y, 2)(Z, 1)]]|true|

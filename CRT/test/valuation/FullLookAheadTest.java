@@ -243,8 +243,8 @@ public class FullLookAheadTest {
 	public void testWithoutRemovingValues() {
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [0,...,200],\n" +
+			"A : [-77,...,0],\n" +
+			"B : [0,...,20],\n" +
 			"C : [5,...,10],\n" +
 			"D : [0,...,1];\n" +
 			"CONSTRAINTS:\n" +
@@ -266,8 +266,8 @@ public class FullLookAheadTest {
 	public void testOperatorEqual() {
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [0,...,200],\n" +
+			"A : [-77,...,20],\n" +
+			"B : [0,...,20],\n" +
 			"C : [5,...,10],\n" +
 			"D : [0,...,1];\n" +
 			"CONSTRAINTS:\n" +
@@ -289,8 +289,8 @@ public class FullLookAheadTest {
 	public void testOperatorEqualAnd1SubstitutionFalse() {
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [0,...,200],\n" +
+			"A : [-77,...,0],\n" +
+			"B : [0,...,20],\n" +
 			"C : [5,...,10],\n" +
 			"D : [0,...,1];\n" +
 			"CONSTRAINTS:\n" +
@@ -306,8 +306,8 @@ public class FullLookAheadTest {
 	public void test2equalsFalse() {
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [100,...,200],\n" +
+			"A : [-77,...,0],\n" +
+			"B : [100,...,20],\n" +
 			"C : [5,...,10],\n" +
 			"D : [0,...,1];\n" +
 			"CONSTRAINTS:\n" +
@@ -323,8 +323,8 @@ public class FullLookAheadTest {
 	public void withoutRemovingValues() {
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [1,...,200],\n" +
+			"A : [-77,...,0],\n" +
+			"B : [1,...,20],\n" +
 			"C : [5,...,10];\n" +
 			"CONSTRAINTS:\n" +
 			"A < B;" ;
@@ -412,8 +412,8 @@ public class FullLookAheadTest {
 
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [1,...,200],\n" +
+			"A : [-77,...,4],\n" +
+			"B : [1,...,20],\n" +
 			"C : [5,...,10];\n" +
 			"CONSTRAINTS:\n" +
 			"A > B;" ;
@@ -457,8 +457,8 @@ public class FullLookAheadTest {
 	public void testRedundant() {
 		content =
 			"DOMAINS:\n" +
-			"A : [-77,...,500],\n" +
-			"B : [0,...,200],\n" +
+			"A : [-77,...,3],\n" +
+			"B : [0,...,20],\n" +
 			"C : [5,...,10],\n" +
 			"D : [0,...,1];\n" +
 			"CONSTRAINTS:\n" +

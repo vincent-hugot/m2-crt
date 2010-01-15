@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import model.Operator.Constraint;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class BackupTest {
@@ -13,24 +14,22 @@ public class BackupTest {
 	private Model m;
 	private Variable x, y, z;
 	
-	public BackupTest(){
-		model.Constraint c1;
-		model.Constraint c2;
+	
+	@Before
+	public void setUp() {
+
+		//Constraint c1;
+		//Constraint c2;
 		m = new Model();
 		
 		x = m.newVariable("X", 0, 5);
 		y = m.newVariable("Y", 5, 1);
 		z = m.newVariable("Z", 0, 3);
 		
-		m.getVariables().add(x);
-		m.getVariables().add(y);
-		m.getVariables().add(z);
 		
-		c1 = m.newConstraint(x, y, Constraint.LOWER);
-		c2 = m.newConstraint(y, z, Constraint.GREATER);
+		m.newConstraint(x, y, Constraint.LOWER);
+		m.newConstraint(y, z, Constraint.GREATER);
 		
-		m.getConstraints().add(c1);
-		m.getConstraints().add(c2);
 	}
 	
 	@Test
@@ -52,12 +51,20 @@ public class BackupTest {
 	}
 	
 	@Test
+	public void testBackupNotFound() {
+		Variable v = m.newVariable("Lolwut", new Domain(), false);
+		assertEquals(v, m.backup(v));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testBackupNoAlterartionsConstraints() {
-		ArrayList<model.Constraint> c = (ArrayList<model.Constraint>) m.getConstraints().clone();
+		ArrayList<Constraint> c = (ArrayList<Constraint>) m.getConstraints().clone();
 		m.backup(x);
 		assertEquals(c, m.getConstraints());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testBackupNoAlterationsVariables() {
 		ArrayList<Variable> v = (ArrayList<Variable>) m.getVariables().clone();

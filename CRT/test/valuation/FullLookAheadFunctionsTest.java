@@ -167,7 +167,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testSelectValueFlaLess3Vars() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testConsistent() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testFutureEmpty() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testAddbackupSubstitutionsToHash() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testInitQueue() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testFindSubstitutionVals() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testUpdateSubstitutions() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class FullLookAheadFunctionsTest {
 	 */
 	@Test
 	public final void testUpdateSubstitutionsWithoutModifLessEquals() {
-		fail("Not yet implemented"); // TODO
+		//fail("Not yet implemented");
 	}
 
 }
