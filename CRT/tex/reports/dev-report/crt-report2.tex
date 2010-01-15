@@ -1,7 +1,7 @@
  
 \documentclass[a4paper,12pt]{article}
 \usepackage[pstricks]{sk2}
-
+\usepackage{pxfonts}
 
 \author{Groupe CRT 1}
 
@@ -28,9 +28,18 @@
 \def\grpd{Groupe Développement}
 \def\grpt{Groupe Test}
 
+\def\fla{Full Look Ahead}
+\def\tdd{Test Driven Development}
+
+\newcommand\seclvlA{
+\newcommand\SA\section
+\newcommand\SB\subsection
+\newcommand\SC\subsubsection}
+
+\newcommand\seclvlB{
 \newcommand\SA\subsection
 \newcommand\SB\subsubsection
-\newcommand\SC\subsubsection
+\newcommand\SC\paragraph}
 
 \begin{document}
  
@@ -45,7 +54,10 @@
 Dans cette seconde partie du projet de CRT, notre groupe était
 chargé d'implanter l'algorithme de valuation FLA (\texttt{Full Look Ahead}).
 Nous avons également pourvu notre programme d'une interface graphique,
-en plus du mode \emph{ligne de commande} disponible précédemment.
+en plus du mode \emph{ligne de commande} disponible précédemment,
+corrigé certains problèmes qui subsistaient dans
+les algorithmes implantés dans la première partie du
+projet.
 
 \section{Organisation}
 
@@ -108,9 +120,9 @@ d'autres membres de l'équipe lorqu'il a été clairement
 
 %input{}
 
-\section{Plan de Test}
 
-%input{}
+\seclvlA
+\input{../report-test}
 
 \section{Bilan technique}
 
