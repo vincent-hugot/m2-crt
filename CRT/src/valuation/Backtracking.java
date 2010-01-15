@@ -16,10 +16,6 @@ public class Backtracking {
 	
 	Model model;
 	ArrayList<Variable> vars;
-	ArrayList<Variable> savedVars;
-	
-	HashMap<Variable,Integer> values;
-	HashMap<Variable,Domain> excludedDomains;
 	
 	HashMap<Integer,Variable> modelBackup; // General backup
 	HashMap[] modelBackups;
@@ -29,16 +25,6 @@ public class Backtracking {
 	public Backtracking(Model model) {
 		this.model = model;
 		vars = getRealVariables();
-		
-		values = new HashMap<Variable,Integer>();
-		savedVars = new ArrayList<Variable>();
-		
-		excludedDomains = new HashMap<Variable, Domain>();
-		
-		for (Variable v : model.getVariables()) {
-			values.put(v, null);
-			excludedDomains.put(v, new Domain());
-		}
 		
 		modelBackups = new HashMap[vars.size()];
 	}
@@ -50,10 +36,6 @@ public class Backtracking {
 		
 		modelBackup = model.backupVariables(0);
 		
-		
-		/*System.out.println(excludedDomains);
-		
-		System.out.println(excludedDomains);*/
 		
 		boolean win = instanciateR(0);
 		
@@ -132,16 +114,12 @@ public class Backtracking {
 			
 			// Instanciation is valid (for Model AND till the end)
 			if (validModel() && instanciateR(varIndice+1)) {
-				values.put(var, val);
 				return true;
 			}
 			
 			// Instanciation invalid, restoring
 			else {
-				//if (varIndice > 0)
-				//		restore(varIndice-1);
-				//	else
-						restore(varIndice);
+				restore(varIndice);
 				//restoreSubstitutions();
 			}
 		}
@@ -153,98 +131,25 @@ public class Backtracking {
 	
 	
 	public void instanciate(int varIndice, int value) {
-		//ArrayList<Integer> toExclude = new ArrayList<Integer>();
 		Variable var = vars.get(varIndice);
 		
 		// Backuping
 		modelBackups[varIndice] = model.backupVariables(0);
 		//modelBackups[varIndice] = model.backupVariables(varIndice);
 		
-		
-		
+		// Instantiation = applying only one value
 		var.getDomain().clear();
 		var.getDomain().add(value);
-		/*for (int i = 0; i < modelBackups.length; i++) {
-			//System.out.print(i + " : " + modelBackups[i]);
-			System.out.println(" / " + model.getVariables());
-		}*/
-		System.out.println(" / " + model.getVariables());
-		//System.out.println("");
-		/*for (Integer exclude : var.getDomain()) {
-			if (exclude != value)
-				toExclude.add(exclude);
-		}
-		
-		for (Integer exclude : toExclude) {
-			reduce(var,exclude);
-		}*/
 	}
 	
-	
-	
-	public void reduce(Variable var, int value) {
-		
-		
-		
-		// Remembering removed value
-		//if (excludedDomains.containsKey(var))
-		
-		System.out.println(excludedDomains);
-		for (Variable v : excludedDomains.keySet()) {
-			System.out.println(v + " -> " + excludedDomains.get(v) + " --- ");
-		}
-		System.out.println(excludedDomains);
-		
-		for (Variable v : excludedDomains.keySet()) {
-			//System.out.print("\n" + v + " on " + excludedDomains.get(v) + " --- ");
-			if (v.equals(var)) {
-				//System.out.print(excludedDomains.get(var) + " / ");
-				//System.out.print(excludedDomains.get(v));
-				excludedDomains.get(var).add(value);
-			}
-		}
-		
-		System.out.println(excludedDomains + "\n\n");
-		
-		// Removing it
-		var.getDomain().remove(value);
-	}
 	
 	
 	
 	@SuppressWarnings("unchecked")
 	public void restore(Integer varIndice) {
-		
-		//Variable var = vars.get(varIndice);
-		
 		model.restoreHashMap((HashMap<Integer,Variable>) modelBackups[varIndice]);
-		
-		
-		// Re-adding values
-		/*for (Integer val : excludedDomains.get(var)) {
-			var.getDomain().add(val);
-		}
-		
-		// Clearing what we remembered
-		excludedDomains.get(var).clear();*/
 	}
 	
-	
-	public Integer getValue(Variable var) {
-		
-		Domain excluded = excludedDomains.get(var);
-		ArrayList<Integer> values = new ArrayList<Integer>();
-		
-		for (Integer i : var.getDomain()) {
-			if (!excluded.contains(i)) values.add(i);
-		}
-		
-		// If 0 values or more than 1, no solution possible
-		if (values.size() != 1)
-			return null;
-		
-		return values.get(0);
-	}
 	
 	
 	
@@ -264,7 +169,6 @@ public class Backtracking {
 			}
 				
 		}
-		System.out.println("\n" + model.getVariables() + "\n");
 		
 		
 		// Looking through constraints
@@ -411,26 +315,6 @@ public class Backtracking {
 				sub.getSubstitutionVariable().getDomain().remove(val);
 				//reduce(sub.getSubstitutionVariable(), val);
 			}
-		}
-	}
-	
-	
-	public void restoreSubstitutions() {
-		
-
-		//System.err.println("---\nRestoring... (Vars : " + model.getVariables() + ")");
-		
-		for (Substitution sub : model.getSubstitutions()) {
-			
-			Variable var = sub.getSubstitutionVariable();
-			
-			// Re-adding values
-			for (Integer val : excludedDomains.get(var)) {
-				var.getDomain().add(val);
-			}
-			
-			// Clearing what we remembered
-			excludedDomains.get(var).clear();
 		}
 	}
 }

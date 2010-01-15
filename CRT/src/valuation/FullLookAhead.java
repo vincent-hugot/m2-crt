@@ -47,7 +47,7 @@ public class FullLookAhead {
 		this.X = model.getVariables();//normalement on a pas à redefinir X mais X.variables
 		this.queue = new LinkedList<Couple>();
 		valuation = new int[X.size()];
-		System.out.println(model);
+		//System.out.println(model);
 	}
 
 	/**
@@ -66,6 +66,7 @@ if ( i=0 )
 else
 	return instantiated values of {x1, . . . , xn}
 	 */
+	@SuppressWarnings("unchecked")
 	public HashSet<Variable>  run() { 
 
 		int i,indice;
@@ -90,7 +91,7 @@ else
 		 */
 		//}
 
-		HashMap<Integer, Variable>[] varRestorsMap = new HashMap[X.size()];
+		HashMap[] varRestorsMap = new HashMap[X.size()];
 		for (indice =0; indice<X.size();indice++){
 			varRestorsMap[indice] = new HashMap<Integer, Variable>();
 		}
@@ -114,7 +115,7 @@ else
 				xi = selectValueFlaLess3Vars(i);
 			}
 
-			System.out.println("i("+i+")= "+xi);//+ " "+X.get(0));
+			// System.out.println("i("+i+")= "+xi);//+ " "+X.get(0));
 			//System.out.println(model);
 
 			if (xi == null){
@@ -127,7 +128,7 @@ else
 				for (indice=0;indice<i;indice++){
 					back+=" "+valuation[indice];
 				}
-				System.out.println(back); //+ " "+X.get(0));
+				// System.out.println(back); //+ " "+X.get(0));
 				i--;
 
 				if (i!=-1){
@@ -166,7 +167,7 @@ else
 		}
 
 		if (i == X.size() ){
-			System.out.println("sol trouvee");
+			// System.out.println("sol trouvee");
 			resVars = new HashSet<Variable>();
 			//On cree un HashSet avec singleton pour donner une solution
 			for (i = 0;i<X.size();i++){
@@ -178,10 +179,10 @@ else
 					resVars.add(variableValuee);
 				}
 			}
-			System.out.println("sol "+resVars);
+			// System.out.println("sol "+resVars);
 		}
 		else{
-			System.out.println("sol pas trouvee"+i);
+			// System.out.println("sol pas trouvee"+i);
 		}
 
 		/*
@@ -314,11 +315,11 @@ else
 								if (!X.get(j).getAssociatedSubstitutions().isEmpty()){
 
 									X.get(i).getDomain().add(a);
-									System.out.println("before subst with a because removed value"+X);
+									// System.out.println("before subst with a because removed value"+X);
 									updateSubstitutionsWithoutModifLessEquals(j);
 									X.get(i).getDomain().remove(a);
 									//System.out.println(model);
-									System.out.println("after subst because removed value"+X);
+									// System.out.println("after subst because removed value"+X);
 
 								}
 
@@ -389,7 +390,7 @@ else
 		// clone sinon acces concurent quand on retire a de Dom(i)
 		Iterator<Integer> iteratorDomI = domIterationA.iterator();
 		int indice;
-		int indiceTab=0;
+		//int indiceTab=0;
 		boolean consistent;
 
 		Variable xi = X.get(i);
@@ -1158,7 +1159,7 @@ else
 		ArrayList<Substitution> listeSub = X.get(iinitial).getAssociatedSubstitutions();
 		Domain toRemove = new Domain();
 
-		boolean reduce;
+		//boolean reduce;
 
 		HashMap<Integer, Variable> intToVar = new HashMap<Integer, Variable>();
 		TreeSet<Integer> indiceVariablesToUpdate = new TreeSet<Integer>();
@@ -1250,7 +1251,7 @@ else
 
 				if (!findSubstitutionVals(sub, ab, sub.getRight())) { // reduce on every (xk,B)
 					toRemove.add(ab);
-					reduce = true;
+					//reduce = true;
 					// reduce(sub.getSubstitutionVariable(),sub.getSubstitutionVariable());
 					//reduce(sub.getRight(), sub.getRight());
 				}

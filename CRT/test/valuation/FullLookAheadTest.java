@@ -2,7 +2,6 @@ package valuation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import model.Domain;
@@ -10,10 +9,7 @@ import model.Model;
 import model.Variable;
 import model.Operator;
 
-
 import org.junit.Test;
-
-import ac.AC3;
 
 import translator.Translator;
 
