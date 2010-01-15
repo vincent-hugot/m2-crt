@@ -1,62 +1,132 @@
-\SA{Sauvegarde et restauration du mod�le}
+\SA{Plan de test}
 
 \SB{Introduction}
 
-La r�alisation du \fla\ requiert de pouvoir avant chaque d�cision sauvegarder l'�tat courant du mod�le afin de pouvoir � tout moment revenir en arri�re lorsque n�cessaire. 
-Or dans l'�tat actuel des choses, le mod�le ne dispose pas de cette fonctionalit�, de ce fait il est n�cessaire de l'impl�menter.\mk\\
-
-Lors de l'application de l'algorithme lorsqu'un choix est fait une seule et unique variable est � chaque fois modifi�e. C'est pourquoi il a �t� d�cid�, � l'origine de cr�er les deux m�thodes suivantes : \sk\\
+Lors de ce second projet, qui consiste à appliquer un algorithme de valuation sur le modèles, 3 éléments nouveaux sont apparus :
 \begin{itemize}
-	\item \tech{Variable backup(Variable v)}
-	\item \tech{void restore(Variable v)}
+	\item L'algorithme \fla
+	\item Un système de sauvegarde et réstauration de l'état du modèle (pour backtracker)
+	\item Une interface graphique
+\end{itemize}
+
+\begin{description}
+	\item[Le \fla] est évidement l'élément principal à tester.
+	Les tests d'acceptation doivent pouvoir couvrir tous les cas particuliers possibles, ainsi que des exemples concrets d'utilisation (fournis ici).
+	L'algorithme s'exécute par une simple méthode qui se charge d'appeler toutes ses dépendances; les tests effectués sont donc essentiellement fonctionnels et de type boite noire.
+	\item[Le système de sauvegarde et réstauration] ou \emph{backup} et \emph{restore},
+	est un système de petite taille, très rapidement implanté, mais crucial pour le bon fonctionnement des méthodes de backtracking.
+	Ce système n'ayant pas été mis en place lors du premier projet, il fait l'objet de tests dans ce second projet.
+	\item[L'interface graphique] n'a pas beaucoup d'importance ici, elle est simplement mise à disposition pour faciliter le lancement des algorithmes (voir exigences non couvertes en partie \ref{test:notcovered}).
+\end{description}
+
+
+%La réalisation du \fla\ requiert de pouvoir avant chaque décision sauvegarder l'état courant du modèle afin de pouvoir à tout moment revenir en arrière lorsque nécessaire. 
+%Or dans l'état actuel des choses, le modèle ne dispose pas de cette fonctionalité, de ce fait il est nécessaire de l'implémenter.
+
+
+%Lors de l'application de l'algorithme lorsqu'un choix est fait une seule et unique variable est à chaque fois modifiée. C'est pourquoi il a été décidé, à l'origine de créer les deux méthodes suivantes : \sk\\
+%\begin{itemize}
+%	\item \tech{Variable backup(Variable v)}
+%	\item \tech{void restore(Variable v)}
+%\end{itemize}
+
+
+
+\SB{Périmètre couvert par le plan de test}
+\label{test:perimetre}
+
+\SC{Tests unitaires}
+Durant la première itération du projet, un plan de test a été conçu pour tester la partie sauvegarde/réstauration.
+Il couvre les méthodes \tech{backup} et \tech{restore} du modèle.
+
+\SC{Tests d'intégration}
+Les tests d'intégrations avaient déjà été effectués lors du projet précédents, puisqu'il était déjà nécessaire d'enchainer l'utilisation de l'ensemble des modules (parsing, modèle, consistance d'arcs, backtracking).
+L'intégration du \fla\ et de l'IHM s'est donc faite de manière informelle.
+
+\SC{Tests fonctionnels}
+Les itérations suivant la première se sont concentrées sur les tests d'acceptation pour couvrir l'algorithme \fla.
+
+
+
+\SB{Propriétés testées par rapport à l'utilisateur}
+
+Les fonctions \tech{backup} et \tech{restore} permettent de sauvegarder la valeur d'une variable à un moment donné, afin de pouvoir être en mesure de revenir à cet état ultérieurement au besoin.
+
+Les principales choses dont nous devons nous assurer sont :
+\begin{itemize}
+	\item Que la variable retournée est bien syntaxiquement égale à celle que l'on souhaite sauvegarder,
+	\item Que la variable créée est bien une copie de l'originale, c'est à dire que la fonction retourne une référence vers une nouvelle variable et non l'originale. (Sinon toute modification de l'originale sur repercuterait sur la copie qui n'aurait plus aucun intérêt),
+	\item Que la variable originale n'est pas modifiée par l'application de la méthode,
+	\item Que, lors d'une réstauration, la (ou les) nouvelle valeur dans le modèle est bien prise en compte.
+\end{itemize}
+
+Pour l'algorithme \fla, il s'agit simplement de s'assurer que :
+\begin{itemize}
+	\item Si le modèle, quel qu'il soit, possède une solution, on doit trouver une solution (la première trouvée),
+	\item Si le modèle ne possède pas de solution, on doit l'indiquer clairement.
 \end{itemize}
 
 
 
-\SB{Pr�rim�tre couvert par le plan de test}
+\SB{Exigences non couvertes par le plan de test}
+\label{test:notcovered}
 
-\SB{Propri�t�s test�es par rapport � l'utilisateur}
+\begin{description}
+	\item[La sauvegarde/réstauration] a été correctement couverte, bien qu'il aurait été bon de tester la bonne neutralité des cas \tech{null} ou de non existance (Variable non reconnue, etc.). Ici on ne peut que confirmer qu'une variable valide a une influence, sinon on ne suppose aucun effet.
+	%\item[L'algorithme \fla] a été couvert au mieux possible, avec beaucoup de tests aux limites, de cas particuliers, et les exemples fournis (qui passent avec succès et offrent une réponse correcte).
+	\item[L'interface graphique] n'a pas fait l'objet de plan de test, pour les raisons suivantes :
+	\begin{itemize}
+		\item faible importance du module (il ne s'agit pas d'une application grand publique, mais d'une interface pour faciliter l'utilisation et le test d'un outil technique),
+		\item temps de développement très réduit (à cause d'une ``défaillance'' des ressources humaines assignées à la tâche),
+		\item les principaux éléments de l'interfaces sont repris d'une ancienne interface (projet MiniJaja de Master 1) déjà beaucoup tester, au mieux quelques tests d'intégrations auraient suffit.
+	\end{itemize}
+\end{description}
 
-La fonction backup permet de sauvegarder la valeur d'une variable � un moment donn�, afin de pouvoir �tre en mesure de revenir � cet �tat ult�rieurement au besoin.
 
-Les pricipales choses dont nous devons nous assurer sont :
+\SB{Stratégies de test}
+
+Deux stratégies principales sont apparues lors de l'application des tests (unitaires comme fonctionnels) :
 \begin{itemize}
-\item Que la variable retourn�e est bien syntaxiquement �gale � celle que l'on souhaite sauvegarder
-\item Que la variable cr��e est bien une copie de l'originale, c'est � dire que la fonction retourne une r�f�rence vers une nouvelle variable et non l'originale. (Sinon toute modification de l'originale sur repercuterait sur la copie qui n'aurait plus aucun int�r�t)
-\item Que la variable originale n'est pas modifi�e par l'application de la m�thode.
-
+	\item Une stratégie inspirée du \emph{Pair-wise}, consistant à fixer systématiquement le même système de contraintes, en faisant varier un ou plusieurs éléments pour constater la différence\footnote{Cette stratégie était déjà présente lors du premier projet, par exemple pour tester les erreurs de parsing en introduisant à chaque fois une erreur différente par rapport à un modèle ``sain''.}.
+	Pour l'application de cette stratégie, on trouvera généralement un modèle composé de 3 variables ($X$, $Y$ et $Z$), et de deux contraintes.
+	Les variables étant également limitées à des intervales simples (\tech{[0..2]}), rendant faciles les tests fonctionnels (dans lesquels il faut pouvoir estimer les résultats possibles).
+	
+	\item Des \textbf{tests aux limites} sont implantés pour venir compléter les tests effectués.
+	Lors des tests de sauvegarde/réstauration, il s'agit d'effectuer plusieurs opérations à la suite sans que celà n'ai d'incidence.
+	Lors des tests du \fla, on y trouve des tests sur des grands intervales, des intervales vides, à un seul éléments, des cas sans solutions, etc.
 \end{itemize}
 
-\SB{Exigences non couvertes par le plan de test}
-Il aurait �t� bon de tester que l'application de la m�thode en lui passant en param�tre une variable nulle ou non pr�sente dans le mod�le retourne bien une erreur.
-\SB{Strat�gies de test}
- 
-Tous les tests se d�roulent dans un m�me ``environnement''. C'est � dire qu'ils sont tous effectu�s sur un mod�le contenant 3 variable et deux contraintes.
-Un test a �t� �crit pour chacune des exigences cit�es. Aisin qu'un test aux limites en essayant de sauvegarder une nouvelle varaiable ayant un domaine vide. De plus un dernier test permet de s'assurer que la fonction n'alt�re aucune des autres variables du mod�le.
-\SB{Crit�res d'acceptation des tests}
 
-\SB{Crit�res d'arr�t des tests}
+\SB{Critères d'acceptation des tests}
 
-\SB{Gestion des anomalies}
+Pour passer correctement, les tests de \tech{backup} et \tech{restore} devaient s'assurer de préserver le modèle, et de le restaurer après une modification manuelle.
+Pour l'algorithme \fla, une méthode \tech{OneOf} a été implanté pour effectuer les tests :
+on propose un modèle de contraintes, on propose l'ensemble des solutions possibles liées à ce modèle, et le test doit confirmer que la solution trouvée en fait partie.
 
-\SB{Gestion des risques}
 
-\SA{Plan de test \fla}
+\SB{Critères d'arrêt des tests}
 
-\SB{Introduction}
+Pour les méthodes \tech{backup} et \tech{restore}, le critère d'arrêt est arrivé assez rapidement étant donné la taille du code : une fois quelques ``enchainements'' de sauvegardes et restaurations effectuées, on peut être assez confiants sur le fonctionnement (voir section \ref{test:risques}).
 
-\SB{Pr�rim�tre couvert par le plan de test}
+aucune nouvelle donnée de teste n'a été introduite lorsqu'il a été jugé qu'elles faisaient le travail demandé.
 
-\SB{Propri�t�s test�es par rapport � l'utilisateur}
+\mk
+Pour l'algorithme \fla, nous avons arrêté les tests lorsque plus aucun cas particulier ne s'est présenté.
+Pour autant la seule garantie qu'on aie est que les tests sont un succès après un maximum d'expérimentations.
 
-\SB{Exigences non couvertes par le plan de test}
-
-\SB{Strat�gies de test}
-
-\SB{Crit�res d'acceptation des tests}
-
-\SB{Crit�res d'arr�t des tests}
 
 \SB{Gestion des anomalies}
 
+Un bug est apparu dans l'algorithme de consistance AC6 grace aux tests effectués au premier projet.
+Ce bug n'a jamais pu être corrigé par manque de temps (les priorités du projet se sont orientées sur le nouvel algorithme à implanté, et une meilleure couverture par les tests).
+
+De même, l'algorithme de backtracking ne semblait pas détecter de solution sur un des exemples fournis (\emph{placement des reines}), et n'avait pas été corrigé.
+De plus, lors des tests fonctionnels, un problème critique est apparu lors de la valuation par backtracking (qui ne fonctionnait plus du tout, par un bug insolvable en Java).
+Le backtracking a donc été entièrement refondue et simplifiée graces aux nouvelles méthodes de \tech{backup} et \tech{restore}, et fonctionne à nouveau
+
+
 \SB{Gestion des risques}
+\label{test:risques}
+
+Concernant \tech{backup} et \tech{restore}, le code étant rapidement testé, peu de risques étaient pris à leur faire confiance une fois les critères d'arrêt atteinds.
+Concernant \fla, puisqu'on n'est jamais sûr du fonctionnement parfait de l'algorithme (étant donné la complexité à mettre en place avec les substitutions), nous avons choisis de considérer comme acceptable les risques pris, faisant corriger l'algorithme au fur et à mesure que l'on trouvait des données de tests invalides.
