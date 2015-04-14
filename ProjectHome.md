@@ -1,0 +1,1 @@
+LIFC _(Laboratoire d'Informatique de Franche-Comté)_ Master 2
